@@ -31,6 +31,7 @@ import {VideoReportFinishDialogComponent} from "./video-report-finish-dialog/vid
 import {VideoReportCopyDialogComponent} from './video-report-copy-dialog/video-report-copy-dialog.component';
 import {VideoReportDeleteDialogComponent} from './video-report-delete-dialog/video-report-delete-dialog.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {VideoReportUnsavedChangesDialogComponent} from './video-report-unsaved-changes-dialog/video-report-unsaved-changes-dialog.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
         SettingsComponent,
         VideoReportCopyDialogComponent,
         VideoReportDeleteDialogComponent,
+        VideoReportUnsavedChangesDialogComponent,
     ],
     imports: [
         BrowserModule,

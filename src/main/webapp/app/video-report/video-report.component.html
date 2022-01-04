@@ -1,10 +1,10 @@
 <div>
     <mat-toolbar color="primary">
         <span>Video Report</span>
-        <button *ngIf="report" mat-icon-button (click)="save()">
+        <button *ngIf="report" mat-icon-button (click)="save()" [disabled]="!unsavedChanges">
             <mat-icon>save</mat-icon>
         </button>
-        <button *ngIf="report" mat-icon-button (click)="finish()">
+        <button *ngIf="report" mat-icon-button (click)="finish()" [disabled]="unsavedChanges">
             <mat-icon>done</mat-icon>
         </button>
         <a *ngIf="report?.id" [href]="'/#/view/' + report?.id" mat-icon-button target="_blank">
@@ -50,6 +50,7 @@
                 <mat-form-field appearance="fill" color="accent">
                     <mat-label>Image, Approach, Fitness Condition</mat-label>
                     <textarea [(ngModel)]="report.imageComment"
+                              (ngModelChange)="onChange()"
                               maxlength="1024"
                               cdkAutosizeMaxRows="5"
                               cdkAutosizeMinRows="2"
@@ -61,6 +62,7 @@
                     <mat-label *ngIf="is3PO()">3PO Mechanics & Individual Officiating Techniques</mat-label>
                     <mat-label *ngIf="is2PO()">2PO Mechanics & Individual Officiating Techniques</mat-label>
                     <textarea [(ngModel)]="report.mechanicsComment"
+                              (ngModelChange)="onChange()"
                               maxlength="1024"
                               cdkAutosizeMaxRows="5"
                               cdkAutosizeMinRows="2"
@@ -73,6 +75,7 @@
                 <mat-form-field appearance="fill" color="accent">
                     <mat-label>Critera: Fouls & Violations</mat-label>
                     <textarea [(ngModel)]="report.foulsComment"
+                              (ngModelChange)="onChange()"
                               maxlength="1024"
                               cdkAutosizeMaxRows="5"
                               cdkAutosizeMinRows="2"
@@ -83,6 +86,7 @@
                 <mat-form-field appearance="fill" color="accent">
                     <mat-label>Game Control and Management</mat-label>
                     <textarea [(ngModel)]="report.gameManagementComment"
+                              (ngModelChange)="onChange()"
                               maxlength="1024"
                               cdkAutosizeMaxRows="5"
                               cdkAutosizeMinRows="2"
@@ -95,6 +99,7 @@
                 <mat-form-field appearance="fill" color="accent">
                     <mat-label>Points to Keep</mat-label>
                     <textarea [(ngModel)]="report.pointsToKeepComment"
+                              (ngModelChange)="onChange()"
                               maxlength="1024"
                               cdkAutosizeMaxRows="5"
                               cdkAutosizeMinRows="2"
@@ -105,6 +110,7 @@
                 <mat-form-field appearance="fill" color="accent">
                     <mat-label>Points to Improve</mat-label>
                     <textarea [(ngModel)]="report.pointsToImproveComment"
+                              (ngModelChange)="onChange()"
                               maxlength="1024"
                               cdkAutosizeMaxRows="5"
                               cdkAutosizeMinRows="2"
@@ -135,6 +141,7 @@
                             <mat-form-field appearance="fill" color="accent">
                                 <mat-label>Comment</mat-label>
                                 <textarea [(ngModel)]="videoComment.comment"
+                                          (ngModelChange)="onChange()"
                                           maxlength="1024"
                                           cdkAutosizeMaxRows="5"
                                           cdkAutosizeMinRows="1"

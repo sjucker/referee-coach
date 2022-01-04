@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>Discard Changes?</h2>
+<mat-dialog-content>
+    <p>You have unsaved changes. Do you really want to discard them?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-flat-button [mat-dialog-close]="true">Discard changes and leave this page</button>
+    <button color="primary" mat-flat-button [mat-dialog-close]="false">Stay on this page</button>
+</mat-dialog-actions>

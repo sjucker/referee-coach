@@ -16,5 +16,8 @@
       <option name="ALIGN_MULTILINE_METHOD_BRACKETS" value="true" />
       <option name="METHOD_CALL_CHAIN_WRAP" value="1" />
     </codeStyleSettings>
+    <codeStyleSettings language="TypeScript">
+      <option name="ALIGN_MULTILINE_CHAINED_METHODS" value="true" />
+    </codeStyleSettings>
   </code_scheme>
 </component>

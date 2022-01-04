@@ -6,6 +6,7 @@ import {MainComponent} from "./main/main.component";
 import {LoginComponent} from "./login/login.component";
 import {AuthenticationGuard} from "./service/authentication.guard";
 import {SettingsComponent} from "./settings/settings.component";
+import {UnsavedChangesGuard} from "./service/unsaved-changes.guard";
 
 const routes: Routes = [
     {
@@ -21,7 +22,8 @@ const routes: Routes = [
     {
         path: 'edit/:id',
         component: VideoReportComponent,
-        canActivate: [AuthenticationGuard]
+        canActivate: [AuthenticationGuard],
+        canDeactivate: [UnsavedChangesGuard]
     },
     {
         path: 'login',

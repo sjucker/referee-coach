@@ -7,6 +7,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {VideoReportFinishDialogComponent} from "../video-report-finish-dialog/video-report-finish-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {Observable, of} from "rxjs";
+import {VideoReportUnsavedChangesDialogComponent} from "../video-report-unsaved-changes-dialog/video-report-unsaved-changes-dialog.component";
 
 @Component({
     selector: 'app-video-report',
@@ -18,6 +20,7 @@ export class VideoReportComponent implements OnInit {
     @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
 
     report?: VideoReportDTO;
+    unsavedChanges = false;
 
     constructor(private readonly basketplanService: BasketplanService,
                 private readonly videoReportService: VideoReportService,
@@ -55,18 +58,11 @@ export class VideoReportComponent implements OnInit {
             this.videoReportService.saveVideoReport(this.report).subscribe(
                 response => {
                     this.report = response;
-                    this.snackBar.open("Successfully saved!", undefined, {
-                        duration: 2000,
-                        verticalPosition: "top",
-                        horizontalPosition: "center"
-                    });
+                    this.unsavedChanges = false;
+                    this.showMessage("Successfully saved!");
                 },
                 error => {
-                    this.snackBar.open("An unexpected error occurred, video report could not be saved.", undefined, {
-                        duration: 4000,
-                        verticalPosition: "top",
-                        horizontalPosition: "center"
-                    });
+                    this.showMessage("An unexpected error occurred, video report could not be saved.");
                 });
         }
     }
@@ -76,11 +72,17 @@ export class VideoReportComponent implements OnInit {
             this.dialog.open(VideoReportFinishDialogComponent).afterClosed().subscribe(decision => {
                 if (decision && this.report) {
                     this.report = {...this.report, finished: true}
-                    this.videoReportService.saveVideoReport(this.report).subscribe(response => {
-                        if (response.finished) {
-                            this.router.navigate(['/view/' + response.id]);
+                    this.videoReportService.saveVideoReport(this.report).subscribe(
+                        response => {
+                            this.unsavedChanges = false;
+                            if (response.finished) {
+                                this.router.navigate(['/view/' + response.id]);
+                            }
+                        },
+                        error => {
+                            this.showMessage("An unexpected error occurred, video report could not be finished.");
                         }
-                    });
+                    );
                 }
             })
         }
@@ -117,4 +119,23 @@ export class VideoReportComponent implements OnInit {
         return this.report?.reportee === Reportee.THIRD_REFEREE;
     }
 
+    canDeactivate(): Observable<boolean> {
+        if (this.unsavedChanges) {
+            return this.dialog.open(VideoReportUnsavedChangesDialogComponent).afterClosed();
+        } else {
+            return of(true);
+        }
+    }
+
+    onChange() {
+        this.unsavedChanges = true;
+    }
+
+    private showMessage(message: string) {
+        this.snackBar.open(message, undefined, {
+            duration: 3000,
+            verticalPosition: "top",
+            horizontalPosition: "center"
+        });
+    }
 }
