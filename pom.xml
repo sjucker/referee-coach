@@ -202,16 +202,6 @@
                             <goal>npm</goal>
                         </goals>
                     </execution>
-
-                    <execution>
-                        <id>ng build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run-script build</arguments>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
 
