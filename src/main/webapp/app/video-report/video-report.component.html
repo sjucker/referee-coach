@@ -129,7 +129,9 @@
             <div fxLayout="column" fxLayout.gt-sm="row">
                 <div fxLayout="column">
                     <youtube-player #youtubePlayer
-                                    [videoId]="report.basketplanGame.youtubeId"></youtube-player>
+                                    [videoId]="report.basketplanGame.youtubeId"
+                                    [width]="videoWidth"
+                                    [height]="videoHeight"></youtube-player>
                     <button (click)="addVideoComment()" color="primary" mat-flat-button>
                         Create comment for current timestamp
                     </button>
@@ -162,4 +164,13 @@
             </div>
         </mat-card-content>
     </mat-card>
+
+    <mat-card *ngIf="notFound">
+        <mat-card-header>
+            <mat-card-title>Video report not found</mat-card-title>
+        </mat-card-header>
+    </mat-card>
+
+    <!-- here so we know the current width of the window and can resize the YouTube video accordingly -->
+    <div #widthMeasurement></div>
 </div>

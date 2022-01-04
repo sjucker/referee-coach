@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {YouTubePlayer} from "@angular/youtube-player";
 import {BasketplanService} from "../service/basketplan.service";
 import {VideoReportService} from "../service/video-report.service";
@@ -15,11 +15,16 @@ import {VideoReportUnsavedChangesDialogComponent} from "../video-report-unsaved-
     templateUrl: './video-report.component.html',
     styleUrls: ['./video-report.component.css']
 })
-export class VideoReportComponent implements OnInit {
+export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
+    @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
+
+    videoWidth?: number;
+    videoHeight?: number;
 
     report?: VideoReportDTO;
+    notFound = false;
     unsavedChanges = false;
 
     constructor(private readonly basketplanService: BasketplanService,
@@ -39,18 +44,40 @@ export class VideoReportComponent implements OnInit {
 
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
-            this.videoReportService.getVideoReport(id).subscribe(dto => {
-                if (dto.finished) {
-                    this.router.navigate(['/view/' + dto.id]);
+            this.videoReportService.getVideoReport(id).subscribe(
+                dto => {
+                    if (dto.finished) {
+                        this.router.navigate(['/view/' + dto.id]);
+                    }
+                    this.report = dto;
+                },
+                error => {
+                    this.notFound = true;
                 }
-                // TODO error handling
-                this.report = dto;
-            });
+            );
         }
     }
 
+    ngAfterViewInit(): void {
+        this.onResize();
+        window.addEventListener('resize', this.onResize);
+    }
+
+    onResize = (): void => {
+        // minus padding (16px each side) and margin (10px each)
+        const contentWidth = this.widthMeasurement!.nativeElement.clientWidth - 52;
+
+        this.videoWidth = Math.min(contentWidth, 720);
+        this.videoHeight = this.videoWidth * 0.6;
+    }
+
+    ngOnDestroy(): void {
+        window.removeEventListener('resize', this.onResize);
+    }
+
     jumpTo(time: number): void {
-        this.youtube!.seekTo(time, true)
+        this.youtube!.seekTo(time, true);
+        this.youtube!.playVideo();
     }
 
     save() {
