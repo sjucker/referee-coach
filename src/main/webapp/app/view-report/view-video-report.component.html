@@ -67,7 +67,10 @@
             <mat-card-content>
                 <div fxLayout="column" fxLayout.gt-md="row">
                     <div>
-                        <youtube-player #youtubePlayer [videoId]="dto.basketplanGame.youtubeId"></youtube-player>
+                        <youtube-player #youtubePlayer
+                                        [videoId]="dto.basketplanGame.youtubeId"
+                                        [width]="videoWidth"
+                                        [height]="videoHeight"></youtube-player>
                     </div>
                     <div fxFlex="stretch" id="video-comments-container">
                         <mat-card *ngFor="let videoComment of dto.videoComments; index as i;">
@@ -86,4 +89,7 @@
             </mat-card-content>
         </mat-card>
     </div>
+
+    <!-- here so we know the current width of the window and can resize the YouTube video accordingly -->
+    <div #widthMeasurement></div>
 </div>

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {VideoReportService} from "../service/video-report.service";
 import {YouTubePlayer} from "@angular/youtube-player";
@@ -10,9 +10,13 @@ import {AuthenticationService} from "../service/authentication.service";
     templateUrl: './view-video-report.component.html',
     styleUrls: ['./view-video-report.component.css']
 })
-export class ViewVideoReportComponent implements OnInit {
+export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
+    @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
+
+    videoWidth?: number;
+    videoHeight?: number;
 
     dto?: VideoReportDTO;
 
@@ -28,9 +32,28 @@ export class ViewVideoReportComponent implements OnInit {
         tag.src = 'https://www.youtube.com/iframe_api';
         document.body.appendChild(tag);
 
-        this.videoReportService.getVideoReport(this.route.snapshot.paramMap.get('id')!).subscribe(result => {
-            this.dto = result;
-        });
+        this.videoReportService.getVideoReport(this.route.snapshot.paramMap.get('id')!).subscribe(
+            result => {
+                this.dto = result;
+            }
+        );
+    }
+
+    ngAfterViewInit(): void {
+        this.onResize();
+        window.addEventListener('resize', this.onResize);
+    }
+
+    onResize = (): void => {
+        // minus padding (16px each side) and margin (10px each)
+        const contentWidth = this.widthMeasurement!.nativeElement.clientWidth - 52;
+
+        this.videoWidth = Math.min(contentWidth, 720);
+        this.videoHeight = this.videoWidth * 0.6;
+    }
+
+    ngOnDestroy(): void {
+        window.removeEventListener('resize', this.onResize);
     }
 
     play(time: number): void {
