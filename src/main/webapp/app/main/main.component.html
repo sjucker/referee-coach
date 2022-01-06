@@ -18,13 +18,12 @@
                     <button color="primary" mat-flat-button type="submit">Search</button>
                 </form>
 
-                <form (ngSubmit)="parseYouTubeUrl()" role="form" *ngIf="game && youtubeIdInputNeeded">
+                <div *ngIf="game && youtubeIdInputNeeded">
                     <mat-form-field appearance="outline" color="accent">
                         <mat-label>YouTube URL</mat-label>
-                        <input [(ngModel)]="youtubeUrlInput" autocomplete="off" matInput name="youtubeUrl" type="text">
+                        <input [(ngModel)]="youtubeUrlInput" (ngModelChange)="parseYouTubeUrl()" autocomplete="off" matInput name="youtubeUrl" type="text">
                     </mat-form-field>
-                    <button color="primary" mat-flat-button type="submit">Check URL</button>
-                </form>
+                </div>
 
                 <form (ngSubmit)="createVideoReport()" role="form" *ngIf="game">
                     <mat-form-field appearance="fill">

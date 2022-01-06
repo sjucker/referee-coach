@@ -87,6 +87,8 @@ export class MainComponent implements OnInit {
 
                     this.game = dto;
                     this.youtubeId = this.game.youtubeId;
+
+                    this.reportee = undefined;
                     this.reportees = [
                         {reportee: Reportee.FIRST_REFEREE, name: dto.referee1.name},
                         {reportee: Reportee.SECOND_REFEREE, name: dto.referee2.name}
@@ -115,6 +117,7 @@ export class MainComponent implements OnInit {
 
     parseYouTubeUrl() {
         this.problemDescription = '';
+        this.youtubeId = undefined;
 
         if (!this.youtubeUrlInput) {
             this.problemDescription = 'Please enter a YouTube URL';
