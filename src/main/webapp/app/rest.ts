@@ -27,6 +27,7 @@ export interface CopyVideoReportDTO {
 export interface CreateVideoReportDTO {
     federation: Federation;
     gameNumber: string;
+    youtubeId: string;
     reportee: Reportee;
 }
 
@@ -82,13 +83,13 @@ export enum OfficiatingMode {
     OFFICIATING_3PO = "OFFICIATING_3PO",
 }
 
-export enum Federation {
-    SBL = "SBL",
-    PROBASKET = "PROBASKET",
-}
-
 export enum Reportee {
     FIRST_REFEREE = "FIRST_REFEREE",
     SECOND_REFEREE = "SECOND_REFEREE",
     THIRD_REFEREE = "THIRD_REFEREE",
+}
+
+export enum Federation {
+    SBL = "SBL",
+    PROBASKET = "PROBASKET",
 }

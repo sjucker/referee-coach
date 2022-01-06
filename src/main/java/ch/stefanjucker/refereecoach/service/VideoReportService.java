@@ -48,12 +48,14 @@ public class VideoReportService {
         this.environment = environment;
     }
 
-    public VideoReportDTO create(Federation federation, String gameNumber, Reportee reportee, User user) {
+    public VideoReportDTO create(Federation federation, String gameNumber, String youtubeId, Reportee reportee, User user) {
         var game = basketplanService.findGameByNumber(federation, gameNumber).orElseThrow();
 
         var videoReport = new VideoReport();
         videoReport.setId(getUuid());
-        videoReport.setBasketplanGame(DTO_MAPPER.fromDTO(game));
+        var basketplanGame = DTO_MAPPER.fromDTO(game);
+        basketplanGame.setYoutubeId(youtubeId); // either coming from Basketplan or manually entered by user
+        videoReport.setBasketplanGame(basketplanGame);
         videoReport.setReportee(reportee);
         videoReport.setReporter(user);
         videoReport.setVideoComments(new ArrayList<>());

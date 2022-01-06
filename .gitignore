@@ -18,6 +18,7 @@ target/
 *.iml
 *.ipr
 .idea/libraries/
+.idea/sonarlint/
 
 ### NetBeans ###
 /nbproject/private/

@@ -17,18 +17,25 @@
                     </mat-form-field>
                     <button color="primary" mat-flat-button type="submit">Search</button>
                 </form>
-                <div *ngIf="ready">
-                    <form (ngSubmit)="createVideoReport()" role="form">
-                        <mat-form-field appearance="fill">
-                            <mat-label>Select Referee</mat-label>
-                            <mat-select [(value)]="reportee">
-                                <mat-option *ngFor="let r of reportees" [value]="r.reportee">{{r.name}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <button color="primary" mat-flat-button [disabled]="!reportee">Start</button>
-                    </form>
-                </div>
-                <div *ngIf="!ready && problemDescription">
+
+                <form (ngSubmit)="parseYouTubeUrl()" role="form" *ngIf="game && youtubeIdInputNeeded">
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-label>YouTube URL</mat-label>
+                        <input [(ngModel)]="youtubeUrlInput" autocomplete="off" matInput name="youtubeUrl" type="text">
+                    </mat-form-field>
+                    <button color="primary" mat-flat-button type="submit">Check URL</button>
+                </form>
+
+                <form (ngSubmit)="createVideoReport()" role="form" *ngIf="game">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Select Referee</mat-label>
+                        <mat-select [(value)]="reportee">
+                            <mat-option *ngFor="let r of reportees" [value]="r.reportee">{{r.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button color="primary" mat-flat-button [disabled]="!reportee || !youtubeId">Start</button>
+                </form>
+                <div *ngIf="problemDescription">
                     {{problemDescription}}
                 </div>
             </div>

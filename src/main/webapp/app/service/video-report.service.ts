@@ -33,9 +33,10 @@ export class VideoReportService {
         return this.httpClient.get<VideoReportDTO[]>(`${this.baseUrl}/video-report`);
     }
 
-    createVideoReport(gameNumber: string, reportee: Reportee): Observable<VideoReportDTO> {
+    createVideoReport(gameNumber: string, youtubeId: string, reportee: Reportee): Observable<VideoReportDTO> {
         const request: CreateVideoReportDTO = {
             gameNumber: gameNumber,
+            youtubeId: youtubeId,
             reportee: reportee,
             federation: Federation.SBL
         };

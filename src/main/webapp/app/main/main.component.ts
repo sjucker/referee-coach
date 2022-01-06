@@ -9,6 +9,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatDialog} from "@angular/material/dialog";
 import {VideoReportCopyDialogComponent} from "../video-report-copy-dialog/video-report-copy-dialog.component";
 import {VideoReportDeleteDialogComponent} from "../video-report-delete-dialog/video-report-delete-dialog.component";
+import getVideoId from "get-video-id";
 
 interface ReporteeSelection {
     reportee: Reportee,
@@ -25,14 +26,15 @@ export class MainComponent implements OnInit {
     videoReportDtos: MatTableDataSource<VideoReportDTO> = new MatTableDataSource<VideoReportDTO>([]);
 
     gameNumberInput: string = '';
+    youtubeUrlInput: string = '';
 
-    // whether we are ready to start with video-report
-    ready = false;
     problemDescription = '';
 
     reportee?: Reportee
     reportees: ReporteeSelection[] = []
     game?: BasketplanGameDTO;
+    youtubeId?: string;
+    youtubeIdInputNeeded = false;
 
     constructor(private basketplanService: BasketplanService,
                 private videoReportService: VideoReportService,
@@ -71,7 +73,6 @@ export class MainComponent implements OnInit {
     }
 
     searchGame(): void {
-        this.ready = false;
         this.problemDescription = '';
 
         if (!this.gameNumberInput) {
@@ -83,30 +84,25 @@ export class MainComponent implements OnInit {
             dto => {
                 if (dto.referee1 && dto.referee2
                     && (dto.officiatingMode === OfficiatingMode.OFFICIATING_2PO || dto.referee3)) {
-                    if (dto.youtubeId) {
-                        this.ready = true;
-                        this.problemDescription = '';
-                        this.game = dto;
 
-                        this.reportees = [
-                            {reportee: Reportee.FIRST_REFEREE, name: dto.referee1.name},
-                            {reportee: Reportee.SECOND_REFEREE, name: dto.referee2.name}
-                        ];
+                    this.game = dto;
+                    this.youtubeId = this.game.youtubeId;
+                    this.reportees = [
+                        {reportee: Reportee.FIRST_REFEREE, name: dto.referee1.name},
+                        {reportee: Reportee.SECOND_REFEREE, name: dto.referee2.name}
+                    ];
 
-                        if (dto.officiatingMode === OfficiatingMode.OFFICIATING_3PO && dto.referee3) {
-                            this.reportees = [...this.reportees, {
-                                reportee: Reportee.THIRD_REFEREE,
-                                name: dto.referee3.name
-                            }];
-                        }
-                    } else {
-                        this.problemDescription = 'No YouTube video available'
+                    if (dto.officiatingMode === OfficiatingMode.OFFICIATING_3PO && dto.referee3) {
+                        this.reportees = [...this.reportees, {
+                            reportee: Reportee.THIRD_REFEREE,
+                            name: dto.referee3.name
+                        }];
                     }
+                    this.youtubeIdInputNeeded = !this.youtubeId;
                 } else {
                     this.problemDescription = 'At least one referee not available in database';
                 }
-            }
-            ,
+            },
             error => {
                 if (error.status === 404) {
                     this.problemDescription = 'No game found for given game number';
@@ -114,13 +110,28 @@ export class MainComponent implements OnInit {
                     this.problemDescription = 'An unexpected error occurred'
                 }
             }
-        )
-        ;
+        );
+    }
+
+    parseYouTubeUrl() {
+        this.problemDescription = '';
+
+        if (!this.youtubeUrlInput) {
+            this.problemDescription = 'Please enter a YouTube URL';
+            return;
+        }
+
+        const {id} = getVideoId(this.youtubeUrlInput);
+        if (id) {
+            this.youtubeId = id;
+        } else {
+            this.problemDescription = 'Not a valid YouTube URL';
+        }
     }
 
     createVideoReport() {
-        if (this.game && this.reportee) {
-            this.videoReportService.createVideoReport(this.game!.gameNumber, this.reportee).subscribe(
+        if (this.game && this.youtubeId && this.reportee) {
+            this.videoReportService.createVideoReport(this.game.gameNumber, this.youtubeId, this.reportee).subscribe(
                 response => {
                     this.router.navigate(['/edit/' + response.id]);
                 },
