@@ -32,6 +32,8 @@ import {VideoReportCopyDialogComponent} from './video-report-copy-dialog/video-r
 import {VideoReportDeleteDialogComponent} from './video-report-delete-dialog/video-report-delete-dialog.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {VideoReportUnsavedChangesDialogComponent} from './video-report-unsaved-changes-dialog/video-report-unsaved-changes-dialog.component';
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({
     declarations: [
@@ -69,6 +71,8 @@ import {VideoReportUnsavedChangesDialogComponent} from './video-report-unsaved-c
         MatSidenavModule,
         MatDialogModule,
         MatProgressSpinnerModule,
+        MatPaginatorModule,
+        MatProgressBarModule,
     ],
     providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true}],
     bootstrap: [AppComponent]

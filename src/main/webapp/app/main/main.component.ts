@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {BasketplanGameDTO, OfficiatingMode, Reportee, ReporterDTO, VideoReportDTO} from "../rest";
 import {getReferee, VideoReportService} from "../service/video-report.service";
 import {BasketplanService} from "../service/basketplan.service";
@@ -10,6 +10,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {VideoReportCopyDialogComponent} from "../video-report-copy-dialog/video-report-copy-dialog.component";
 import {VideoReportDeleteDialogComponent} from "../video-report-delete-dialog/video-report-delete-dialog.component";
 import getVideoId from "get-video-id";
+import {MatPaginator} from "@angular/material/paginator";
 
 interface ReporteeSelection {
     reportee: Reportee,
@@ -24,6 +25,8 @@ interface ReporteeSelection {
 export class MainComponent implements OnInit {
     displayedColumns: string[] = ['finished', 'date', 'gameNumber', 'competition', 'teams', 'coach', 'reportee', 'edit', 'view', 'copy', 'delete'];
     videoReportDtos: MatTableDataSource<VideoReportDTO> = new MatTableDataSource<VideoReportDTO>([]);
+    @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
+    reportsLoaded = false;
 
     gameNumberInput: string = '';
     youtubeUrlInput: string = '';
@@ -51,7 +54,11 @@ export class MainComponent implements OnInit {
     private loadVideoReports() {
         this.videoReportService.getAllVideoReports().subscribe(
             value => {
+                this.reportsLoaded = true;
                 this.videoReportDtos = new MatTableDataSource<VideoReportDTO>(value);
+                if (this.paginator) {
+                    this.videoReportDtos.paginator = this.paginator
+                }
                 this.videoReportDtos.filterPredicate = (data, filter) => {
                     // default filter cannot handle nested objects, so handle each column specifically
                     return data.basketplanGame.gameNumber.toLowerCase().indexOf(filter) != -1
