@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface VideoCommentRepository extends JpaRepository<VideoComment, Long> {
@@ -26,14 +25,5 @@ public interface VideoCommentRepository extends JpaRepository<VideoComment, Long
             """,
             nativeQuery = true)
     List<VideoComment> findVideoCommentsByGameNumberAndReporter(String gameNumber, Long reporterId);
-
-    @Query(value = """
-            select distinct c.*
-            from video_report_comment c
-                     join video_report_comment_tags t on c.id = t.video_report_comment_id
-            where t.tag_id in (?1);
-            """,
-            nativeQuery = true)
-    List<VideoComment> findCommentsHavingTags(Set<Long> tagIds);
 
 }

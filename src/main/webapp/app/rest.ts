@@ -101,10 +101,13 @@ export interface VideoCommentDTO {
 }
 
 export interface VideoCommentDetailDTO {
-    basketplanGame: BasketplanGameDTO;
+    gameNumber: string;
+    competition: string;
+    date: Date;
     timestamp: number;
     comment: string;
-    tags: TagDTO[];
+    youtubeId: string;
+    tags: string;
 }
 
 export interface VideoCommentReplyDTO {

@@ -82,12 +82,8 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    tagsAsList(tags: TagDTO[]) {
-        return tags.map(t => t.name);
-    }
-
     play(element: VideoCommentDetailDTO) {
-        this.currentVideoId = element.basketplanGame.youtubeId;
+        this.currentVideoId = element.youtubeId;
 
 
         console.log(this.youtube!.getPlayerState());

@@ -18,6 +18,7 @@ import ch.stefanjucker.refereecoach.dto.VideoCommentReplyDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDiscussionDTO;
 import ch.stefanjucker.refereecoach.service.ExportService;
+import ch.stefanjucker.refereecoach.service.SearchService;
 import ch.stefanjucker.refereecoach.service.VideoReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -51,11 +52,16 @@ public class VideoReportResource {
     private final VideoReportService videoReportService;
     private final UserRepository userRepository;
     private final ExportService exportService;
+    private final SearchService searchService;
 
-    public VideoReportResource(VideoReportService videoReportService, UserRepository userRepository, ExportService exportService) {
+    public VideoReportResource(VideoReportService videoReportService,
+                               UserRepository userRepository,
+                               ExportService exportService,
+                               SearchService searchService) {
         this.videoReportService = videoReportService;
         this.userRepository = userRepository;
         this.exportService = exportService;
+        this.searchService = searchService;
     }
 
     @GetMapping
@@ -172,7 +178,7 @@ public class VideoReportResource {
     @PostMapping(path = "/search")
     public ResponseEntity<SearchResponseDTO> search(@RequestBody @Valid SearchRequestDTO dto) {
         log.info("POST /video-report/search {}", dto);
-        return ResponseEntity.ok(new SearchResponseDTO(videoReportService.search(dto)));
+        return ResponseEntity.ok(new SearchResponseDTO(searchService.search(dto)));
     }
 
 }

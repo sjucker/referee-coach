@@ -14,7 +14,6 @@ import ch.stefanjucker.refereecoach.dto.Reportee;
 import ch.stefanjucker.refereecoach.dto.ReporterDTO;
 import ch.stefanjucker.refereecoach.dto.TagDTO;
 import ch.stefanjucker.refereecoach.dto.VideoCommentDTO;
-import ch.stefanjucker.refereecoach.dto.VideoCommentDetailDTO;
 import ch.stefanjucker.refereecoach.dto.VideoCommentReplyDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDTO;
 import org.mapstruct.Mapper;
@@ -75,8 +74,6 @@ public interface DTOMapper {
     TagDTO toDTO(Tags tags);
 
     Set<TagDTO> toDTO(Set<Tags> tags);
-
-    VideoCommentDetailDTO toDTO(BasketplanGame basketplanGame, VideoComment videoComment);
 
     default void update(VideoReportDTO dto, VideoReport videoReport) {
         videoReport.setGeneral(new CriteriaEvaluation(dto.general().comment(), dto.general().score()));
