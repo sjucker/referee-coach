@@ -2,8 +2,6 @@ package ch.stefanjucker.refereecoach.service;
 
 import static ch.stefanjucker.refereecoach.domain.VideoReport.CURRENT_VERSION;
 import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
 import ch.stefanjucker.refereecoach.domain.HasNameEmail;
@@ -17,10 +15,8 @@ import ch.stefanjucker.refereecoach.domain.repository.VideoCommentRepository;
 import ch.stefanjucker.refereecoach.domain.repository.VideoReportRepository;
 import ch.stefanjucker.refereecoach.dto.CreateRepliesDTO;
 import ch.stefanjucker.refereecoach.dto.Reportee;
-import ch.stefanjucker.refereecoach.dto.SearchRequestDTO;
 import ch.stefanjucker.refereecoach.dto.TagDTO;
 import ch.stefanjucker.refereecoach.dto.VideoCommentDTO;
-import ch.stefanjucker.refereecoach.dto.VideoCommentDetailDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDiscussionDTO;
 import ch.stefanjucker.refereecoach.mapper.DTOMapper;
@@ -41,10 +37,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -349,25 +343,6 @@ public class VideoReportService {
         return tagsRepository.findAll().stream()
                              .map(DTO_MAPPER::toDTO)
                              .toList();
-
-    }
-
-    public List<VideoCommentDetailDTO> search(SearchRequestDTO dto) {
-        List<VideoComment> commentsHavingTags = videoCommentRepository.findCommentsHavingTags(dto.tags().stream()
-                                                                                                 .map(TagDTO::id)
-                                                                                                 .collect(toSet()));
-
-        Set<String> videoReportIds = commentsHavingTags.stream()
-                                                       .map(VideoComment::getVideoReportId)
-                                                       .collect(toSet());
-
-        Map<String, VideoReport> videoReports = videoReportRepository.findAllById(videoReportIds).stream()
-                                                                     .collect(toMap(VideoReport::getId, Function.identity()));
-
-        return commentsHavingTags.stream()
-                                 .map(comment -> DTO_MAPPER.toDTO(videoReports.get(comment.getVideoReportId()).getBasketplanGame(), comment))
-                                 .distinct()
-                                 .toList();
 
     }
 }

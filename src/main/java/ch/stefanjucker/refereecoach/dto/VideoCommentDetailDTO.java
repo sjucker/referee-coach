@@ -3,10 +3,13 @@ package ch.stefanjucker.refereecoach.dto;
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.NotNull;
-import java.util.Set;
+import java.time.LocalDate;
 
-public record VideoCommentDetailDTO(@NotNull BasketplanGameDTO basketplanGame,
+public record VideoCommentDetailDTO(@NotNull String gameNumber,
+                                    @NotNull String competition,
+                                    @NotNull LocalDate date,
                                     @NotNull Integer timestamp,
                                     @NotNull @Length(max = 1024) String comment,
-                                    @NotNull Set<TagDTO> tags) {
+                                    @NotNull String youtubeId,
+                                    @NotNull String tags) {
 }
