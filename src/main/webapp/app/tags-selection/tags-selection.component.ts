@@ -2,7 +2,7 @@ import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} f
 import {TagDTO} from "../rest";
 import {FormControl} from "@angular/forms";
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
-import {VideoReportService} from "../service/video-report.service";
+import {Observable, of} from "rxjs";
 
 @Component({
     selector: 'app-tags-selection',
@@ -12,6 +12,11 @@ import {VideoReportService} from "../service/video-report.service";
 export class TagsSelectionComponent implements OnInit {
 
     @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
+
+    @Input()
+    availableTags: Observable<TagDTO[]> = of([]);
+    allTags: TagDTO[] = [];
+
 
     @Input()
     initialSelectedTags: TagDTO[] = [];
@@ -24,28 +29,26 @@ export class TagsSelectionComponent implements OnInit {
     @Output()
     removed = new EventEmitter<TagDTO>();
 
-    tags: TagDTO[] = [];
     filteredTags: TagDTO[] = [];
     tagController = new FormControl('');
 
-    constructor(private readonly videoReportService: VideoReportService) {
+    constructor() {
     }
 
     ngOnInit(): void {
-        this.videoReportService.getAllAvailableTags().subscribe(tags => {
-            this.tags = tags;
-            this.filteredTags = tags;
+        this.availableTags.subscribe(value => {
+            this.filteredTags = [...value];
+            this.allTags = [...value];
         });
+        this.selectedTags = [...this.initialSelectedTags];
 
         this.tagController.valueChanges.subscribe(value => {
             if (value && value.length > 0) {
-                this.filteredTags = this.tags.filter(tag => tag.name.toLowerCase().includes(value.toLowerCase()));
+                this.filteredTags = this.allTags.filter(tag => tag.name.toLowerCase().includes(value.toLowerCase()));
             } else {
-                this.filteredTags = this.tags.slice();
+                this.filteredTags = this.allTags.slice();
             }
         });
-
-        this.selectedTags = [...this.initialSelectedTags];
     }
 
     removeTag(tag: TagDTO) {

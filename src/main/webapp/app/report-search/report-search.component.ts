@@ -5,6 +5,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {YouTubePlayer} from "@angular/youtube-player";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {Observable, of, share} from "rxjs";
 
 @Component({
     selector: 'app-report-search',
@@ -28,6 +29,8 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
     searching = false;
 
+    availableTags: Observable<TagDTO[]> = of([]);
+
     constructor(private readonly videoReportService: VideoReportService,
                 private snackBar: MatSnackBar) {
     }
@@ -38,6 +41,8 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
         const tag = document.createElement('script');
         tag.src = 'https://www.youtube.com/iframe_api';
         document.body.appendChild(tag);
+
+        this.availableTags = this.videoReportService.getAllAvailableTags().pipe(share())
     }
 
     ngAfterViewInit(): void {
@@ -102,11 +107,13 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     onResize = (): void => {
-        // minus padding (16px each side) and margin (10px each)
-        const contentWidth = this.widthMeasurement!.nativeElement.clientWidth - 52;
+        setTimeout(() => {
+            // minus padding (16px each side) and margin (10px each)
+            const contentWidth = this.widthMeasurement!.nativeElement.clientWidth - 52;
 
-        this.videoWidth = Math.min(contentWidth, 720);
-        this.videoHeight = this.videoWidth * 0.6;
+            this.videoWidth = Math.min(contentWidth, 720);
+            this.videoHeight = this.videoWidth * 0.6;
+        })
     }
 
 }
