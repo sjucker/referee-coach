@@ -112,12 +112,13 @@ public class VideoReportService {
         copy.setFinished(false);
         var newVideoReport = videoReportRepository.save(copy);
 
-        List<VideoCommentDTO> newComments = new ArrayList<>();
-        for (var videoComment : videoCommentRepository.findByVideoReportId(sourceId)) {
-            var commentCopy = DTO_MAPPER.copy(videoComment);
-            commentCopy.setVideoReportId(newVideoReport.getId());
-            newComments.add(DTO_MAPPER.toDTO(videoCommentRepository.save(commentCopy)));
-        }
+        var newComments = videoCommentRepository.saveAll(videoCommentRepository.findByVideoReportId(sourceId).stream()
+                                                                               .map(DTO_MAPPER::copy)
+                                                                               .peek(commentCopy -> commentCopy.setVideoReportId(newVideoReport.getId()))
+                                                                               .toList())
+                                                .stream()
+                                                .map(DTO_MAPPER::toDTO)
+                                                .toList();
 
         return DTO_MAPPER.toDTO(newVideoReport, newComments, getOtherReportees(newVideoReport));
     }
