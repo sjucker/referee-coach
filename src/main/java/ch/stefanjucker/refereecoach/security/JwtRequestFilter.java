@@ -45,6 +45,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } catch (UsernameNotFoundException e) {
                     // just continue unauthenticated if username unknown (e.g, email needed changing) => user gets logged out
+                    logger.warn("could not authenticate user, since username was unknown", e);
                     filterChain.doFilter(request, response);
                 }
             }
