@@ -256,7 +256,7 @@ export class MainComponent implements OnInit {
                 title: 'Copy Report',
                 description: 'A new report will be created containing all comments from the existing source report.'
             } as VideoReportCopyDialogData
-        }).afterClosed().subscribe((reportee: Reportee) => {
+        }).afterClosed().subscribe((reportee?: Reportee) => {
             if (reportee) {
                 this.reportsLoaded = false;
                 this.videoReportService.copyVideoReport(report.id, reportee).subscribe({

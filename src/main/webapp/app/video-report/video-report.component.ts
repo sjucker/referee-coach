@@ -172,15 +172,17 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
                 title: 'Copy Comment to other Report',
                 description: 'This will create the same comment in the report for selected referee.'
             } as VideoReportCopyDialogData
-        }).afterClosed().subscribe((reportee: Reportee) => {
-            this.videoReportService.copyVideoComment(videoComment, reportee).subscribe({
-                next: _ => {
-                    this.showMessage("Successfully copied!");
-                },
-                error: _ => {
-                    this.showMessage("An unexpected error occurred, comment could not be copied.");
-                }
-            })
+        }).afterClosed().subscribe((reportee?: Reportee) => {
+            if (reportee) {
+                this.videoReportService.copyVideoComment(videoComment, reportee).subscribe({
+                    next: _ => {
+                        this.showMessage("Successfully copied!");
+                    },
+                    error: _ => {
+                        this.showMessage("An unexpected error occurred, comment could not be copied.");
+                    }
+                })
+            }
         });
     }
 
