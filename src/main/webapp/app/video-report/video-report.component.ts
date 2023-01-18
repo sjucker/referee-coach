@@ -7,7 +7,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {VideoReportFinishDialogComponent} from "../video-report-finish-dialog/video-report-finish-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {Observable, of} from "rxjs";
+import {Observable, of, share} from "rxjs";
 import {VideoReportUnsavedChangesDialogComponent} from "../video-report-unsaved-changes-dialog/video-report-unsaved-changes-dialog.component";
 import {VIEW_PATH} from "../app-routing.module";
 import {VideoReportCopyDialogComponent, VideoReportCopyDialogData} from "../video-report-copy-dialog/video-report-copy-dialog.component";
@@ -29,6 +29,8 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
     notFound = false;
     unsavedChanges = false;
     saving = false;
+
+    availableTags: Observable<TagDTO[]> = of([]);
 
     constructor(private readonly basketplanService: BasketplanService,
                 private readonly videoReportService: VideoReportService,
@@ -59,6 +61,8 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
             });
         }
+
+        this.availableTags = this.videoReportService.getAllAvailableTags().pipe(share())
     }
 
     ngAfterViewInit(): void {

@@ -11,7 +11,8 @@
         <mat-card-content>
             <div fxLayout="column" fxLayout.gt-md="row" fxLayoutGap.gt-md="20px">
                 <div fxFlex.gt-md="40">
-                    <app-tags-selection (selected)="selectTag($event)"
+                    <app-tags-selection [availableTags]="availableTags"
+                                        (selected)="selectTag($event)"
                                         (removed)="removeTag($event)"></app-tags-selection>
 
                 </div>

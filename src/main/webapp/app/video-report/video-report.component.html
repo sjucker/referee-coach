@@ -224,7 +224,8 @@
                                           cdkTextareaAutosize
                                           matInput></textarea>
                             </mat-form-field>
-                            <app-tags-selection [initialSelectedTags]="videoComment.tags"
+                            <app-tags-selection [availableTags]="availableTags"
+                                                [initialSelectedTags]="videoComment.tags"
                                                 (removed)="removeTag(videoComment, $event)"
                                                 (selected)="selectTag(videoComment, $event)"></app-tags-selection>
                         </mat-card-content>
