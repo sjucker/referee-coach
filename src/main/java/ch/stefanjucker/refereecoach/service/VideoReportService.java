@@ -4,8 +4,8 @@ import static ch.stefanjucker.refereecoach.domain.VideoReport.CURRENT_VERSION;
 import static java.util.stream.Collectors.toCollection;
 
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
+import ch.stefanjucker.refereecoach.domain.Coach;
 import ch.stefanjucker.refereecoach.domain.HasNameEmail;
-import ch.stefanjucker.refereecoach.domain.User;
 import ch.stefanjucker.refereecoach.domain.VideoComment;
 import ch.stefanjucker.refereecoach.domain.VideoCommentReply;
 import ch.stefanjucker.refereecoach.domain.VideoReport;
@@ -47,8 +47,9 @@ public class VideoReportService {
 
     private static final DTOMapper DTO_MAPPER = DTOMapper.INSTANCE;
 
-    private static final String STEFAN_JUCKER_EMAIL = "reports@referee-coach.ch";
-    private static final String FABRIZIO_PIZIO_EMAIL = "fabrizio.pizio@swissbasketball.ch";
+    private static final String STEFAN_JUCKER_EMAIL = "stefan.jucker@gmail.com";
+    // TODO make this configurable
+    private static final String FABRIZIO_PIZIO_EMAIL = "allihjartar1971@gmail.com";
 
     private final VideoReportRepository videoReportRepository;
     private final VideoCommentRepository videoCommentRepository;
@@ -77,7 +78,7 @@ public class VideoReportService {
         this.environment = environment;
     }
 
-    public VideoReportDTO create(Federation federation, String gameNumber, String youtubeId, Reportee reportee, User user) {
+    public VideoReportDTO create(Federation federation, String gameNumber, String youtubeId, Reportee reportee, Coach coach) {
         var game = basketplanService.findGameByNumber(federation, gameNumber).orElseThrow();
 
         var videoReport = new VideoReport();
@@ -86,7 +87,7 @@ public class VideoReportService {
         basketplanGame.setYoutubeId(youtubeId); // either coming from Basketplan or manually entered by user
         videoReport.setBasketplanGame(basketplanGame);
         videoReport.setReportee(reportee);
-        videoReport.setReporter(user);
+        videoReport.setCoach(coach);
         videoReport.setFinished(false);
         videoReport.setVersion(CURRENT_VERSION);
 
@@ -94,20 +95,20 @@ public class VideoReportService {
     }
 
     private List<Reportee> getOtherReportees(VideoReport videoReport) {
-        return videoReportRepository.findByBasketplanGameGameNumberAndReporterId(videoReport.getBasketplanGame().getGameNumber(),
-                                                                                 videoReport.getReporter().getId())
+        return videoReportRepository.findByBasketplanGameGameNumberAndCoachId(videoReport.getBasketplanGame().getGameNumber(),
+                                                                              videoReport.getCoach().getId())
                                     .stream()
                                     .map(VideoReport::getReportee)
                                     .filter(reportee -> reportee != videoReport.getReportee())
                                     .toList();
     }
 
-    public VideoReportDTO copy(String sourceId, Reportee reportee, User user) {
+    public VideoReportDTO copy(String sourceId, Reportee reportee, Coach coach) {
         var source = videoReportRepository.findById(sourceId).orElseThrow();
 
         var copy = DTO_MAPPER.copy(source);
         copy.setId(getUuid());
-        copy.setReporter(user);
+        copy.setCoach(coach);
         copy.setReportee(reportee);
         copy.setFinished(false);
         var newVideoReport = videoReportRepository.save(copy);
@@ -123,12 +124,12 @@ public class VideoReportService {
         return DTO_MAPPER.toDTO(newVideoReport, newComments, getOtherReportees(newVideoReport));
     }
 
-    public void copyVideoComment(Long sourceId, Reportee reportee, User user) {
+    public void copyVideoComment(Long sourceId, Reportee reportee, Coach coach) {
         // TODO check that comment does not yet exists in other report
         var source = videoCommentRepository.getReferenceById(sourceId);
         var gameNumber = videoReportRepository.getReferenceById(source.getVideoReportId()).getBasketplanGame().getGameNumber();
 
-        var videoReport = videoReportRepository.findByBasketplanGameGameNumberAndReporterId(gameNumber, user.getId()).stream()
+        var videoReport = videoReportRepository.findByBasketplanGameGameNumberAndCoachId(gameNumber, coach.getId()).stream()
                                                .filter(s -> s.getReportee() == reportee)
                                                .findFirst()
                                                .orElseThrow();
@@ -148,15 +149,15 @@ public class VideoReportService {
     }
 
     @Transactional
-    public VideoReportDTO update(String id, VideoReportDTO dto, User user) {
+    public VideoReportDTO update(String id, VideoReportDTO dto, Coach coach) {
         var videoReport = videoReportRepository.findById(id).orElseThrow();
-        if (!videoReport.getReporter().getEmail().equals(user.getEmail())) {
-            log.error("user {} tried to update video-report {} that does not belong to them", user, videoReport);
+        if (!videoReport.getCoach().getEmail().equals(coach.getEmail())) {
+            log.error("user {} tried to update video-report {} that does not belong to them", coach, videoReport);
             throw new IllegalStateException("user is not allowed to update this video-report!");
         }
 
         if (videoReport.isFinished()) {
-            log.error("user {} tried to update video-report {} that is already finished", user, videoReport);
+            log.error("user {} tried to update video-report {} that is already finished", coach, videoReport);
             throw new IllegalStateException("user is not allowed to update already finished video-report!");
         }
 
@@ -182,16 +183,16 @@ public class VideoReportService {
 
                 simpleMessage.setSubject(dto.isTextOnly() ? "[Referee Coach] New Report" : "[Referee Coach] New Video Report");
                 simpleMessage.setFrom(environment.getRequiredProperty("spring.mail.username"));
-                simpleMessage.setReplyTo(videoReport.getReporter().getEmail());
+                simpleMessage.setReplyTo(videoReport.getCoach().getEmail());
                 simpleMessage.setBcc(STEFAN_JUCKER_EMAIL);
 
                 if (properties.isOverrideRecipient()) {
-                    simpleMessage.setTo(videoReport.getReporter().getEmail());
+                    simpleMessage.setTo(videoReport.getCoach().getEmail());
                     simpleMessage.setSubject(simpleMessage.getSubject() + " (%s)".formatted(referee.getEmail()));
                 } else {
                     simpleMessage.setTo(referee.getEmail());
-                    // make sure Fabrizio does not receive mail twice when he is the reporter
-                    simpleMessage.setCc(Stream.of(videoReport.getReporter().getEmail(), FABRIZIO_PIZIO_EMAIL)
+                    // make sure Fabrizio does not receive mail twice when he is the coach
+                    simpleMessage.setCc(Stream.of(videoReport.getCoach().getEmail(), FABRIZIO_PIZIO_EMAIL)
                                               .distinct()
                                               .toArray(String[]::new));
                 }
@@ -233,13 +234,13 @@ public class VideoReportService {
                                     .map(videoReport -> DTO_MAPPER.toDTO(videoReport, videoCommentDTOs, getOtherReportees(videoReport)));
     }
 
-    public void delete(String id, User user) {
+    public void delete(String id, Coach coach) {
         // verify, that us is allowed to delete this video report
         var videoReport = videoReportRepository.findById(id).orElseThrow();
-        if (user.isAdmin() || isUnfinishedReportOwnedByUser(videoReport, user)) {
+        if (coach.isAdmin() || isUnfinishedReportOwnedByUser(videoReport, coach)) {
             videoReportRepository.delete(videoReport);
         } else {
-            log.error("user ({}) tried to delete video report ({}), but is not authorized to do so", user, videoReport);
+            log.error("user ({}) tried to delete video report ({}), but is not authorized to do so", coach, videoReport);
             throw new IllegalStateException("user is not allowed to delete this video-report!");
         }
     }
@@ -248,22 +249,22 @@ public class VideoReportService {
         var videoReport = videoReportRepository.findById(videoReportId).orElseThrow();
 
         List<VideoCommentDTO> videoCommentDTOs = new ArrayList<>();
-        for (var videoComment : videoCommentRepository.findVideoCommentsByGameNumberAndReporter(videoReport.getBasketplanGame()
-                                                                                                           .getGameNumber(), videoReport.getReporter()
-                                                                                                                                        .getId())) {
+        for (var videoComment : videoCommentRepository.findVideoCommentsByGameNumberAndCoach(videoReport.getBasketplanGame()
+                                                                                                        .getGameNumber(), videoReport.getCoach()
+                                                                                                                                     .getId())) {
             var replies = videoCommentReplyRepository.findByVideoCommentIdOrderByRepliedAt(videoComment.getId());
             videoCommentDTOs.add(DTO_MAPPER.toDTO(videoComment, DTO_MAPPER.toDTO(replies)));
         }
 
         return new VideoReportDiscussionDTO(videoReport.getId(),
                                             DTO_MAPPER.toDTO(videoReport.getBasketplanGame()),
-                                            DTO_MAPPER.toDTO(videoReport.getReporter()),
+                                            DTO_MAPPER.toDTO(videoReport.getCoach()),
                                             videoReport.relevantReferee().getName(),
                                             videoCommentDTOs);
     }
 
-    private boolean isUnfinishedReportOwnedByUser(VideoReport videoReport, User user) {
-        return !videoReport.isFinished() && videoReport.getReporter().getEmail().equals(user.getEmail());
+    private boolean isUnfinishedReportOwnedByUser(VideoReport videoReport, Coach coach) {
+        return !videoReport.isFinished() && videoReport.getCoach().getEmail().equals(coach.getEmail());
     }
 
     public List<VideoReportDTO> findAll(LocalDate from, LocalDate to) {
@@ -273,12 +274,12 @@ public class VideoReportService {
                                     .toList();
     }
 
-    public void addReplies(User user, String id, CreateRepliesDTO dto) {
+    public void addReplies(Coach coach, String id, CreateRepliesDTO dto) {
         var videoReport = videoReportRepository.findById(id).orElseThrow();
 
         String repliedBy;
-        if (user != null) {
-            repliedBy = user.getName();
+        if (coach != null) {
+            repliedBy = coach.getName();
         } else {
             repliedBy = videoReport.relevantReferee().getName();
         }
@@ -295,19 +296,19 @@ public class VideoReportService {
             }
         }
 
-        for (var report : videoReportRepository.findByBasketplanGameGameNumberAndReporterId(videoReport.getBasketplanGame().getGameNumber(),
-                                                                                            videoReport.getReporter().getId())) {
+        for (var report : videoReportRepository.findByBasketplanGameGameNumberAndCoachId(videoReport.getBasketplanGame().getGameNumber(),
+                                                                                         videoReport.getCoach().getId())) {
 
-            if (user != null || !report.getId().equals(id)) {
+            if (coach != null || !report.getId().equals(id)) {
                 sendDiscussionEmail(repliedBy, report.relevantReferee(), report.getId(), newCommentsMade);
             }
         }
 
         // user == null => one of the referees replied
-        // user != reporter => another coach replied
-        // in both cases send to the reporter
-        if (user == null || !user.getId().equals(videoReport.getReporter().getId())) {
-            sendDiscussionEmail(repliedBy, videoReport.getReporter(), videoReport.getId(), newCommentsMade);
+        // user != coach => another coach replied
+        // in both cases send to the coach
+        if (coach == null || !coach.getId().equals(videoReport.getCoach().getId())) {
+            sendDiscussionEmail(repliedBy, videoReport.getCoach(), videoReport.getId(), newCommentsMade);
         }
     }
 

@@ -1,0 +1,187 @@
+@use '@angular/material' as mat;
+@import "responsive";
+@import "variables";
+
+@include mat.all-component-typographies();
+@include mat.core();
+
+$my-primary: mat.define-palette((
+        50: #e2f6fe,
+        100: #b5e7fb,
+        200: #84d8f9,
+        300: #55c8f6,
+        400: #33bcf5,
+        500: #16b0f4,
+        600: #11a2e5,
+        700: $primary-color,
+        800: #087dbd,
+        900: #025d9b,
+        A100: #84ffff,
+        A200: #18ffff,
+        A400: #00e5ff,
+        A700: #00b8d4,
+        contrast: (
+                50: $dark-primary-text,
+                100: $dark-primary-text,
+                200: $dark-primary-text,
+                300: $dark-primary-text,
+                400: $dark-primary-text,
+                500: $light-primary-text,
+                600: $light-primary-text,
+                700: $light-primary-text,
+                800: $light-primary-text,
+                900: $light-primary-text,
+                A100: $dark-primary-text,
+                A200: $dark-primary-text,
+                A400: $dark-primary-text,
+                A700: $dark-primary-text,
+        )
+), 700, 500, 900);
+$my-accent: mat.define-palette((
+        50: #fbe9e6,
+        100: #ffcbba,
+        200: #ffa98e,
+        300: #ff8761,
+        400: #ff6d3d,
+        500: $accent-color,
+        600: #f44d15,
+        700: #e6450f,
+        800: #d83e0a,
+        900: #c03001,
+        A100: #ffcbba,
+        A200: #ffa98e,
+        A400: #ff6d3d,
+        A700: #e6450f,
+        contrast: (
+                50: $dark-primary-text,
+                100: $dark-primary-text,
+                200: $dark-primary-text,
+                300: $dark-primary-text,
+                400: $dark-primary-text,
+                500: $light-primary-text,
+                600: $light-primary-text,
+                700: $light-primary-text,
+                800: $light-primary-text,
+                900: $light-primary-text,
+                A100: $dark-primary-text,
+                A200: $dark-primary-text,
+                A400: $dark-primary-text,
+                A700: $light-primary-text,
+        )
+));
+
+$my-theme: mat.define-light-theme((
+        color: (
+                primary: $my-primary,
+                accent: $my-accent,
+        ),
+        typography: mat.define-typography-config(),
+        density: 0,
+));
+
+@include mat.all-component-themes($my-theme);
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+.mat-grid-tile-content {
+  align-items: flex-start !important;
+  justify-content: left !important;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.mat-mdc-card {
+  margin: 10px;
+}
+
+.game-info-container {
+  display: flex;
+  flex-direction: column;
+
+  @include responsive('gt-sm') {
+    flex-direction: row;
+    gap: 20px;
+  }
+}
+
+.criteria-container {
+  display: flex;
+  flex-direction: column;
+
+  @include responsive('gt-md') {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+}
+
+.video-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  @include responsive('gt-md') {
+    flex-direction: row;
+  }
+}
+
+.show-gt-sm {
+  display: none;
+
+  @include responsive(gt-sm) {
+    display: table-cell;
+  }
+}
+
+.show-gt-xs {
+  display: none;
+
+  @include responsive(gt-xs) {
+    display: table-cell;
+  }
+}
+
+table {
+  &.mat-mdc-table {
+    width: 100%;
+    max-width: 100%;
+
+    th, td {
+      padding: 0 2px;
+    }
+  }
+}
+
+.video-comments-container {
+  max-height: 440px;
+  overflow-y: auto;
+
+  .mat-mdc-card-actions {
+    gap: 10px;
+  }
+
+  @include responsive('gt-sm') {
+    .mat-mdc-card {
+      margin-top: 0;
+    }
+  }
+
+  @include responsive('lt-md') {
+    .mat-mdc-card {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .mat-mdc-card-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+}

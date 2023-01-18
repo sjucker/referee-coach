@@ -1,0 +1,13 @@
+@import "../../responsive";
+
+@include responsive('gt-sm') {
+  form {
+    width: 33%;
+  }
+}
+
+@include responsive('gt-md') {
+  form {
+    width: 25%;
+  }
+}

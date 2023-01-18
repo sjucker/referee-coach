@@ -1,0 +1,30 @@
+@import "../../variables";
+@import "../../responsive";
+
+
+.mat-mdc-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+}
+
+.reportee {
+    color: $primary-color;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.video-comments-container {
+    max-height: 470px;
+}
+
+.criteria-container {
+    @include responsive('gt-sm') {
+        gap: 10px;
+    }
+}
+
+.youtube-container {
+    display: flex;
+    flex-direction: column;
+}

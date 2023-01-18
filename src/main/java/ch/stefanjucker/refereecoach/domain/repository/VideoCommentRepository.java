@@ -19,11 +19,11 @@ public interface VideoCommentRepository extends JpaRepository<VideoComment, Long
                 from video_report r
                          join video_report_comment vrc on r.id = vrc.video_report_id
                 where r.game_number = ?1
-                  and r.reporter_id = ?2
+                  and r.coach_id = ?2
                 group by vrc.timestamp
             );
             """,
             nativeQuery = true)
-    List<VideoComment> findVideoCommentsByGameNumberAndReporter(String gameNumber, Long reporterId);
+    List<VideoComment> findVideoCommentsByGameNumberAndCoach(String gameNumber, Long coachId);
 
 }

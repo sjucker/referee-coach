@@ -1,4 +1,5 @@
 export const environment = {
     production: true,
-    baseUrl: 'https://app.referee-coach.ch/api'
+    // TODO make this configurable from outside?
+    baseUrl: 'https://referee-coach-kki.herokuapp.com/api'
 };

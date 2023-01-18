@@ -13,7 +13,6 @@ import {MatCardModule} from "@angular/material/card";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {MatGridListModule} from "@angular/material/grid-list";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatIconModule} from "@angular/material/icon";
 import {VideoReportComponent} from './video-report/video-report.component';
 import {ViewVideoReportComponent} from './view-report/view-video-report.component';
@@ -83,7 +82,6 @@ import {TagsSelectionComponent} from './tags-selection/tags-selection.component'
         FormsModule,
         HttpClientModule,
         MatGridListModule,
-        FlexLayoutModule,
         MatIconModule,
         MatRadioModule,
         MatTableModule,

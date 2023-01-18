@@ -2,30 +2,31 @@ import {Component} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {AuthenticationService} from "../service/authentication.service";
 import {Router} from "@angular/router";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css']
+    styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
 
-    authenticationError = false;
+    authenticating = false;
 
     loginForm = this.formBuilder.group({
         email: [null, [Validators.required]],
         password: [null, [Validators.required]],
-        rememberMe: [false],
     });
 
     constructor(private formBuilder: FormBuilder,
                 private router: Router,
-                private authenticationService: AuthenticationService) {
+                private authenticationService: AuthenticationService,
+                private snackBar: MatSnackBar) {
     }
 
     login(): void {
         if (this.loginForm.valid) {
-            this.authenticationError = false;
+            this.authenticating = true;
             const val = this.loginForm.value;
             this.authenticationService.login(val.email!, val.password!).subscribe({
                 next: response => {
@@ -33,7 +34,12 @@ export class LoginComponent {
                     this.router.navigate(['/']);
                 },
                 error: _ => {
-                    this.authenticationError = true;
+                    this.snackBar.open('Email/Password is not correct!', undefined, {
+                        duration: 3000,
+                        horizontalPosition: "center",
+                        verticalPosition: "top"
+                    })
+                    this.authenticating = false;
                 }
             })
         }

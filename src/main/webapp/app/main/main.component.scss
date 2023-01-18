@@ -1,0 +1,21 @@
+@import '../../variables';
+@import '../../responsive';
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.search-container,
+.filter-container {
+  display: flex;
+  flex-direction: column;
+
+  @include responsive(gt-sm) {
+    flex-direction: row;
+    gap: 20px;
+  }
+}
+
+.current-user {
+  color: $primary-color;
+}

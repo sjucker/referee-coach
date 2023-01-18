@@ -1,0 +1,22 @@
+@import "../../variables";
+
+p {
+  white-space: pre-wrap;
+}
+
+.reportee {
+  color: $primary-color;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.reply {
+  margin-left: 10px;
+}
+
+.repliedAt {
+  margin-left: 10px;
+  font-size: 10px;
+}

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface VideoReportRepository extends JpaRepository<VideoReport, String> {
 
-    List<VideoReport> findByBasketplanGameGameNumberAndReporterId(String gameNumber, Long id);
+    List<VideoReport> findByBasketplanGameGameNumberAndCoachId(String gameNumber, Long id);
 
     @Query("""
             SELECT v FROM VideoReport v

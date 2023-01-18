@@ -14,9 +14,9 @@
         </button>
     </mat-toolbar>
 
-    <mat-card>
+    <mat-card appearance="outlined">
         <mat-card-content>
-            <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="20px">
+            <div class="search-container">
                 <form (ngSubmit)="searchGame()" role="form">
                     <mat-form-field appearance="outline" color="accent">
                         <mat-label>Game Number (e.g., 21-03520)</mat-label>
@@ -51,28 +51,28 @@
         </mat-card-content>
     </mat-card>
 
-    <mat-card>
+    <mat-card appearance="outlined">
         <mat-card-content>
-            <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="20px">
-                <mat-form-field appearance="standard" fxFlex="70%">
+            <div class="filter-container">
+                <mat-form-field style="flex: 15">
                     <mat-label>Filter</mat-label>
                     <input matInput (keyup)="applyFilter($event)" [(ngModel)]="filter">
                 </mat-form-field>
-                <mat-form-field appearance="fill" fxFlex="13%">
+                <mat-form-field appearance="fill" style="flex: 4">
                     <mat-label>From</mat-label>
                     <input matInput [matDatepicker]="pickerFrom" [(ngModel)]="from" (dateChange)="dateFilterChanged()">
                     <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
                     <mat-datepicker #pickerFrom></mat-datepicker>
                 </mat-form-field>
 
-                <mat-form-field appearance="fill" fxFlex="13%">
+                <mat-form-field appearance="fill" style="flex: 4">
                     <mat-label>To</mat-label>
                     <input matInput [matDatepicker]="pickerTo" [(ngModel)]="to" (dateChange)="dateFilterChanged()">
                     <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
                     <mat-datepicker #pickerTo></mat-datepicker>
                 </mat-form-field>
 
-                <button mat-icon-button (click)="export()" matTooltip="Excel Download" fxFlex="4%" [disabled]="exporting">
+                <button mat-icon-button (click)="export()" matTooltip="Excel Download" style="flex: 1" [disabled]="exporting">
                     <mat-icon>cloud_download</mat-icon>
                 </button>
             </div>
@@ -81,30 +81,30 @@
 
             <table mat-table [dataSource]="videoReportDtos" *ngIf="reportsLoaded">
                 <ng-container matColumnDef="finished">
-                    <th mat-header-cell *matHeaderCellDef fxHide fxShow.gt-sm></th>
-                    <td mat-cell *matCellDef="let element" fxHide fxShow.gt-sm>
+                    <th mat-header-cell *matHeaderCellDef class="show-gt-sm"></th>
+                    <td mat-cell *matCellDef="let element" class="show-gt-sm">
                         <i *ngIf="element.finished" class="material-icons">check_circle_outline</i>
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="date">
-                    <th mat-header-cell *matHeaderCellDef fxHide fxShow.gt-sm>Date</th>
-                    <td mat-cell *matCellDef="let element" fxHide fxShow.gt-sm>{{element.basketplanGame.date | date: 'dd.MM.yyyy'}}</td>
+                    <th mat-header-cell *matHeaderCellDef class="show-gt-sm">Date</th>
+                    <td mat-cell *matCellDef="let element" class="show-gt-sm">{{element.basketplanGame.date | date: 'dd.MM.yyyy'}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="gameNumber">
-                    <th mat-header-cell *matHeaderCellDef>Game Number</th>
-                    <td mat-cell *matCellDef="let element">{{element.basketplanGame.gameNumber}}</td>
+                    <th mat-header-cell *matHeaderCellDef class="show-gt-sm">Game Number</th>
+                    <td mat-cell *matCellDef="let element" class="show-gt-sm">{{element.basketplanGame.gameNumber}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="competition">
-                    <th mat-header-cell *matHeaderCellDef fxHide fxShow.gt-sm>Competition</th>
-                    <td mat-cell *matCellDef="let element" fxHide fxShow.gt-sm>{{element.basketplanGame.competition}}</td>
+                    <th mat-header-cell *matHeaderCellDef class="show-gt-sm">Competition</th>
+                    <td mat-cell *matCellDef="let element" class="show-gt-sm">{{element.basketplanGame.competition}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="teams">
-                    <th mat-header-cell *matHeaderCellDef fxHide fxShow.gt-xs>Teams</th>
-                    <td mat-cell *matCellDef="let element" fxHide fxShow.gt-xs>
+                    <th mat-header-cell *matHeaderCellDef class="show-gt-xs">Teams</th>
+                    <td mat-cell *matCellDef="let element" class="show-gt-xs">
                         {{element.basketplanGame.teamA}} - {{element.basketplanGame.teamB}}
                     </td>
                 </ng-container>
@@ -112,8 +112,8 @@
                 <ng-container matColumnDef="coach">
                     <th mat-header-cell *matHeaderCellDef>Coach</th>
                     <td mat-cell *matCellDef="let element"
-                        [class]="isCurrentUser(element.reporter) ? 'current-user' : ''">
-                        {{element.reporter.name}}
+                        [class]="{'current-user': isCurrentUser(element.coach)}">
+                        {{element.coach.name}}
                     </td>
                 </ng-container>
 
@@ -150,8 +150,8 @@
                 </ng-container>
 
                 <ng-container matColumnDef="delete">
-                    <th mat-header-cell *matHeaderCellDef>Delete</th>
-                    <td mat-cell *matCellDef="let element">
+                    <th mat-header-cell *matHeaderCellDef class="show-gt-xs">Delete</th>
+                    <td mat-cell *matCellDef="let element" class="show-gt-xs">
                         <button mat-icon-button (click)="delete(element)" *ngIf="isDeletable(element)">
                             <mat-icon color="primary">delete</mat-icon>
                         </button>

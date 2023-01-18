@@ -8,6 +8,9 @@
       "schematics": {
         "@schematics/angular:application": {
           "strict": true
+        },
+        "@schematics/angular:component": {
+          "style": "scss"
         }
       },
       "root": "src/main/webapp",
@@ -23,12 +26,11 @@
             "polyfills": "src/main/webapp/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              "src/main/webapp/favicon.ico",
+              "src/main/webapp/favicon.svg",
               "src/main/webapp/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
-              "src/main/webapp/styles.css"
+              "src/main/webapp/styles.scss"
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
@@ -115,12 +117,11 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": [
-              "src/main/webapp/favicon.ico",
+              "src/main/webapp/favicon.svg",
               "src/main/webapp/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
-              "src/main/webapp/styles.css"
+              "src/main/webapp/styles.scss"
             ],
             "scripts": []
           }

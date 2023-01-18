@@ -7,7 +7,7 @@ import {Observable, of} from "rxjs";
 @Component({
     selector: 'app-tags-selection',
     templateUrl: './tags-selection.component.html',
-    styleUrls: ['./tags-selection.component.css']
+    styleUrls: ['./tags-selection.component.scss']
 })
 export class TagsSelectionComponent implements OnInit {
 
@@ -16,7 +16,6 @@ export class TagsSelectionComponent implements OnInit {
     @Input()
     availableTags: Observable<TagDTO[]> = of([]);
     allTags: TagDTO[] = [];
-
 
     @Input()
     initialSelectedTags: TagDTO[] = [];

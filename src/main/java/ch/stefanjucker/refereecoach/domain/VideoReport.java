@@ -34,8 +34,8 @@ public class VideoReport {
     private String id;
 
     @OneToOne
-    @JoinColumn(name = "reporter_id")
-    private User reporter;
+    @JoinColumn(name = "coach_id")
+    private Coach coach;
 
     @Enumerated(STRING)
     @Column(nullable = false)
