@@ -5,72 +5,10 @@
 @include mat.all-component-typographies();
 @include mat.core();
 
-$my-primary: mat.define-palette((
-        50: #e2f6fe,
-        100: #b5e7fb,
-        200: #84d8f9,
-        300: #55c8f6,
-        400: #33bcf5,
-        500: #16b0f4,
-        600: #11a2e5,
-        700: $primary-color,
-        800: #087dbd,
-        900: #025d9b,
-        A100: #84ffff,
-        A200: #18ffff,
-        A400: #00e5ff,
-        A700: #00b8d4,
-        contrast: (
-                50: $dark-primary-text,
-                100: $dark-primary-text,
-                200: $dark-primary-text,
-                300: $dark-primary-text,
-                400: $dark-primary-text,
-                500: $light-primary-text,
-                600: $light-primary-text,
-                700: $light-primary-text,
-                800: $light-primary-text,
-                900: $light-primary-text,
-                A100: $dark-primary-text,
-                A200: $dark-primary-text,
-                A400: $dark-primary-text,
-                A700: $dark-primary-text,
-        )
-), 700, 500, 900);
-$my-accent: mat.define-palette((
-        50: #fbe9e6,
-        100: #ffcbba,
-        200: #ffa98e,
-        300: #ff8761,
-        400: #ff6d3d,
-        500: $accent-color,
-        600: #f44d15,
-        700: #e6450f,
-        800: #d83e0a,
-        900: #c03001,
-        A100: #ffcbba,
-        A200: #ffa98e,
-        A400: #ff6d3d,
-        A700: #e6450f,
-        contrast: (
-                50: $dark-primary-text,
-                100: $dark-primary-text,
-                200: $dark-primary-text,
-                300: $dark-primary-text,
-                400: $dark-primary-text,
-                500: $light-primary-text,
-                600: $light-primary-text,
-                700: $light-primary-text,
-                800: $light-primary-text,
-                900: $light-primary-text,
-                A100: $dark-primary-text,
-                A200: $dark-primary-text,
-                A400: $dark-primary-text,
-                A700: $light-primary-text,
-        )
-));
+$my-primary: mat.define-palette(mat.$pink-palette, 700, 100, 900);
+$my-accent: mat.define-palette(mat.$blue-grey-palette, A200, A100, A400);
 
-$my-theme: mat.define-light-theme((
+$my-theme: mat.define-dark-theme((
         color: (
                 primary: $my-primary,
                 accent: $my-accent,
