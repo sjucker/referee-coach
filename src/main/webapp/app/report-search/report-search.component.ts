@@ -90,9 +90,6 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     play(element: VideoCommentDetailDTO) {
         this.currentVideoId = element.youtubeId;
 
-
-        console.log(this.youtube!.getPlayerState());
-
         const interval = setInterval(() => {
             if (this.youtube!.getPlayerState() !== YT.PlayerState.UNSTARTED) {
                 this.youtube!.seekTo(element.timestamp, true);
@@ -100,10 +97,6 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
                 clearInterval(interval);
             }
         }, 500);
-
-        setTimeout(() => {
-            console.log(this.youtube!.getPlayerState());
-        }, 1000);
     }
 
     onResize = (): void => {
