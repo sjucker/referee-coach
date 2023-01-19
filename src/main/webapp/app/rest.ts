@@ -19,6 +19,11 @@ export interface ChangePasswordRequestDTO {
     newPassword: string;
 }
 
+export interface CoachDTO {
+    id: number;
+    name: string;
+}
+
 export interface CommentReplyDTO {
     commentId: number;
     comment: string;
@@ -69,11 +74,6 @@ export interface RefereeDTO {
     name: string;
 }
 
-export interface ReporterDTO {
-    id: number;
-    name: string;
-}
-
 export interface SearchRequestDTO {
     tags: TagDTO[];
 }
@@ -85,11 +85,6 @@ export interface SearchResponseDTO {
 export interface TagDTO {
     id: number;
     name: string;
-}
-
-export interface UserDTO {
-    email?: string;
-    admin: boolean;
 }
 
 export interface VideoCommentDTO {
@@ -120,7 +115,7 @@ export interface VideoCommentReplyDTO {
 export interface VideoReportDTO {
     id: string;
     basketplanGame: BasketplanGameDTO;
-    reporter: ReporterDTO;
+    coach: CoachDTO;
     reportee: Reportee;
     general: CriteriaEvaluationDTO;
     image: CriteriaEvaluationDTO;
@@ -141,7 +136,7 @@ export interface VideoReportDTO {
 export interface VideoReportDiscussionDTO {
     videoReportId: string;
     basketplanGame: BasketplanGameDTO;
-    reporter: ReporterDTO;
+    coach: CoachDTO;
     referee: string;
     videoComments: VideoCommentDTO[];
 }

@@ -16,7 +16,7 @@ import {DiscussVideoReportFinishDialogComponent} from "../discuss-video-report-f
 @Component({
     selector: 'app-discuss-video-report',
     templateUrl: './discuss-video-report.component.html',
-    styleUrls: ['./discuss-video-report.component.css']
+    styleUrls: ['./discuss-video-report.component.scss']
 })
 export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 

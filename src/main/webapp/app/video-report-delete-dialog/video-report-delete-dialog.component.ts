@@ -6,7 +6,7 @@ import {getReferee} from "../service/video-report.service";
 @Component({
     selector: 'app-video-report-delete-dialog',
     templateUrl: './video-report-delete-dialog.component.html',
-    styleUrls: ['./video-report-delete-dialog.component.css']
+    styleUrls: ['./video-report-delete-dialog.component.scss']
 })
 export class VideoReportDeleteDialogComponent {
 

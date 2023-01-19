@@ -12,10 +12,12 @@
         </a>
     </mat-toolbar>
     <div *ngIf="dto">
-        <mat-card>
-            <mat-card-title>Game Info</mat-card-title>
+        <mat-card appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>Game Info</mat-card-title>
+            </mat-card-header>
             <mat-card-content>
-                <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="20px">
+                <div class="game-info-container">
                     <span>Game Number: {{dto.basketplanGame.gameNumber}}</span>
                     <span>Competition: {{dto.basketplanGame.competition}}</span>
                     <span>Date: {{dto.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
@@ -23,15 +25,15 @@
                     <span>Team A: {{dto.basketplanGame.teamA}}</span>
                     <span>Team B: {{dto.basketplanGame.teamB}}</span>
                 </div>
-                <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="20px">
-                    <span>Coach: {{dto.reporter.name}}</span>
+                <div class="game-info-container">
+                    <span>Coach: {{dto.coach.name}}</span>
                 </div>
-                <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="20px" *ngIf="is3PO()">
+                <div class="game-info-container" *ngIf="is3PO()">
                     <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Crew Chief: {{dto.basketplanGame.referee1!.name}}</span>
                     <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 1: {{dto.basketplanGame.referee2!.name}}</span>
                     <span [ngClass]="isThirdUmpire() ? 'reportee' : ''">Umpire 2: {{dto.basketplanGame.referee3!.name}}</span>
                 </div>
-                <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="20px" *ngIf="is2PO()">
+                <div  class="game-info-container" *ngIf="is2PO()">
                     <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Umpire 1: {{dto.basketplanGame.referee1!.name}}</span>
                     <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 2: {{dto.basketplanGame.referee2!.name}}</span>
                 </div>
@@ -41,33 +43,41 @@
             </mat-card-content>
         </mat-card>
 
-        <mat-card *ngIf="dto.version > 1">
-            <mat-card-title>General Comment</mat-card-title>
+        <mat-card appearance="outlined" *ngIf="dto.version > 1">
+            <mat-card-header>
+                <mat-card-title>General Comment</mat-card-title>
+            </mat-card-header>
             <mat-card-content>
                 <p>{{dto.general.comment}}</p>
             </mat-card-content>
         </mat-card>
 
-        <div fxLayout="column" fxLayout.gt-md="row" fxLayoutAlign="space-around stretch">
-            <mat-card fxFlex.gt-md="33%">
-                <mat-card-title>Image, Approach</mat-card-title>
+        <div class="criteria-container">
+            <mat-card appearance="outlined" style="flex: 1">
+                <mat-card-header>
+                    <mat-card-title>Image, Approach</mat-card-title>
+                </mat-card-header>
                 <mat-card-content>
                     <p>{{dto.image.comment}}</p>
                     <p *ngIf="dto.version > 1">Rating: {{dto.image.rating}}</p>
                 </mat-card-content>
             </mat-card>
 
-            <mat-card fxFlex.gt-md="33%">
-                <mat-card-title>Fitness Condition</mat-card-title>
+            <mat-card appearance="outlined" style="flex: 1">
+                <mat-card-header>
+                    <mat-card-title>Fitness Condition</mat-card-title>
+                </mat-card-header>
                 <mat-card-content>
                     <p>{{dto.fitness.comment}}</p>
                     <p *ngIf="dto.version > 1">Rating: {{dto.fitness.rating}}</p>
                 </mat-card-content>
             </mat-card>
 
-            <mat-card fxFlex.gt-md="33%">
-                <mat-card-title *ngIf="is2PO()">2PO Mechanics & Individual Officiating Techniques</mat-card-title>
-                <mat-card-title *ngIf="is3PO()">3PO Mechanics & Individual Officiating Techniques</mat-card-title>
+            <mat-card appearance="outlined" style="flex: 1">
+                <mat-card-header>
+                    <mat-card-title *ngIf="is2PO()">2PO Mechanics & Individual Officiating Techniques</mat-card-title>
+                    <mat-card-title *ngIf="is3PO()">3PO Mechanics & Individual Officiating Techniques</mat-card-title>
+                </mat-card-header>
                 <mat-card-content>
                     <p>{{dto.mechanics.comment}}</p>
                     <p *ngIf="dto.version > 1">Rating: {{dto.mechanics.rating}}</p>
@@ -75,26 +85,32 @@
             </mat-card>
         </div>
 
-        <div fxLayout="column" fxLayout.gt-md="row" fxLayoutAlign="space-around stretch">
+        <div class="criteria-container">
 
-            <mat-card fxFlex.gt-md="33%">
-                <mat-card-title>Critera: Fouls</mat-card-title>
+            <mat-card appearance="outlined" style="flex: 1">
+                <mat-card-header>
+                    <mat-card-title>Critera: Fouls</mat-card-title>
+                </mat-card-header>
                 <mat-card-content>
                     <p>{{dto.fouls.comment}}</p>
                     <p *ngIf="dto.version > 1">Rating: {{dto.fouls.rating}}</p>
                 </mat-card-content>
             </mat-card>
 
-            <mat-card fxFlex.gt-md="33%">
-                <mat-card-title>Critera: Violations</mat-card-title>
+            <mat-card appearance="outlined" style="flex: 1">
+                <mat-card-header>
+                    <mat-card-title>Critera: Violations</mat-card-title>
+                </mat-card-header>
                 <mat-card-content>
                     <p>{{dto.violations.comment}}</p>
                     <p *ngIf="dto.version > 1">Rating: {{dto.violations.rating}}</p>
                 </mat-card-content>
             </mat-card>
 
-            <mat-card fxFlex.gt-md="33%">
-                <mat-card-title>Game Control and Management</mat-card-title>
+            <mat-card appearance="outlined" style="flex: 1">
+                <mat-card-header>
+                    <mat-card-title>Game Control and Management</mat-card-title>
+                </mat-card-header>
                 <mat-card-content>
                     <p>{{dto.gameManagement.comment}}</p>
                     <p *ngIf="dto.version > 1">Rating: {{dto.gameManagement.rating}}</p>
@@ -102,28 +118,34 @@
             </mat-card>
         </div>
 
-        <div fxLayout="column" fxLayout.gt-md="row" fxLayoutAlign="space-around stretch">
-            <mat-card fxFlex.gt-md="50%">
-                <mat-card-title>Points to Keep</mat-card-title>
+        <div class="criteria-container">
+            <mat-card appearance="outlined" style="flex: 1">
+                <mat-card-header>
+                    <mat-card-title>Points to Keep</mat-card-title>
+                </mat-card-header>
                 <mat-card-content><p>{{dto.pointsToKeepComment}}</p></mat-card-content>
             </mat-card>
-            <mat-card fxFlex.gt-md="50%">
-                <mat-card-title>Points to Improve</mat-card-title>
+            <mat-card appearance="outlined" style="flex: 1">
+                <mat-card-header>
+                    <mat-card-title>Points to Improve</mat-card-title>
+                </mat-card-header>
                 <mat-card-content><p>{{dto.pointsToImproveComment}}</p></mat-card-content>
             </mat-card>
         </div>
-        <mat-card *ngIf="!dto.textOnly">
+        <mat-card appearance="outlined" *ngIf="!dto.textOnly">
             <mat-card-content>
-                <div fxLayout="column" fxLayout.gt-md="row">
+                <div class="video-container">
                     <div>
                         <youtube-player #youtubePlayer
                                         [videoId]="dto.basketplanGame.youtubeId"
                                         [width]="videoWidth"
                                         [height]="videoHeight"></youtube-player>
                     </div>
-                    <div fxFlex="stretch" id="video-comments-container">
-                        <mat-card *ngFor="let videoComment of dto.videoComments; index as i;">
-                            <mat-card-title>Video Comment #{{i + 1}}</mat-card-title>
+                    <div style="flex: 1" class="video-comments-container">
+                        <mat-card appearance="outlined" *ngFor="let videoComment of dto.videoComments; index as i;">
+                            <mat-card-header>
+                                <mat-card-title>Video Comment #{{i + 1}}</mat-card-title>
+                            </mat-card-header>
                             <mat-card-content>
                                 <p>{{videoComment.comment}}</p>
                             </mat-card-content>
@@ -139,8 +161,10 @@
         </mat-card>
     </div>
 
-    <mat-card *ngIf="notFound">
-        <mat-card-title>Not found</mat-card-title>
+    <mat-card appearance="outlined" *ngIf="notFound">
+        <mat-card-header>
+            <mat-card-title>Not found</mat-card-title>
+        </mat-card-header>
         <mat-card-content>
             Video Report was not found...
         </mat-card-content>

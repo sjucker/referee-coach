@@ -1,6 +1,6 @@
 package ch.stefanjucker.refereecoach.security;
 
-import ch.stefanjucker.refereecoach.domain.repository.UserRepository;
+import ch.stefanjucker.refereecoach.domain.repository.CoachRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -14,22 +14,22 @@ import java.util.ArrayList;
 @Service
 public class UserAuthService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final CoachRepository coachRepository;
 
-    public UserAuthService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserAuthService(CoachRepository coachRepository) {
+        this.coachRepository = coachRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = userRepository.findByEmail(username);
-        if (user.isPresent()) {
+        var coach = coachRepository.findByEmail(username);
+        if (coach.isPresent()) {
             ArrayList<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority("USER"));
-            if (user.get().isAdmin()) {
+            if (coach.get().isAdmin()) {
                 authorities.add(new SimpleGrantedAuthority("ADMIN"));
             }
-            return new User(user.get().getEmail(), user.get().getPassword(), authorities);
+            return new User(coach.get().getEmail(), coach.get().getPassword(), authorities);
         }
 
         throw new UsernameNotFoundException("user not found for: " + username);

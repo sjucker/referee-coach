@@ -6,7 +6,7 @@ import {VideoReportDiscussionDTO} from "../rest";
 @Component({
     selector: 'app-video-report-reply-dialog',
     templateUrl: './video-report-reply-dialog.component.html',
-    styleUrls: ['./video-report-reply-dialog.component.css']
+    styleUrls: ['./video-report-reply-dialog.component.scss']
 })
 export class VideoReportReplyDialogComponent {
 

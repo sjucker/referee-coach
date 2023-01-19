@@ -68,7 +68,7 @@ public class ExportService {
                 row.createCell(columnIndex++).setCellValue(videoReport.getBasketplanGame().getCompetition());
                 row.createCell(columnIndex++).setCellValue("%s - %s".formatted(videoReport.getBasketplanGame().getTeamA(),
                                                                                videoReport.getBasketplanGame().getTeamB()));
-                row.createCell(columnIndex++).setCellValue(videoReport.getReporter().getName());
+                row.createCell(columnIndex++).setCellValue(videoReport.getCoach().getName());
                 row.createCell(columnIndex++).setCellValue(videoReport.relevantReferee().getName());
                 if (videoReport.getVersion() > 1) {
                     row.createCell(columnIndex++).setCellValue(videoReport.getImage().getScore());

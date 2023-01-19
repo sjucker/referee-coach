@@ -5,7 +5,7 @@ import java.util.List;
 
 public record VideoReportDiscussionDTO(@NotNull String videoReportId,
                                        @NotNull BasketplanGameDTO basketplanGame,
-                                       @NotNull ReporterDTO reporter,
+                                       @NotNull CoachDTO coach,
                                        @NotNull String referee,
                                        @NotNull List<VideoCommentDTO> videoComments) {
 }

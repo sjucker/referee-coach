@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {BasketplanGameDTO, OfficiatingMode, Reportee, ReporterDTO, VideoReportDTO} from "../rest";
+import {BasketplanGameDTO, CoachDTO, OfficiatingMode, Reportee, VideoReportDTO} from "../rest";
 import {getReferee, VideoReportService} from "../service/video-report.service";
 import {BasketplanService} from "../service/basketplan.service";
 import {Router} from "@angular/router";
@@ -29,7 +29,7 @@ const dateFormat = 'yyyy-MM-dd';
 @Component({
     selector: 'app-main',
     templateUrl: './main.component.html',
-    styleUrls: ['./main.component.css']
+    styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
     displayedColumns: string[] = ['finished', 'date', 'gameNumber', 'competition', 'teams', 'coach', 'reportee', 'edit', 'view', 'copy', 'delete'];
@@ -116,7 +116,7 @@ export class MainComponent implements OnInit {
                         || data.basketplanGame.teamA.toLowerCase().indexOf(filter) != -1
                         || data.basketplanGame.teamB.toLowerCase().indexOf(filter) != -1
                         || data.basketplanGame.teamB.toLowerCase().indexOf(filter) != -1
-                        || data.reporter.name.toLowerCase().indexOf(filter) != -1
+                        || data.coach.name.toLowerCase().indexOf(filter) != -1
                         || this.getReportee(data).toLowerCase().indexOf(filter) != -1;
                 }
                 const currentFilter = sessionStorage.getItem(keyFilter);
@@ -235,11 +235,11 @@ export class MainComponent implements OnInit {
     }
 
     isEditable(report: VideoReportDTO) {
-        return !report.finished && this.isCurrentUser(report.reporter);
+        return !report.finished && this.isCurrentUser(report.coach);
     }
 
-    isCurrentUser(reporter: ReporterDTO): boolean {
-        return reporter.id === this.authenticationService.getUserId();
+    isCurrentUser(coach: CoachDTO): boolean {
+        return coach.id === this.authenticationService.getUserId();
     }
 
     edit(report: VideoReportDTO) {

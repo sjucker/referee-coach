@@ -1,17 +1,17 @@
 package ch.stefanjucker.refereecoach.mapper;
 
 import ch.stefanjucker.refereecoach.domain.BasketplanGame;
+import ch.stefanjucker.refereecoach.domain.Coach;
 import ch.stefanjucker.refereecoach.domain.CriteriaEvaluation;
 import ch.stefanjucker.refereecoach.domain.Referee;
 import ch.stefanjucker.refereecoach.domain.Tags;
-import ch.stefanjucker.refereecoach.domain.User;
 import ch.stefanjucker.refereecoach.domain.VideoComment;
 import ch.stefanjucker.refereecoach.domain.VideoCommentReply;
 import ch.stefanjucker.refereecoach.domain.VideoReport;
 import ch.stefanjucker.refereecoach.dto.BasketplanGameDTO;
+import ch.stefanjucker.refereecoach.dto.CoachDTO;
 import ch.stefanjucker.refereecoach.dto.RefereeDTO;
 import ch.stefanjucker.refereecoach.dto.Reportee;
-import ch.stefanjucker.refereecoach.dto.ReporterDTO;
 import ch.stefanjucker.refereecoach.dto.TagDTO;
 import ch.stefanjucker.refereecoach.dto.VideoCommentDTO;
 import ch.stefanjucker.refereecoach.dto.VideoCommentReplyDTO;
@@ -30,7 +30,7 @@ public interface DTOMapper {
 
     RefereeDTO toDTO(Referee referee);
 
-    ReporterDTO toDTO(User user);
+    CoachDTO toDTO(Coach coach);
 
     default VideoReportDTO toDTO(VideoReport videoReport) {
         return toDTO(videoReport, List.of(), List.of());
@@ -54,7 +54,7 @@ public interface DTOMapper {
     List<VideoCommentReplyDTO> toDTO(List<VideoCommentReply> videoCommentReply);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "reporter", ignore = true)
+    @Mapping(target = "coach", ignore = true)
     @Mapping(target = "reportee", ignore = true)
     @Mapping(target = "finished", ignore = true)
     VideoReport copy(VideoReport videoReport);

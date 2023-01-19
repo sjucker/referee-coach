@@ -1,0 +1,125 @@
+@use '@angular/material' as mat;
+@import "responsive";
+@import "variables";
+
+@include mat.all-component-typographies();
+@include mat.core();
+
+$my-primary: mat.define-palette(mat.$pink-palette, 700, 100, 900);
+$my-accent: mat.define-palette(mat.$blue-grey-palette, A200, A100, A400);
+
+$my-theme: mat.define-dark-theme((
+        color: (
+                primary: $my-primary,
+                accent: $my-accent,
+        ),
+        typography: mat.define-typography-config(),
+        density: 0,
+));
+
+@include mat.all-component-themes($my-theme);
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+.mat-grid-tile-content {
+  align-items: flex-start !important;
+  justify-content: left !important;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.mat-mdc-card {
+  margin: 10px;
+}
+
+.game-info-container {
+  display: flex;
+  flex-direction: column;
+
+  @include responsive('gt-sm') {
+    flex-direction: row;
+    gap: 20px;
+  }
+}
+
+.criteria-container {
+  display: flex;
+  flex-direction: column;
+
+  @include responsive('gt-md') {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+}
+
+.video-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  @include responsive('gt-md') {
+    flex-direction: row;
+  }
+}
+
+.show-gt-sm {
+  display: none;
+
+  @include responsive(gt-sm) {
+    display: table-cell;
+  }
+}
+
+.show-gt-xs {
+  display: none;
+
+  @include responsive(gt-xs) {
+    display: table-cell;
+  }
+}
+
+table {
+  &.mat-mdc-table {
+    width: 100%;
+    max-width: 100%;
+
+    th, td {
+      padding: 0 2px;
+    }
+  }
+}
+
+.video-comments-container {
+  max-height: 440px;
+  overflow-y: auto;
+
+  .mat-mdc-card-actions {
+    gap: 10px;
+  }
+
+  @include responsive('gt-sm') {
+    .mat-mdc-card {
+      margin-top: 0;
+    }
+  }
+
+  @include responsive('lt-md') {
+    .mat-mdc-card {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .mat-mdc-card-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+}

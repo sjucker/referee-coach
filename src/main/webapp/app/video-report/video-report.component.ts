@@ -15,7 +15,7 @@ import {VideoReportCopyDialogComponent, VideoReportCopyDialogData} from "../vide
 @Component({
     selector: 'app-video-report',
     templateUrl: './video-report.component.html',
-    styleUrls: ['./video-report.component.css']
+    styleUrls: ['./video-report.component.scss']
 })
 export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 

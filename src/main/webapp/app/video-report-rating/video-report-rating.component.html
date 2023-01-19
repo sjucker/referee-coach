@@ -1,8 +1,5 @@
 <span style="display: inline-block; width: 250px">{{title}}:</span>
-<mat-slider min="6" max="9" step="0.1" tickInterval="auto"
-            thumbLabel
-            (input)="dto.score = $event.value!"
-            [value]="dto.score ? dto.score : 7"
-            (valueChange)="changed.emit($event)">
+<mat-slider min="6" max="9" step="0.1" discrete="true">
+    <input matSliderThumb [(ngModel)]="dto.score" (valueChange)="changed.emit($event)">
 </mat-slider>
 {{dto.score}} ({{rating()}})

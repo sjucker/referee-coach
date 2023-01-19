@@ -2,7 +2,7 @@ package ch.stefanjucker.refereecoach.rest;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-import ch.stefanjucker.refereecoach.domain.repository.UserRepository;
+import ch.stefanjucker.refereecoach.domain.repository.CoachRepository;
 import ch.stefanjucker.refereecoach.dto.ChangePasswordRequestDTO;
 import ch.stefanjucker.refereecoach.dto.LoginRequestDTO;
 import ch.stefanjucker.refereecoach.dto.LoginResponseDTO;
@@ -26,12 +26,12 @@ import java.time.LocalDateTime;
 public class AuthenticationResource {
 
     private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final CoachRepository coachRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationResource(JwtService jwtService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthenticationResource(JwtService jwtService, CoachRepository coachRepository, PasswordEncoder passwordEncoder) {
         this.jwtService = jwtService;
-        this.userRepository = userRepository;
+        this.coachRepository = coachRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -39,18 +39,18 @@ public class AuthenticationResource {
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
         log.info("POST /api/authenticate {}", request.email());
 
-        var user = userRepository.findByEmail(request.email()).orElse(null);
+        var coach = coachRepository.findByEmail(request.email()).orElse(null);
 
-        if (user != null) {
-            if (passwordEncoder.matches(request.password(), user.getPassword())) {
+        if (coach != null) {
+            if (passwordEncoder.matches(request.password(), coach.getPassword())) {
 
-                user.setLastLogin(LocalDateTime.now());
-                userRepository.save(user);
+                coach.setLastLogin(LocalDateTime.now());
+                coachRepository.save(coach);
 
                 return ResponseEntity.ok(new LoginResponseDTO(
-                        user.getId(),
-                        user.getName(),
-                        user.isAdmin(),
+                        coach.getId(),
+                        coach.getName(),
+                        coach.isAdmin(),
                         jwtService.createJwt(request.email())
                 ));
             } else {
@@ -66,14 +66,14 @@ public class AuthenticationResource {
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails principal,
                                             @RequestBody @Valid ChangePasswordRequestDTO request) {
-        var user = userRepository.findByEmail(principal.getUsername()).orElseThrow();
+        var coach = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
 
-        log.info("POST /api/authenticate/change-password {}", user.getEmail());
+        log.info("POST /api/authenticate/change-password {}", coach.getEmail());
 
-        if (passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(request.newPassword()));
-            userRepository.save(user);
-            log.info("successfully changed password for: {}", user.getEmail());
+        if (passwordEncoder.matches(request.oldPassword(), coach.getPassword())) {
+            coach.setPassword(passwordEncoder.encode(request.newPassword()));
+            coachRepository.save(coach);
+            log.info("successfully changed password for: {}", coach.getEmail());
             return ResponseEntity.accepted().build();
         } else {
             log.warn("provided old password did not match password in database");

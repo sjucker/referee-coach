@@ -5,8 +5,8 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 
-import ch.stefanjucker.refereecoach.domain.User;
-import ch.stefanjucker.refereecoach.domain.repository.UserRepository;
+import ch.stefanjucker.refereecoach.domain.Coach;
+import ch.stefanjucker.refereecoach.domain.repository.CoachRepository;
 import ch.stefanjucker.refereecoach.dto.CopyVideoCommentDTO;
 import ch.stefanjucker.refereecoach.dto.CopyVideoReportDTO;
 import ch.stefanjucker.refereecoach.dto.CreateRepliesDTO;
@@ -50,16 +50,16 @@ import java.util.List;
 public class VideoReportResource {
 
     private final VideoReportService videoReportService;
-    private final UserRepository userRepository;
+    private final CoachRepository coachRepository;
     private final ExportService exportService;
     private final SearchService searchService;
 
     public VideoReportResource(VideoReportService videoReportService,
-                               UserRepository userRepository,
+                               CoachRepository coachRepository,
                                ExportService exportService,
                                SearchService searchService) {
         this.videoReportService = videoReportService;
-        this.userRepository = userRepository;
+        this.coachRepository = coachRepository;
         this.exportService = exportService;
         this.searchService = searchService;
     }
@@ -83,7 +83,7 @@ public class VideoReportResource {
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<VideoReportDTO> createVideoReport(@AuthenticationPrincipal UserDetails principal,
                                                             @RequestBody @Valid CreateVideoReportDTO dto) {
-        var user = userRepository.findByEmail(principal.getUsername()).orElseThrow();
+        var user = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
         log.info("POST /video-report {} ({})", dto, user);
 
         return ResponseEntity.ok(videoReportService.create(dto.federation(), dto.gameNumber(), dto.youtubeId(), dto.reportee(), user));
@@ -92,7 +92,7 @@ public class VideoReportResource {
     @PostMapping(path = "/copy", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<VideoReportDTO> copyVideoReport(@AuthenticationPrincipal UserDetails principal,
                                                           @RequestBody @Valid CopyVideoReportDTO dto) {
-        var user = userRepository.findByEmail(principal.getUsername()).orElseThrow();
+        var user = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
         log.info("POST /video-report/copy {} ({})", dto, user);
 
         return ResponseEntity.ok(videoReportService.copy(dto.sourceId(), dto.reportee(), user));
@@ -102,7 +102,7 @@ public class VideoReportResource {
     public ResponseEntity<VideoReportDTO> updateVideoReport(@AuthenticationPrincipal UserDetails principal,
                                                             @PathVariable String id,
                                                             @RequestBody @Valid VideoReportDTO dto) {
-        var user = userRepository.findByEmail(principal.getUsername()).orElseThrow();
+        var user = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
         log.info("PUT /video-report/{} {} ({})", id, dto, user);
         return ResponseEntity.ok(videoReportService.update(id, dto, user));
     }
@@ -110,7 +110,7 @@ public class VideoReportResource {
     @PostMapping(path = "/copy-comment", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> copyComment(@AuthenticationPrincipal UserDetails principal,
                                          @RequestBody @Valid CopyVideoCommentDTO dto) {
-        var user = userRepository.findByEmail(principal.getUsername()).orElseThrow();
+        var user = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
         log.info("POST /video-report/copy-comment {} ({})", dto, user);
 
         videoReportService.copyVideoComment(dto.sourceId(), dto.reportee(), user);
@@ -129,13 +129,13 @@ public class VideoReportResource {
                                                                @PathVariable String id,
                                                                @RequestBody @Valid CreateRepliesDTO dto) {
 
-        User user = null;
+        Coach coach = null;
         if (principal != null) {
-            user = userRepository.findByEmail(principal.getUsername()).orElseThrow();
+            coach = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
         }
-        log.info("POST /video-report/{}/discussion {} {}", id, dto, user);
+        log.info("POST /video-report/{}/discussion {} {}", id, dto, coach);
 
-        videoReportService.addReplies(user, id, dto);
+        videoReportService.addReplies(coach, id, dto);
 
         return ResponseEntity.ok().build();
     }
@@ -143,7 +143,7 @@ public class VideoReportResource {
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> deleteVideoReport(@AuthenticationPrincipal UserDetails principal,
                                                @PathVariable String id) {
-        var user = userRepository.findByEmail(principal.getUsername()).orElseThrow();
+        var user = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
         log.info("DELETE /video-report/{} ({})", id, user);
 
         videoReportService.delete(id, user);
