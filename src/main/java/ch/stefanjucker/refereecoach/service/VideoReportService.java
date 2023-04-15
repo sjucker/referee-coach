@@ -1,7 +1,9 @@
 package ch.stefanjucker.refereecoach.service;
 
+import static ch.stefanjucker.refereecoach.domain.VideoComment.COMMENT_MAX_LENGTH;
 import static ch.stefanjucker.refereecoach.domain.VideoReport.CURRENT_VERSION;
 import static java.util.stream.Collectors.toCollection;
+import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
 import ch.stefanjucker.refereecoach.domain.Coach;
@@ -291,7 +293,9 @@ public class VideoReportService {
         boolean newCommentsMade = false;
         for (var newComment : dto.newComments()) {
             if (StringUtils.isNotEmpty(newComment.comment())) {
-                videoCommentRepository.save(new VideoComment(null, newComment.timestamp(), "%s: %s".formatted(repliedBy, newComment.comment()), id, new HashSet<>()));
+                videoCommentRepository.save(new VideoComment(null, newComment.timestamp(),
+                                                             abbreviate("%s: %s".formatted(repliedBy, newComment.comment()), COMMENT_MAX_LENGTH),
+                                                             id, new HashSet<>()));
                 newCommentsMade = true;
             }
         }

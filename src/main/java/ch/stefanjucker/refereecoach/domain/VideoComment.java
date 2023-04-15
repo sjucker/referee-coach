@@ -30,6 +30,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class VideoComment {
 
+    public static final int COMMENT_MAX_LENGTH = 1024;
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -38,7 +40,7 @@ public class VideoComment {
     @Column(nullable = false)
     private Integer timestamp;
 
-    @Column(nullable = false, length = 1024)
+    @Column(nullable = false, length = COMMENT_MAX_LENGTH)
     private String comment;
 
     @Column(name = "video_report_id", nullable = false)
