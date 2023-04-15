@@ -49,10 +49,6 @@ public class VideoReportService {
 
     private static final DTOMapper DTO_MAPPER = DTOMapper.INSTANCE;
 
-    private static final String STEFAN_JUCKER_EMAIL = "reports@referee-coach.ch";
-    // TODO make this configurable
-    private static final String FABRIZIO_PIZIO_EMAIL = "fabrizio.pizio@swissbasketball.ch";
-
     private final VideoReportRepository videoReportRepository;
     private final VideoCommentRepository videoCommentRepository;
     private final VideoCommentReplyRepository videoCommentReplyRepository;
@@ -186,15 +182,15 @@ public class VideoReportService {
                 simpleMessage.setSubject(dto.isTextOnly() ? "[Referee Coach] New Report" : "[Referee Coach] New Video Report");
                 simpleMessage.setFrom(environment.getRequiredProperty("spring.mail.username"));
                 simpleMessage.setReplyTo(videoReport.getCoach().getEmail());
-                simpleMessage.setBcc(STEFAN_JUCKER_EMAIL);
+                simpleMessage.setBcc(properties.getBccMail());
 
                 if (properties.isOverrideRecipient()) {
                     simpleMessage.setTo(videoReport.getCoach().getEmail());
                     simpleMessage.setSubject(simpleMessage.getSubject() + " (%s)".formatted(referee.getEmail()));
                 } else {
                     simpleMessage.setTo(referee.getEmail());
-                    // make sure Fabrizio does not receive mail twice when he is the coach
-                    simpleMessage.setCc(Stream.of(videoReport.getCoach().getEmail(), FABRIZIO_PIZIO_EMAIL)
+                    // make sure that copy-receiver does not receive mail twice when he is the coach
+                    simpleMessage.setCc(Stream.of(videoReport.getCoach().getEmail(), properties.getCcMail())
                                               .distinct()
                                               .toArray(String[]::new));
                 }
@@ -321,10 +317,10 @@ public class VideoReportService {
         try {
             simpleMessage.setSubject("[Referee Coach] New Video Report Discussion");
             simpleMessage.setFrom(environment.getRequiredProperty("spring.mail.username"));
-            simpleMessage.setBcc(STEFAN_JUCKER_EMAIL);
+            simpleMessage.setBcc(properties.getBccMail());
 
             if (properties.isOverrideRecipient()) {
-                simpleMessage.setTo(STEFAN_JUCKER_EMAIL);
+                simpleMessage.setTo(properties.getOverrideRecipientMail());
                 simpleMessage.setSubject(simpleMessage.getSubject() + " (%s)".formatted(recipient.getEmail()));
             } else {
                 simpleMessage.setTo(recipient.getEmail());

@@ -13,4 +13,7 @@ public class RefereeCoachProperties {
     private String jwtSecret;
     private String baseUrl;
     private boolean overrideRecipient;
+    private String ccMail;
+    private String bccMail;
+    private String overrideRecipientMail;
 }
