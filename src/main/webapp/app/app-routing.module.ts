@@ -1,5 +1,5 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import {inject, NgModule} from '@angular/core';
+import {CanActivateFn, CanDeactivateFn, RouterModule, Routes} from '@angular/router';
 import {VideoReportComponent} from "./video-report/video-report.component";
 import {ViewVideoReportComponent} from "./view-report/view-video-report.component";
 import {MainComponent} from "./main/main.component";
@@ -18,11 +18,15 @@ export const DISCUSS_PATH = 'discuss'
 export const SETTINGS_PATH = 'settings'
 export const SEARCH_PATH = 'search'
 
+const authenticationGuard: CanActivateFn = () => inject(AuthenticationGuard).canActivate();
+const unsavedRepliesGuard: CanDeactivateFn<DiscussVideoReportComponent> = (component) => inject(UnsavedRepliesGuard).canDeactivate(component);
+const unsavedChangesGuard: CanDeactivateFn<VideoReportComponent> = (component) => inject(UnsavedChangesGuard).canDeactivate(component);
+
 const routes: Routes = [
     {
         path: '',
         component: MainComponent,
-        canActivate: [AuthenticationGuard]
+        canActivate: [authenticationGuard]
     },
     {
         path: VIEW_PATH + '/:id',
@@ -33,13 +37,13 @@ const routes: Routes = [
         path: DISCUSS_PATH + '/:id',
         component: DiscussVideoReportComponent,
         // allowed without being logged in, anonymous user only needs to know the report's ID (which should be hard to guess)
-        canDeactivate: [UnsavedRepliesGuard]
+        canDeactivate: [unsavedRepliesGuard]
     },
     {
         path: EDIT_PATH + '/:id',
         component: VideoReportComponent,
-        canActivate: [AuthenticationGuard],
-        canDeactivate: [UnsavedChangesGuard]
+        canActivate: [authenticationGuard],
+        canDeactivate: [unsavedChangesGuard]
     },
     {
         path: LOGIN_PATH,
@@ -48,12 +52,12 @@ const routes: Routes = [
     {
         path: SETTINGS_PATH,
         component: SettingsComponent,
-        canActivate: [AuthenticationGuard]
+        canActivate: [authenticationGuard]
     },
     {
         path: SEARCH_PATH,
         component: ReportSearchComponent,
-        canActivate: [AuthenticationGuard]
+        canActivate: [authenticationGuard]
     }
 ];
 
