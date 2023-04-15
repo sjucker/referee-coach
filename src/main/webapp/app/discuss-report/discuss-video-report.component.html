@@ -2,7 +2,7 @@
     <mat-toolbar color="primary">
         <mat-progress-spinner mode="indeterminate" *ngIf="!notFound && !dto" [diameter]="30" color="accent"></mat-progress-spinner>
         <h1 *ngIf="dto">Video Report Discussion</h1>
-        <button *ngIf="dto" mat-icon-button (click)="finishReply()" [disabled]="!hasUnsavedReplies()">
+        <button *ngIf="dto" mat-icon-button (click)="finishReply()" [disabled]="saving || !hasUnsavedReplies()">
             <mat-icon>save</mat-icon>
         </button>
         <div *ngIf="hasUnsavedReplies()" class="unsaved-hint show-gt-sm">

@@ -28,6 +28,7 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
 
     dto?: VideoReportDiscussionDTO;
     notFound = false;
+    saving = false;
 
     replies: CommentReplyDTO[] = [];
     newComments: VideoCommentDTO[] = [];
@@ -115,14 +116,17 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
     finishReply(): void {
         this.dialog.open(DiscussVideoReportFinishDialogComponent).afterClosed().subscribe(decision => {
             if (decision && this.dto) {
+                this.saving = true;
                 this.videoReportService.reply(this.dto.videoReportId, this.replies, this.newComments).subscribe({
                     next: _ => {
                         this.showMessage("Replies saved");
                         this.replies = [];
                         this.newComments = [];
+                        this.saving = false;
                     },
                     error: _ => {
-                        this.showMessage("Replies could not be saved...")
+                        this.showMessage("Replies could not be saved...");
+                        this.saving = false;
                     }
                 });
             }
