@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+  referee-coach-db:
+    image: mysql:8.0.31
+    environment:
+      MYSQL_ROOT_PASSWORD: referee-coach
+      MYSQL_USER: referee-coach
+      MYSQL_PASSWORD: referee-coach
+      MYSQL_DATABASE: referee-coach
+    ports:
+      - "3306:3306"
