@@ -22,5 +22,12 @@
       <jdbc-url>jdbc:mysql://db8.netzone.ch:3306/probasket7</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="referee-coach@localhost" uuid="06ff5708-41da-485b-a74a-8320318cbaf1">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/referee-coach</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

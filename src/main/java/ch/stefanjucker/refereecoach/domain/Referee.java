@@ -1,6 +1,7 @@
 package ch.stefanjucker.refereecoach.domain;
 
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ import jakarta.persistence.Id;
 @NoArgsConstructor
 public class Referee implements HasNameEmail {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false)

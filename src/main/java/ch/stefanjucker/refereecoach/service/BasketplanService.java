@@ -107,10 +107,6 @@ public class BasketplanService {
         return node != null ? Optional.ofNullable(node.getNodeValue()) : Optional.empty();
     }
 
-    public Optional<Referee> findReferee(String name) {
-        return refereeRepository.findByName(name);
-    }
-
     public enum Federation {
         SBL(12),
         PROBASKET(10);

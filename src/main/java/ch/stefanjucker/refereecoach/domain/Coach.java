@@ -1,5 +1,7 @@
 package ch.stefanjucker.refereecoach.domain;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +21,7 @@ import java.time.LocalDateTime;
 public class Coach implements HasNameEmail {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
