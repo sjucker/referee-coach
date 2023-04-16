@@ -1,5 +1,7 @@
 package ch.stefanjucker.refereecoach.domain;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +19,7 @@ import jakarta.persistence.Id;
 public class Tags {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     private String name;

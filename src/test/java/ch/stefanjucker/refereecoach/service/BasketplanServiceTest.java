@@ -1,0 +1,61 @@
+package ch.stefanjucker.refereecoach.service;
+
+import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
+import static ch.stefanjucker.refereecoach.service.BasketplanService.Federation.SBL;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+import ch.stefanjucker.refereecoach.domain.Referee;
+import ch.stefanjucker.refereecoach.domain.repository.RefereeRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
+@ExtendWith(MockitoExtension.class)
+class BasketplanServiceTest {
+
+    @Mock
+    private RefereeRepository refereeRepository;
+
+    private BasketplanService basketplanService;
+
+    @BeforeEach
+    void setUp() {
+        basketplanService = new BasketplanService(refereeRepository);
+    }
+
+    @AfterEach
+    void tearDown() {
+    }
+
+    @Test
+    void findGameByNumber() {
+        // given
+        when(refereeRepository.findByName("Stojcev Bosko")).thenReturn(Optional.of(new Referee()));
+        when(refereeRepository.findByName("Balletta Davide")).thenReturn(Optional.of(new Referee()));
+        when(refereeRepository.findByName("Vitalini Fabiano")).thenReturn(Optional.of(new Referee()));
+
+        // when
+        var game = basketplanService.findGameByNumber(SBL, "22-00249");
+
+        // then
+        assertThat(game).isNotEmpty()
+                        .hasValueSatisfying(dto -> {
+                            assertThat(dto.gameNumber()).isEqualTo("22-00249");
+                            assertThat(dto.date()).isEqualTo("2022-10-01");
+                            assertThat(dto.result()).isEqualTo("82 - 98");
+                            assertThat(dto.teamA()).isEqualTo("Lugano Tigers");
+                            assertThat(dto.teamB()).isEqualTo("Spinelli Massagno");
+                            assertThat(dto.officiatingMode()).isEqualTo(OFFICIATING_3PO);
+                            assertThat(dto.referee1()).isNotNull();
+                            assertThat(dto.referee2()).isNotNull();
+                            assertThat(dto.referee3()).isNotNull();
+                            assertThat(dto.youtubeId()).isEqualTo("2d9RLdlTihY");
+                        });
+    }
+}
