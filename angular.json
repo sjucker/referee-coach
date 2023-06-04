@@ -138,7 +138,6 @@
       }
     }
   },
-  "defaultProject": "referee-coach-ui",
   "cli": {
     "analytics": false,
     "schematicCollections": [

@@ -36,7 +36,9 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {VideoReportReplyDialogComponent} from './video-report-reply-dialog/video-report-reply-dialog.component';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {DiscussVideoReportComponent} from './discuss-report/discuss-video-report.component';
-import {DiscussVideoReportUnsavedRepliesDialogComponent} from './discuss-video-report-unsaved-replies-dialog/discuss-video-report-unsaved-replies-dialog.component';
+import {
+    DiscussVideoReportUnsavedRepliesDialogComponent
+} from './discuss-video-report-unsaved-replies-dialog/discuss-video-report-unsaved-replies-dialog.component';
 import {DiscussVideoReportFinishDialogComponent} from './discuss-video-report-finish-dialog/discuss-video-report-finish-dialog.component';
 import {MatSliderModule} from "@angular/material/slider";
 import {VideoReportRatingComponent} from './video-report-rating/video-report-rating.component';
@@ -48,6 +50,7 @@ import {MatChipsModule} from "@angular/material/chips";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {ReportSearchComponent} from './report-search/report-search.component';
 import {TagsSelectionComponent} from './tags-selection/tags-selection.component';
+import {AdminComponent} from './admin/admin.component';
 
 @NgModule({
     declarations: [
@@ -68,6 +71,7 @@ import {TagsSelectionComponent} from './tags-selection/tags-selection.component'
         VideoReportRatingComponent,
         ReportSearchComponent,
         TagsSelectionComponent,
+        AdminComponent,
     ],
     imports: [
         BrowserModule,
