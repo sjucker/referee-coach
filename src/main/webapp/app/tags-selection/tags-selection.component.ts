@@ -13,7 +13,7 @@ export class TagsSelectionComponent implements OnInit {
 
     @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
-    @Input()
+    @Input({required: true})
     availableTags: Observable<TagDTO[]> = of([]);
     allTags: TagDTO[] = [];
 

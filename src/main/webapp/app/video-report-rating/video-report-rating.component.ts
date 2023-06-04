@@ -8,10 +8,10 @@ import {CriteriaEvaluationDTO} from "../rest";
 })
 export class VideoReportRatingComponent {
 
-    @Input()
+    @Input({required: true})
     title = '';
 
-    @Input()
+    @Input({required: true})
     dto: CriteriaEvaluationDTO = {
         rating: undefined,
         score: undefined,

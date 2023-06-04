@@ -13,9 +13,21 @@ export class AuthenticationGuard {
                 private router: Router) {
     }
 
-    canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    isLoggedIn(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
         if (this.authenticationService.isLoggedIn()) {
             return true;
+        } else {
+            return this.router.parseUrl(LOGIN_PATH);
+        }
+    }
+
+    isAdmin(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+        if (this.authenticationService.isLoggedIn()) {
+            if (this.authenticationService.isAdmin()) {
+                return true;
+            } else {
+                return this.router.parseUrl('');
+            }
         } else {
             return this.router.parseUrl(LOGIN_PATH);
         }
