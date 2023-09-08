@@ -21,6 +21,7 @@ class RefereeRepositoryTest extends AbstractIntegrationTest {
         referee.setName("Test Ref");
         referee.setEmail("test@ref.com");
         referee.setLevel(GROUP_2);
+        referee.setPassword("");
         refereeRepository.save(referee);
     }
 
