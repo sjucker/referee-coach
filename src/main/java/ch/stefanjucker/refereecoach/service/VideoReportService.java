@@ -2,11 +2,13 @@ package ch.stefanjucker.refereecoach.service;
 
 import static ch.stefanjucker.refereecoach.domain.VideoComment.COMMENT_MAX_LENGTH;
 import static ch.stefanjucker.refereecoach.domain.VideoReport.CURRENT_VERSION;
+import static ch.stefanjucker.refereecoach.util.DateUtil.now;
 import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
 import ch.stefanjucker.refereecoach.domain.Coach;
+import ch.stefanjucker.refereecoach.domain.HasLogin;
 import ch.stefanjucker.refereecoach.domain.HasNameEmail;
 import ch.stefanjucker.refereecoach.domain.VideoComment;
 import ch.stefanjucker.refereecoach.domain.VideoCommentReply;
@@ -34,7 +36,6 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -54,6 +55,7 @@ public class VideoReportService {
     private final VideoCommentReplyRepository videoCommentReplyRepository;
     private final TagsRepository tagsRepository;
     private final BasketplanService basketplanService;
+    private final LoginService loginService;
     private final JavaMailSender mailSender;
     private final RefereeCoachProperties properties;
     private final Environment environment;
@@ -63,6 +65,7 @@ public class VideoReportService {
                               VideoCommentReplyRepository videoCommentReplyRepository,
                               TagsRepository tagsRepository,
                               BasketplanService basketplanService,
+                              LoginService loginService,
                               JavaMailSender mailSender,
                               RefereeCoachProperties properties,
                               Environment environment) {
@@ -71,6 +74,7 @@ public class VideoReportService {
         this.videoCommentReplyRepository = videoCommentReplyRepository;
         this.tagsRepository = tagsRepository;
         this.basketplanService = basketplanService;
+        this.loginService = loginService;
         this.mailSender = mailSender;
         this.properties = properties;
         this.environment = environment;
@@ -265,25 +269,30 @@ public class VideoReportService {
         return !videoReport.isFinished() && videoReport.getCoach().getEmail().equals(coach.getEmail());
     }
 
-    public List<VideoReportDTO> findAll(LocalDate from, LocalDate to) {
+    public List<VideoReportDTO> findAll(LocalDate from, LocalDate to, String email) {
+        var user = loginService.find(email).orElseThrow();
         return videoReportRepository.findAll(from, to)
                                     .stream()
+                                    // coach see everything, referee only own reports
+                                    .filter(report -> user.isCoach() || report.relevantReferee().getId().equals(user.getId()))
+                                    // referee only see finished reports
+                                    .filter(report -> user.isCoach() || report.isFinished())
                                     .map(DTO_MAPPER::toDTO) // no need to fill the comments as well, not needed in report overview
                                     .toList();
     }
 
-    public void addReplies(Coach coach, String id, CreateRepliesDTO dto) {
+    public void addReplies(HasLogin user, String id, CreateRepliesDTO dto) {
         var videoReport = videoReportRepository.findById(id).orElseThrow();
 
         String repliedBy;
-        if (coach != null) {
-            repliedBy = coach.getName();
+        if (user != null) {
+            repliedBy = user.getName();
         } else {
             repliedBy = videoReport.relevantReferee().getName();
         }
 
         for (var reply : dto.replies()) {
-            videoCommentReplyRepository.save(new VideoCommentReply(null, repliedBy, LocalDateTime.now(), reply.comment(), reply.commentId()));
+            videoCommentReplyRepository.save(new VideoCommentReply(null, repliedBy, now(), reply.comment(), reply.commentId()));
         }
 
         boolean newCommentsMade = false;
@@ -299,7 +308,7 @@ public class VideoReportService {
         for (var report : videoReportRepository.findByBasketplanGameGameNumberAndCoachId(videoReport.getBasketplanGame().getGameNumber(),
                                                                                          videoReport.getCoach().getId())) {
 
-            if (coach != null || !report.getId().equals(id)) {
+            if ((user != null && user.isCoach()) || !report.getId().equals(id)) {
                 sendDiscussionEmail(repliedBy, report.relevantReferee(), report.getId(), newCommentsMade);
             }
         }
@@ -307,7 +316,7 @@ public class VideoReportService {
         // user == null => one of the referees replied
         // user != coach => another coach replied
         // in both cases send to the coach
-        if (coach == null || !coach.getId().equals(videoReport.getCoach().getId())) {
+        if (user == null || user.isReferee() || (user.isCoach() && !user.getId().equals(videoReport.getCoach().getId()))) {
             sendDiscussionEmail(repliedBy, videoReport.getCoach(), videoReport.getId(), newCommentsMade);
         }
     }

@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {BasketplanGameDTO, CoachDTO, OfficiatingMode, Reportee, VideoReportDTO} from "../rest";
+import {BasketplanGameDTO, CoachDTO, OfficiatingMode, Reportee, UserRole, VideoReportDTO} from "../rest";
 import {getReferee, VideoReportService} from "../service/video-report.service";
 import {BasketplanService} from "../service/basketplan.service";
 import {Router} from "@angular/router";
@@ -32,7 +32,6 @@ const dateFormat = 'yyyy-MM-dd';
     styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-    displayedColumns: string[] = ['finished', 'date', 'gameNumber', 'competition', 'teams', 'coach', 'reportee', 'edit', 'view', 'copy', 'delete'];
     videoReportDtos: MatTableDataSource<VideoReportDTO> = new MatTableDataSource<VideoReportDTO>([]);
     @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
     reportsLoaded = false;
@@ -340,5 +339,17 @@ export class MainComponent implements OnInit {
                 this.exporting = false;
             }
         })
+    }
+
+    isCoach(): boolean {
+        return this.authenticationService.getRole() === UserRole.COACH;
+    }
+
+    get displayedColumns(): string[] {
+        if (this.isCoach()) {
+            return ['finished', 'date', 'gameNumber', 'competition', 'teams', 'coach', 'reportee', 'edit', 'view', 'copy', 'delete'];
+        } else {
+            return ['date', 'gameNumber', 'competition', 'teams', 'coach', 'view'];
+        }
     }
 }

@@ -66,6 +66,7 @@ export interface LoginResponseDTO {
     id: number;
     name: string;
     admin: boolean;
+    role: UserRole;
     jwt: string;
 }
 
@@ -155,4 +156,9 @@ export enum Reportee {
 export enum Federation {
     SBL = "SBL",
     PROBASKET = "PROBASKET",
+}
+
+export enum UserRole {
+    COACH = "COACH",
+    REFEREE = "REFEREE",
 }

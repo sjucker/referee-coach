@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface RefereeRepository extends JpaRepository<Referee, Long> {
 
     Optional<Referee> findByName(String name);
+
+    Optional<Referee> findByEmail(String email);
 }

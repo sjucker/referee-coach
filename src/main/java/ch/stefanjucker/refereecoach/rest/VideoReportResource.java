@@ -5,7 +5,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 
-import ch.stefanjucker.refereecoach.domain.Coach;
+import ch.stefanjucker.refereecoach.domain.HasLogin;
 import ch.stefanjucker.refereecoach.domain.repository.CoachRepository;
 import ch.stefanjucker.refereecoach.dto.CopyVideoCommentDTO;
 import ch.stefanjucker.refereecoach.dto.CopyVideoReportDTO;
@@ -18,6 +18,7 @@ import ch.stefanjucker.refereecoach.dto.VideoCommentReplyDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDiscussionDTO;
 import ch.stefanjucker.refereecoach.service.ExportService;
+import ch.stefanjucker.refereecoach.service.LoginService;
 import ch.stefanjucker.refereecoach.service.SearchService;
 import ch.stefanjucker.refereecoach.service.VideoReportService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,24 +53,28 @@ public class VideoReportResource {
 
     private final VideoReportService videoReportService;
     private final CoachRepository coachRepository;
+    private final LoginService loginService;
     private final ExportService exportService;
     private final SearchService searchService;
 
     public VideoReportResource(VideoReportService videoReportService,
                                CoachRepository coachRepository,
+                               LoginService loginService,
                                ExportService exportService,
                                SearchService searchService) {
         this.videoReportService = videoReportService;
         this.coachRepository = coachRepository;
+        this.loginService = loginService;
         this.exportService = exportService;
         this.searchService = searchService;
     }
 
     @GetMapping
-    public ResponseEntity<List<VideoReportDTO>> getAllReports(@RequestParam @DateTimeFormat(iso = DATE) LocalDate from,
+    public ResponseEntity<List<VideoReportDTO>> getAllReports(@AuthenticationPrincipal UserDetails principal,
+                                                              @RequestParam @DateTimeFormat(iso = DATE) LocalDate from,
                                                               @RequestParam @DateTimeFormat(iso = DATE) LocalDate to) {
         log.info("GET /video-report?from={}&to={}", from, to);
-        return ResponseEntity.ok(videoReportService.findAll(from, to));
+        return ResponseEntity.ok(videoReportService.findAll(from, to, principal.getUsername()));
     }
 
     @GetMapping("/{id}")
@@ -81,39 +87,43 @@ public class VideoReportResource {
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @Secured({"COACH"})
     public ResponseEntity<VideoReportDTO> createVideoReport(@AuthenticationPrincipal UserDetails principal,
                                                             @RequestBody @Valid CreateVideoReportDTO dto) {
-        var user = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
-        log.info("POST /video-report {} ({})", dto, user);
+        var coach = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
+        log.info("POST /video-report {} ({})", dto, coach);
 
-        return ResponseEntity.ok(videoReportService.create(dto.federation(), dto.gameNumber(), dto.youtubeId(), dto.reportee(), user));
+        return ResponseEntity.ok(videoReportService.create(dto.federation(), dto.gameNumber(), dto.youtubeId(), dto.reportee(), coach));
     }
 
     @PostMapping(path = "/copy", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @Secured({"COACH"})
     public ResponseEntity<VideoReportDTO> copyVideoReport(@AuthenticationPrincipal UserDetails principal,
                                                           @RequestBody @Valid CopyVideoReportDTO dto) {
-        var user = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
-        log.info("POST /video-report/copy {} ({})", dto, user);
+        var coach = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
+        log.info("POST /video-report/copy {} ({})", dto, coach);
 
-        return ResponseEntity.ok(videoReportService.copy(dto.sourceId(), dto.reportee(), user));
+        return ResponseEntity.ok(videoReportService.copy(dto.sourceId(), dto.reportee(), coach));
     }
 
     @PutMapping(path = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @Secured({"COACH"})
     public ResponseEntity<VideoReportDTO> updateVideoReport(@AuthenticationPrincipal UserDetails principal,
                                                             @PathVariable String id,
                                                             @RequestBody @Valid VideoReportDTO dto) {
-        var user = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
-        log.info("PUT /video-report/{} {} ({})", id, dto, user);
-        return ResponseEntity.ok(videoReportService.update(id, dto, user));
+        var coach = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
+        log.info("PUT /video-report/{} {} ({})", id, dto, coach);
+        return ResponseEntity.ok(videoReportService.update(id, dto, coach));
     }
 
     @PostMapping(path = "/copy-comment", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @Secured({"COACH"})
     public ResponseEntity<?> copyComment(@AuthenticationPrincipal UserDetails principal,
                                          @RequestBody @Valid CopyVideoCommentDTO dto) {
-        var user = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
-        log.info("POST /video-report/copy-comment {} ({})", dto, user);
+        var coach = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
+        log.info("POST /video-report/copy-comment {} ({})", dto, coach);
 
-        videoReportService.copyVideoComment(dto.sourceId(), dto.reportee(), user);
+        videoReportService.copyVideoComment(dto.sourceId(), dto.reportee(), coach);
         return ResponseEntity.ok().build();
     }
 
@@ -129,28 +139,30 @@ public class VideoReportResource {
                                                                @PathVariable String id,
                                                                @RequestBody @Valid CreateRepliesDTO dto) {
 
-        Coach coach = null;
+        HasLogin user = null;
         if (principal != null) {
-            coach = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
+            user = loginService.find(principal.getUsername()).orElseThrow();
         }
-        log.info("POST /video-report/{}/discussion {} {}", id, dto, coach);
+        log.info("POST /video-report/{}/discussion {} {}", id, dto, user);
 
-        videoReportService.addReplies(coach, id, dto);
+        videoReportService.addReplies(user, id, dto);
 
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "/{id}")
+    @Secured({"COACH"})
     public ResponseEntity<?> deleteVideoReport(@AuthenticationPrincipal UserDetails principal,
                                                @PathVariable String id) {
-        var user = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
-        log.info("DELETE /video-report/{} ({})", id, user);
+        var coach = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
+        log.info("DELETE /video-report/{} ({})", id, coach);
 
-        videoReportService.delete(id, user);
+        videoReportService.delete(id, coach);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "/export")
+    @Secured({"COACH"})
     public ResponseEntity<Resource> export() {
         log.info("GET /video-report/export");
         try {
