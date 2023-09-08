@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {ChangePasswordRequestDTO, LoginRequestDTO, LoginResponseDTO} from "../rest";
+import {ChangePasswordRequestDTO, LoginRequestDTO, LoginResponseDTO, UserRole} from "../rest";
 import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
 
@@ -12,6 +12,7 @@ export class AuthenticationService {
     private readonly token = 'token';
     private readonly userId = 'user-id';
     private readonly admin = 'admin';
+    private readonly role = 'role';
 
     private baseUrl = environment.baseUrl;
 
@@ -42,6 +43,7 @@ export class AuthenticationService {
     setCredentials(dto: LoginResponseDTO): void {
         localStorage.setItem(this.token, dto.jwt);
         localStorage.setItem(this.userId, String(dto.id));
+        localStorage.setItem(this.role, String(dto.role));
         if (dto.admin) {
             localStorage.setItem(this.admin, "1");
         } else {
@@ -67,6 +69,10 @@ export class AuthenticationService {
 
     isAdmin(): boolean {
         return this.isLoggedIn() && localStorage.getItem(this.admin) !== null;
+    }
+
+    getRole(): UserRole {
+        return UserRole[localStorage.getItem(this.role) as keyof typeof UserRole]
     }
 
 }

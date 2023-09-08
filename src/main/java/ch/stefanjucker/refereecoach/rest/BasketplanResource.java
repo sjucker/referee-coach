@@ -5,6 +5,7 @@ import ch.stefanjucker.refereecoach.service.BasketplanService;
 import ch.stefanjucker.refereecoach.service.BasketplanService.Federation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ public class BasketplanResource {
     }
 
     @GetMapping("/{federation}/{gameNumber}")
+    @Secured({"COACH"})
     public ResponseEntity<BasketplanGameDTO> game(@PathVariable Federation federation, @PathVariable String gameNumber) {
         log.info("GET /game/{}/{}", federation.getId(), gameNumber);
 

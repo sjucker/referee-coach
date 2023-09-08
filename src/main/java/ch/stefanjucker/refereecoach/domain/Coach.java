@@ -1,7 +1,9 @@
 package ch.stefanjucker.refereecoach.domain;
 
+import static ch.stefanjucker.refereecoach.dto.UserRole.COACH;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+import ch.stefanjucker.refereecoach.dto.UserRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +20,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @NoArgsConstructor
-public class Coach implements HasNameEmail {
+public class Coach implements HasNameEmail, HasLogin {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -40,4 +42,8 @@ public class Coach implements HasNameEmail {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
+    @Override
+    public UserRole getRole() {
+        return COACH;
+    }
 }

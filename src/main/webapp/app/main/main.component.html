@@ -14,7 +14,7 @@
         </button>
     </mat-toolbar>
 
-    <mat-card appearance="outlined">
+    <mat-card appearance="outlined" *ngIf="isCoach()">
         <mat-card-content>
             <div class="search-container">
                 <form (ngSubmit)="searchGame()" role="form">
@@ -72,7 +72,7 @@
                     <mat-datepicker #pickerTo></mat-datepicker>
                 </mat-form-field>
 
-                <button mat-icon-button (click)="export()" matTooltip="Excel Download" style="flex: 1" [disabled]="exporting">
+                <button mat-icon-button *ngIf="isCoach()" (click)="export()" matTooltip="Excel Download" style="flex: 1" [disabled]="exporting">
                     <mat-icon>cloud_download</mat-icon>
                 </button>
             </div>
@@ -80,7 +80,7 @@
             <mat-progress-bar mode="indeterminate" *ngIf="!reportsLoaded"></mat-progress-bar>
 
             <table mat-table [dataSource]="videoReportDtos" *ngIf="reportsLoaded">
-                <ng-container matColumnDef="finished">
+                <ng-container matColumnDef="finished" *ngIf="isCoach()">
                     <th mat-header-cell *matHeaderCellDef class="show-gt-sm"></th>
                     <td mat-cell *matCellDef="let element" class="show-gt-sm">
                         <i *ngIf="element.finished" class="material-icons">check_circle_outline</i>
@@ -117,12 +117,12 @@
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="reportee">
+                <ng-container matColumnDef="reportee" *ngIf="isCoach()">
                     <th mat-header-cell *matHeaderCellDef>Referee</th>
                     <td mat-cell *matCellDef="let element">{{getReportee(element)}}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="edit">
+                <ng-container matColumnDef="edit" *ngIf="isCoach()">
                     <th mat-header-cell *matHeaderCellDef>Edit</th>
                     <td mat-cell *matCellDef="let element">
                         <button mat-icon-button (click)="edit(element)" *ngIf="isEditable(element)">
@@ -131,7 +131,7 @@
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="copy">
+                <ng-container matColumnDef="copy" *ngIf="isCoach()">
                     <th mat-header-cell *matHeaderCellDef>Copy</th>
                     <td mat-cell *matCellDef="let element">
                         <button mat-icon-button (click)="copy(element)">
@@ -149,7 +149,7 @@
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="delete">
+                <ng-container matColumnDef="delete" *ngIf="isCoach()">
                     <th mat-header-cell *matHeaderCellDef class="show-gt-xs">Delete</th>
                     <td mat-cell *matCellDef="let element" class="show-gt-xs">
                         <button mat-icon-button (click)="delete(element)" *ngIf="isDeletable(element)">

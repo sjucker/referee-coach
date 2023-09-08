@@ -57,7 +57,7 @@
         </mat-card-content>
     </mat-card>
 
-    <mat-card appearance="outlined">
+    <mat-card appearance="outlined" *ngIf="isCoach()">
         <mat-card-header>
             <mat-card-title>Manual</mat-card-title>
         </mat-card-header>
