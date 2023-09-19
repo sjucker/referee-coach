@@ -1,19 +1,21 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {BasketplanGameDTO, CoachDTO, OfficiatingMode, Reportee, UserRole, VideoReportDTO} from "../rest";
-import {getReferee, VideoReportService} from "../service/video-report.service";
+import {BasketplanGameDTO, CoachDTO, GameDiscussionDTO, OfficiatingMode, OverviewDTO, RefereeDTO, Reportee, ReportType, UserRole} from "../rest";
+import {VideoReportService} from "../service/video-report.service";
 import {BasketplanService} from "../service/basketplan.service";
 import {Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {AuthenticationService} from "../service/authentication.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatDialog} from "@angular/material/dialog";
-import {VideoReportCopyDialogComponent, VideoReportCopyDialogData} from "../video-report-copy-dialog/video-report-copy-dialog.component";
-import {VideoReportDeleteDialogComponent} from "../video-report-delete-dialog/video-report-delete-dialog.component";
 import getVideoId from "get-video-id";
 import {MatPaginator} from "@angular/material/paginator";
-import {EDIT_PATH, LOGIN_PATH, VIEW_PATH} from "../app-routing.module";
+import {EDIT_PATH, GAME_DISCUSSION_PATH, LOGIN_PATH, VIEW_PATH} from "../app-routing.module";
 import {saveAs} from "file-saver";
 import {DateTime} from "luxon";
+import {GameDiscussionService} from "../service/game-discussion.service";
+import {SearchService} from "../service/search.service";
+import {VideoReportCopyDialogComponent, VideoReportCopyDialogData} from "../video-report-copy-dialog/video-report-copy-dialog.component";
+import {VideoReportDeleteDialogComponent} from "../video-report-delete-dialog/video-report-delete-dialog.component";
 
 interface ReporteeSelection {
     reportee: Reportee,
@@ -32,7 +34,7 @@ const dateFormat = 'yyyy-MM-dd';
     styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-    videoReportDtos: MatTableDataSource<VideoReportDTO> = new MatTableDataSource<VideoReportDTO>([]);
+    dtos: MatTableDataSource<OverviewDTO> = new MatTableDataSource<OverviewDTO>([]);
     @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
     reportsLoaded = false;
 
@@ -58,6 +60,8 @@ export class MainComponent implements OnInit {
 
     constructor(private basketplanService: BasketplanService,
                 private videoReportService: VideoReportService,
+                private searchService: SearchService,
+                private gameDiscussionService: GameDiscussionService,
                 private authenticationService: AuthenticationService,
                 private router: Router,
                 private snackBar: MatSnackBar,
@@ -101,26 +105,26 @@ export class MainComponent implements OnInit {
     }
 
     private loadVideoReports() {
-        this.videoReportService.getAllVideoReports(this.from, this.to).subscribe({
+        this.searchService.find(this.from, this.to).subscribe({
             next: value => {
                 this.reportsLoaded = true;
-                this.videoReportDtos = new MatTableDataSource<VideoReportDTO>(value);
+                this.dtos = new MatTableDataSource<OverviewDTO>(value);
                 if (this.paginator) {
-                    this.videoReportDtos.paginator = this.paginator
+                    this.dtos.paginator = this.paginator
                 }
-                this.videoReportDtos.filterPredicate = (data, filter) => {
+                this.dtos.filterPredicate = (data, filter) => {
                     // default filter cannot handle nested objects, so handle each column specifically
-                    return data.basketplanGame.gameNumber.toLowerCase().indexOf(filter) != -1
-                        || data.basketplanGame.competition.toLowerCase().indexOf(filter) != -1
-                        || data.basketplanGame.teamA.toLowerCase().indexOf(filter) != -1
-                        || data.basketplanGame.teamB.toLowerCase().indexOf(filter) != -1
-                        || data.basketplanGame.teamB.toLowerCase().indexOf(filter) != -1
-                        || data.coach.name.toLowerCase().indexOf(filter) != -1
-                        || this.getReportee(data).toLowerCase().indexOf(filter) != -1;
+                    return data.gameNumber.toLowerCase().indexOf(filter) != -1
+                        || data.competition.toLowerCase().indexOf(filter) != -1
+                        || data.teamA.toLowerCase().indexOf(filter) != -1
+                        || data.teamB.toLowerCase().indexOf(filter) != -1
+                        || data.teamB.toLowerCase().indexOf(filter) != -1
+                        || (data.type === ReportType.GAME_DISCUSSION ? false : data.coach?.name.toLowerCase().indexOf(filter) != -1)
+                        || (data.type === ReportType.GAME_DISCUSSION ? false : data.relevantReferee?.name.toLowerCase().indexOf(filter) != -1);
                 }
                 const currentFilter = sessionStorage.getItem(keyFilter);
                 if (currentFilter) {
-                    this.videoReportDtos.filter = currentFilter;
+                    this.dtos.filter = currentFilter;
                 }
             },
             error: _ => {
@@ -180,6 +184,34 @@ export class MainComponent implements OnInit {
         );
     }
 
+    searchGameForReferee(): void {
+        this.problemDescription = '';
+        this.game = undefined;
+
+        if (!this.gameNumberInput) {
+            this.problemDescription = 'Please enter a game number';
+            return;
+        }
+
+        this.searching = true;
+        this.basketplanService.searchGameForReferee(this.gameNumberInput.trim()).subscribe({
+                next: dto => {
+                    this.game = dto;
+                    this.searching = false;
+                },
+                error: error => {
+                    if (error.status === 404) {
+                        this.problemDescription = 'No game found for given game number that is relevant for you';
+                    } else {
+                        this.problemDescription = 'An unexpected error occurred'
+                    }
+                    this.searching = false;
+                }
+            }
+        );
+    }
+
+
     parseYouTubeUrl() {
         this.problemDescription = '';
         this.youtubeId = undefined;
@@ -198,12 +230,12 @@ export class MainComponent implements OnInit {
     }
 
     createVideoReport() {
-        this.creating = true;
         if (this.game && (this.textOnlyMode || this.youtubeId) && this.reportee) {
+            this.creating = true;
             this.videoReportService.createVideoReport(this.game.gameNumber, this.reportee, this.textOnlyMode ? undefined : this.youtubeId).subscribe({
                 next: response => {
                     this.creating = false;
-                    this.edit(response);
+                    this.edit(response.id, ReportType.COACHING);
                 },
                 error: _ => {
                     this.creating = false;
@@ -223,35 +255,92 @@ export class MainComponent implements OnInit {
         }
     }
 
-    getReportee(report: VideoReportDTO): string {
-        return getReferee(report);
+    createGameDiscussion() {
+        if (this.game) {
+            this.creating = true;
+            this.gameDiscussionService.createGameDiscussion(this.game.gameNumber).subscribe({
+                next: response => {
+                    this.creating = false;
+                    this.discuss(response);
+                },
+                error: _ => {
+                    this.creating = false;
+                    this.snackBar.open("An unexpected error occurred, report could not be created.", undefined, {
+                        duration: 3000,
+                        horizontalPosition: "center",
+                        verticalPosition: "top"
+                    })
+                }
+            })
+        } else {
+            this.snackBar.open("Please search for a game or select a referee", undefined, {
+                duration: 3000,
+                horizontalPosition: "center",
+                verticalPosition: "top"
+            });
+        }
+
     }
 
     applyFilter(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value;
-        this.videoReportDtos.filter = filterValue.trim().toLowerCase();
-        sessionStorage.setItem(keyFilter, this.videoReportDtos.filter);
+        this.dtos.filter = filterValue.trim().toLowerCase();
+        sessionStorage.setItem(keyFilter, this.dtos.filter);
     }
 
-    isEditable(report: VideoReportDTO) {
-        return !report.finished && this.isCurrentUser(report.coach);
+    isEditable(report: OverviewDTO) {
+        if (report.coach) {
+            return !report.finished && this.isCurrentUser(report.coach);
+        } else {
+            return false;
+        }
     }
 
-    isCurrentUser(coach: CoachDTO): boolean {
-        return coach.id === this.authenticationService.getUserId();
+    isCurrentUser(coach?: CoachDTO): boolean {
+        if (coach) {
+            return coach.id === this.authenticationService.getUserId();
+        } else {
+            return false;
+        }
     }
 
-    edit(report: VideoReportDTO) {
-        this.router.navigate([EDIT_PATH, report.id]);
+    getCoach(coach?: CoachDTO): string {
+        if (coach) {
+            return coach.name;
+        } else {
+            return "";
+        }
     }
 
-    copy(report: VideoReportDTO) {
+    getReferee(referee?: RefereeDTO): string {
+        if (referee) {
+            return referee.name;
+        } else {
+            return "";
+        }
+    }
+
+    edit(id: string, type: ReportType) {
+        if (type === ReportType.COACHING) {
+            this.router.navigate([EDIT_PATH, id]).catch(reason => {
+                console.error(reason);
+            });
+        }
+    }
+
+    discuss(gameDiscussion: GameDiscussionDTO) {
+        this.router.navigate([GAME_DISCUSSION_PATH, gameDiscussion.id]).catch(reason => {
+            console.error(reason);
+        });
+    }
+
+    copy(report: OverviewDTO) {
         this.dialog.open(VideoReportCopyDialogComponent, {
             data: {
                 reportee: report.reportee,
-                referee1: report.basketplanGame.referee1,
-                referee2: report.basketplanGame.referee2,
-                referee3: report.basketplanGame.referee3,
+                referee1: report.referee1,
+                referee2: report.referee2,
+                referee3: report.referee3,
                 title: 'Copy Report',
                 description: 'A new report will be created containing all comments from the existing source report.'
             } as VideoReportCopyDialogData
@@ -260,7 +349,7 @@ export class MainComponent implements OnInit {
                 this.reportsLoaded = false;
                 this.videoReportService.copyVideoReport(report.id, reportee).subscribe({
                     next: response => {
-                        this.edit(response);
+                        this.edit(response.id, ReportType.COACHING);
                     },
                     error: _ => {
                         this.reportsLoaded = true;
@@ -275,19 +364,21 @@ export class MainComponent implements OnInit {
         });
     }
 
-    view(report: VideoReportDTO) {
-        this.router.navigate([VIEW_PATH, report.id]);
+    view(report: OverviewDTO) {
+        this.router.navigate([report.type === ReportType.GAME_DISCUSSION ? GAME_DISCUSSION_PATH : VIEW_PATH, report.id]).catch(reason => {
+            console.error(reason);
+        })
     }
 
-    isDeletable(report: VideoReportDTO): boolean {
-        return this.isEditable(report) || this.authenticationService.isAdmin();
+    isDeletable(report: OverviewDTO): boolean {
+        return this.isCoaching(report) && (this.isEditable(report) || this.authenticationService.isAdmin());
     }
 
-    delete(report: VideoReportDTO) {
+    delete(report: OverviewDTO) {
         this.dialog.open(VideoReportDeleteDialogComponent, {data: report}).afterClosed().subscribe((confirm: boolean) => {
             if (confirm) {
                 this.reportsLoaded = false;
-                this.videoReportService.deleteVideoReport(report).subscribe({
+                this.videoReportService.deleteVideoReport(report.id).subscribe({
                     next: _ => {
                         this.loadVideoReports();
                         this.snackBar.open("Report successfully deleted", undefined, {
@@ -345,11 +436,19 @@ export class MainComponent implements OnInit {
         return this.authenticationService.getRole() === UserRole.COACH;
     }
 
+    isReferee(): boolean {
+        return this.authenticationService.getRole() === UserRole.REFEREE;
+    }
+
     get displayedColumns(): string[] {
         if (this.isCoach()) {
             return ['finished', 'date', 'gameNumber', 'competition', 'teams', 'coach', 'reportee', 'edit', 'view', 'copy', 'delete'];
         } else {
             return ['date', 'gameNumber', 'competition', 'teams', 'coach', 'view'];
         }
+    }
+
+    isCoaching(report: OverviewDTO): boolean {
+        return report.type === ReportType.COACHING;
     }
 }

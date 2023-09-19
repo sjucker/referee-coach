@@ -21,7 +21,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
-import java.util.Set;
 
 @Mapper
 public interface DTOMapper {
@@ -31,10 +30,6 @@ public interface DTOMapper {
     RefereeDTO toDTO(Referee referee);
 
     CoachDTO toDTO(Coach coach);
-
-    default VideoReportDTO toDTO(VideoReport videoReport) {
-        return toDTO(videoReport, List.of(), List.of());
-    }
 
     @Mapping(target = "videoComments", source = "videoCommentDTOs")
     @Mapping(target = "otherReportees", source = "otherReportees")
@@ -48,8 +43,6 @@ public interface DTOMapper {
     VideoCommentDTO toDTO(VideoComment videoComment, List<VideoCommentReplyDTO> replyDTOs);
 
     VideoComment fromDTO(VideoCommentDTO dto, String videoReportId);
-
-    VideoCommentReplyDTO toDTO(VideoCommentReply videoCommentReply);
 
     List<VideoCommentReplyDTO> toDTO(List<VideoCommentReply> videoCommentReply);
 
@@ -67,13 +60,7 @@ public interface DTOMapper {
 
     BasketplanGame fromDTO(BasketplanGameDTO dto);
 
-    @Mapping(target = "email", ignore = true)
-    @Mapping(target = "level", ignore = true)
-    Referee fromDTO(RefereeDTO refereeDTO);
-
     TagDTO toDTO(Tags tags);
-
-    Set<TagDTO> toDTO(Set<Tags> tags);
 
     default void update(VideoReportDTO dto, VideoReport videoReport) {
         videoReport.setGeneral(new CriteriaEvaluation(dto.general().comment(), dto.general().score()));

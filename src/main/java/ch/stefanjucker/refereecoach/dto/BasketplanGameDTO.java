@@ -15,4 +15,10 @@ public record BasketplanGameDTO(@NotNull String gameNumber,
                                 RefereeDTO referee2,
                                 RefereeDTO referee3,
                                 String youtubeId) {
+
+    public boolean containsReferee(Long refereeId) {
+        return (referee1 != null && referee1.id().equals(refereeId)) ||
+                (referee2 != null && referee2.id().equals(refereeId)) ||
+                (referee3 != null && referee3.id().equals(refereeId));
+    }
 }

@@ -17,18 +17,6 @@ import {
     VideoReportDTO
 } from "../rest";
 import {environment} from "../../environments/environment";
-import {DateTime} from "luxon";
-
-export function getReferee(report: VideoReportDTO): string {
-    switch (report.reportee) {
-        case Reportee.FIRST_REFEREE:
-            return report.basketplanGame.referee1!.name;
-        case Reportee.SECOND_REFEREE:
-            return report.basketplanGame.referee2!.name;
-        case Reportee.THIRD_REFEREE:
-            return report.basketplanGame.referee3!.name;
-    }
-}
 
 @Injectable({
     providedIn: 'root'
@@ -42,10 +30,6 @@ export class VideoReportService {
 
     getVideoReport(id: string): Observable<VideoReportDTO> {
         return this.httpClient.get<VideoReportDTO>(`${this.baseUrl}/video-report/${id}`);
-    }
-
-    getAllVideoReports(from: DateTime, to: DateTime): Observable<VideoReportDTO[]> {
-        return this.httpClient.get<VideoReportDTO[]>(`${this.baseUrl}/video-report?from=${from.toFormat('yyyy-MM-dd')}&to=${to.toFormat('yyyy-MM-dd')}`);
     }
 
     createVideoReport(gameNumber: string, reportee: Reportee, youtubeId?: string): Observable<VideoReportDTO> {
@@ -78,8 +62,8 @@ export class VideoReportService {
         return this.httpClient.put<VideoReportDTO>(`${this.baseUrl}/video-report/${dto.id}`, dto);
     }
 
-    deleteVideoReport(dto: VideoReportDTO): Observable<any> {
-        return this.httpClient.delete<any>(`${this.baseUrl}/video-report/${dto.id}`);
+    deleteVideoReport(id: string): Observable<any> {
+        return this.httpClient.delete<any>(`${this.baseUrl}/video-report/${id}`);
     }
 
     getVideoReportDiscussion(id: string): Observable<VideoReportDiscussionDTO> {

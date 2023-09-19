@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {YouTubePlayer} from "@angular/youtube-player";
 import {BasketplanService} from "../service/basketplan.service";
 import {VideoReportService} from "../service/video-report.service";
@@ -80,6 +80,13 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnDestroy(): void {
         window.removeEventListener('resize', this.onResize);
+    }
+
+    @HostListener('window:beforeunload', ['$event'])
+    handleClose($event: BeforeUnloadEvent) {
+        if (this.unsavedChanges) {
+            $event.returnValue = 'unsavedChanges';
+        }
     }
 
     jumpTo(time: number): void {

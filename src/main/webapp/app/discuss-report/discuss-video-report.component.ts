@@ -1,24 +1,23 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {VideoReportService} from "../service/video-report.service";
 import {AuthenticationService} from "../service/authentication.service";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {CommentReplyDTO, OfficiatingMode, VideoCommentDTO, VideoCommentReplyDTO, VideoReportDiscussionDTO} from "../rest";
 import {YouTubePlayer} from "@angular/youtube-player";
-import {VideoReportReplyDialogComponent} from "../video-report-reply-dialog/video-report-reply-dialog.component";
+import {CommentReplyDialogComponent, CommentReplyDialogData} from "../comment-reply-dialog/comment-reply-dialog.component";
 import {Observable, of} from "rxjs";
-import {
-    DiscussVideoReportUnsavedRepliesDialogComponent
-} from "../discuss-video-report-unsaved-replies-dialog/discuss-video-report-unsaved-replies-dialog.component";
+import {UnsavedRepliesDialogComponent} from "../discuss-video-report-unsaved-replies-dialog/unsaved-replies-dialog.component";
 import {DiscussVideoReportFinishDialogComponent} from "../discuss-video-report-finish-dialog/discuss-video-report-finish-dialog.component";
+import {HasUnsavedReplies} from "../has-unsaved-replies";
 
 @Component({
     selector: 'app-discuss-video-report',
     templateUrl: './discuss-video-report.component.html',
     styleUrls: ['./discuss-video-report.component.scss']
 })
-export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDestroy, HasUnsavedReplies {
 
     @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
     @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
@@ -74,6 +73,13 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
         window.removeEventListener('resize', this.onResize);
     }
 
+    @HostListener('window:beforeunload', ['$event'])
+    handleClose($event: BeforeUnloadEvent) {
+        if (this.hasUnsavedReplies()) {
+            $event.returnValue = 'hasUnsavedReplies';
+        }
+    }
+
     isLoggedIn(): boolean {
         return this.authenticationService.isLoggedIn();
     }
@@ -93,11 +99,13 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
     }
 
     reply(comment: VideoCommentDTO): void {
-        this.dialog.open(VideoReportReplyDialogComponent, {
-            data: this.dto,
+        this.dialog.open(CommentReplyDialogComponent, {
+            data: {
+                referee: this.dto?.referee
+            },
             disableClose: true,
             hasBackdrop: true,
-        }).afterClosed().subscribe(reply => {
+        } as MatDialogConfig<CommentReplyDialogData>).afterClosed().subscribe(reply => {
             if (reply) {
                 this.replies = [...this.replies, {
                     commentId: comment.id!,
@@ -130,8 +138,7 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
                     }
                 });
             }
-        })
-
+        });
     }
 
     private showMessage(message: string) {
@@ -148,7 +155,7 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
 
     canDeactivate(): Observable<boolean> {
         if (this.hasUnsavedReplies()) {
-            return this.dialog.open(DiscussVideoReportUnsavedRepliesDialogComponent).afterClosed();
+            return this.dialog.open(UnsavedRepliesDialogComponent).afterClosed();
         } else {
             return of(true);
         }
@@ -164,11 +171,7 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
 
         // check if there is already a comment in the same timestamp range +/-3 seconds
         if (this.dto!.videoComments.some(comment => timestamp >= comment.timestamp - 3 && timestamp <= comment.timestamp + 3)) {
-            this.snackBar.open('There is already an existing comment around this timestamp', undefined, {
-                duration: 3000,
-                verticalPosition: "top",
-                horizontalPosition: "center"
-            });
+            this.showMessage('There is already an existing comment around this timestamp');
         } else {
             const newComment = {
                 id: undefined,

@@ -33,12 +33,10 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {VideoReportUnsavedChangesDialogComponent} from './video-report-unsaved-changes-dialog/video-report-unsaved-changes-dialog.component';
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
-import {VideoReportReplyDialogComponent} from './video-report-reply-dialog/video-report-reply-dialog.component';
+import {CommentReplyDialogComponent} from './comment-reply-dialog/comment-reply-dialog.component';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {DiscussVideoReportComponent} from './discuss-report/discuss-video-report.component';
-import {
-    DiscussVideoReportUnsavedRepliesDialogComponent
-} from './discuss-video-report-unsaved-replies-dialog/discuss-video-report-unsaved-replies-dialog.component';
+import {UnsavedRepliesDialogComponent} from './discuss-video-report-unsaved-replies-dialog/unsaved-replies-dialog.component';
 import {DiscussVideoReportFinishDialogComponent} from './discuss-video-report-finish-dialog/discuss-video-report-finish-dialog.component';
 import {MatSliderModule} from "@angular/material/slider";
 import {VideoReportRatingComponent} from './video-report-rating/video-report-rating.component';
@@ -51,6 +49,8 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {ReportSearchComponent} from './report-search/report-search.component';
 import {TagsSelectionComponent} from './tags-selection/tags-selection.component';
 import {AdminComponent} from './admin/admin.component';
+import {GameDiscussionComponent} from './game-discussion/game-discussion.component';
+import {GameDiscussionFinishCommentsDialogComponent} from './game-discussion-finish-comments-dialog/game-discussion-finish-comments-dialog.component';
 
 @NgModule({
     declarations: [
@@ -64,14 +64,16 @@ import {AdminComponent} from './admin/admin.component';
         VideoReportCopyDialogComponent,
         VideoReportDeleteDialogComponent,
         VideoReportUnsavedChangesDialogComponent,
-        VideoReportReplyDialogComponent,
+        CommentReplyDialogComponent,
         DiscussVideoReportComponent,
-        DiscussVideoReportUnsavedRepliesDialogComponent,
+        UnsavedRepliesDialogComponent,
         DiscussVideoReportFinishDialogComponent,
         VideoReportRatingComponent,
         ReportSearchComponent,
         TagsSelectionComponent,
         AdminComponent,
+        GameDiscussionComponent,
+        GameDiscussionFinishCommentsDialogComponent,
     ],
     imports: [
         BrowserModule,
