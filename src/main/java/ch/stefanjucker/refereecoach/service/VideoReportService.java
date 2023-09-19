@@ -35,7 +35,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -55,7 +54,6 @@ public class VideoReportService {
     private final VideoCommentReplyRepository videoCommentReplyRepository;
     private final TagsRepository tagsRepository;
     private final BasketplanService basketplanService;
-    private final LoginService loginService;
     private final JavaMailSender mailSender;
     private final RefereeCoachProperties properties;
     private final Environment environment;
@@ -65,7 +63,6 @@ public class VideoReportService {
                               VideoCommentReplyRepository videoCommentReplyRepository,
                               TagsRepository tagsRepository,
                               BasketplanService basketplanService,
-                              LoginService loginService,
                               JavaMailSender mailSender,
                               RefereeCoachProperties properties,
                               Environment environment) {
@@ -74,7 +71,6 @@ public class VideoReportService {
         this.videoCommentReplyRepository = videoCommentReplyRepository;
         this.tagsRepository = tagsRepository;
         this.basketplanService = basketplanService;
-        this.loginService = loginService;
         this.mailSender = mailSender;
         this.properties = properties;
         this.environment = environment;
@@ -267,18 +263,6 @@ public class VideoReportService {
 
     private boolean isUnfinishedReportOwnedByUser(VideoReport videoReport, Coach coach) {
         return !videoReport.isFinished() && videoReport.getCoach().getEmail().equals(coach.getEmail());
-    }
-
-    public List<VideoReportDTO> findAll(LocalDate from, LocalDate to, String email) {
-        var user = loginService.find(email).orElseThrow();
-        return videoReportRepository.findAll(from, to)
-                                    .stream()
-                                    // coach see everything, referee only own reports
-                                    .filter(report -> user.isCoach() || report.relevantReferee().getId().equals(user.getId()))
-                                    // referee only see finished reports
-                                    .filter(report -> user.isCoach() || report.isFinished())
-                                    .map(DTO_MAPPER::toDTO) // no need to fill the comments as well, not needed in report overview
-                                    .toList();
     }
 
     public void addReplies(HasLogin user, String id, CreateRepliesDTO dto) {

@@ -1,0 +1,56 @@
+@import "../../variables";
+@import "../../responsive";
+
+p {
+  white-space: pre-wrap;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.reply {
+  margin-left: 10px;
+}
+
+.repliedAt {
+  margin-left: 10px;
+  font-size: 10px;
+}
+
+.new-reply,
+.new-comment {
+  color: $accent-color;
+}
+
+.new-reply {
+  display: flex;
+  align-items: center;
+}
+
+.unsaved-hint {
+  font-size: 12px;
+}
+
+.youtube-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.show-gt-sm {
+  display: none;
+
+  @include responsive('gt-sm') {
+    display: inherit;
+  }
+}
+
+.hide-gt-sm {
+  @include responsive('gt-sm') {
+    display: none;
+  }
+}
+
+.mat-mdc-card-actions {
+  gap: 10px;
+}

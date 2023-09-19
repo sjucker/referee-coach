@@ -1,18 +1,21 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {AuthenticationService} from "../service/authentication.service";
-import {VideoReportDiscussionDTO} from "../rest";
+
+export interface CommentReplyDialogData {
+    referee: string;
+}
 
 @Component({
-    selector: 'app-video-report-reply-dialog',
-    templateUrl: './video-report-reply-dialog.component.html',
-    styleUrls: ['./video-report-reply-dialog.component.scss']
+    selector: 'app-comment-reply-dialog',
+    templateUrl: './comment-reply-dialog.component.html',
+    styleUrls: ['./comment-reply-dialog.component.scss']
 })
-export class VideoReportReplyDialogComponent {
+export class CommentReplyDialogComponent {
 
     reply: String = '';
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: VideoReportDiscussionDTO,
+    constructor(@Inject(MAT_DIALOG_DATA) public data: CommentReplyDialogData,
                 private authenticationService: AuthenticationService) {
     }
 

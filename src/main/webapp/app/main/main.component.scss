@@ -9,6 +9,7 @@
 .filter-container {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 
   @include responsive(gt-sm) {
     flex-direction: row;
@@ -18,4 +19,8 @@
 
 .current-user {
   color: $primary-color;
+}
+
+.referee-start-discussion {
+  min-height: 90px;
 }

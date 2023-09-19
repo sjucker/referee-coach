@@ -11,6 +11,8 @@ import {DiscussVideoReportComponent} from "./discuss-report/discuss-video-report
 import {UnsavedRepliesGuard} from "./service/unsaved-replies.guard";
 import {ReportSearchComponent} from "./report-search/report-search.component";
 import {AdminComponent} from "./admin/admin.component";
+import {GameDiscussionComponent} from "./game-discussion/game-discussion.component";
+import {HasUnsavedReplies} from "./has-unsaved-replies";
 
 export const LOGIN_PATH = 'login'
 export const EDIT_PATH = 'edit'
@@ -19,10 +21,11 @@ export const DISCUSS_PATH = 'discuss'
 export const SETTINGS_PATH = 'settings'
 export const SEARCH_PATH = 'search'
 export const ADMIN_PATH = 'admin'
+export const GAME_DISCUSSION_PATH = 'game-discussion'
 
 const authenticationGuard: CanActivateFn = () => inject(AuthenticationGuard).isLoggedIn();
 const hasAdminRightsGuard: CanActivateFn = () => inject(AuthenticationGuard).isAdmin();
-const unsavedRepliesGuard: CanDeactivateFn<DiscussVideoReportComponent> = (component) => inject(UnsavedRepliesGuard).canDeactivate(component);
+const unsavedRepliesGuard: CanDeactivateFn<HasUnsavedReplies> = (component) => inject(UnsavedRepliesGuard).canDeactivate(component);
 const unsavedChangesGuard: CanDeactivateFn<VideoReportComponent> = (component) => inject(UnsavedChangesGuard).canDeactivate(component);
 
 const routes: Routes = [
@@ -47,6 +50,12 @@ const routes: Routes = [
         component: VideoReportComponent,
         canActivate: [authenticationGuard],
         canDeactivate: [unsavedChangesGuard]
+    },
+    {
+        path: GAME_DISCUSSION_PATH + '/:id',
+        component: GameDiscussionComponent,
+        canActivate: [authenticationGuard],
+        canDeactivate: [unsavedRepliesGuard]
     },
     {
         path: LOGIN_PATH,

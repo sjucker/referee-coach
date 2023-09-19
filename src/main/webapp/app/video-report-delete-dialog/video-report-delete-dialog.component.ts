@@ -1,7 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {VideoReportDTO} from "../rest";
-import {getReferee} from "../service/video-report.service";
+import {OverviewDTO} from "../rest";
 
 @Component({
     selector: 'app-video-report-delete-dialog',
@@ -10,11 +9,7 @@ import {getReferee} from "../service/video-report.service";
 })
 export class VideoReportDeleteDialogComponent {
 
-    constructor(@Inject(MAT_DIALOG_DATA) public dto: VideoReportDTO) {
-    }
-
-    getReferee(): string {
-        return getReferee(this.dto);
+    constructor(@Inject(MAT_DIALOG_DATA) public dto: OverviewDTO) {
     }
 
 }

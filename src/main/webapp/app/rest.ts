@@ -39,6 +39,16 @@ export interface CopyVideoReportDTO {
     reportee: Reportee;
 }
 
+export interface CreateGameDiscussionCommentDTO {
+    replies: CommentReplyDTO[];
+    newComments: GameDiscussionCommentDTO[];
+}
+
+export interface CreateGameDiscussionDTO {
+    federation: Federation;
+    gameNumber: string;
+}
+
 export interface CreateRepliesDTO {
     replies: CommentReplyDTO[];
     newComments: VideoCommentDTO[];
@@ -57,6 +67,26 @@ export interface CriteriaEvaluationDTO {
     rating?: string;
 }
 
+export interface GameDiscussionCommentDTO {
+    id?: number;
+    timestamp: number;
+    comment: string;
+    replies: GameDiscussionCommentReplyDTO[];
+}
+
+export interface GameDiscussionCommentReplyDTO {
+    id: number;
+    repliedBy: string;
+    repliedAt: Date;
+    reply: string;
+}
+
+export interface GameDiscussionDTO {
+    id: string;
+    basketplanGame: BasketplanGameDTO;
+    comments: GameDiscussionCommentDTO[];
+}
+
 export interface LoginRequestDTO {
     email: string;
     password: string;
@@ -68,6 +98,25 @@ export interface LoginResponseDTO {
     admin: boolean;
     role: UserRole;
     jwt: string;
+}
+
+export interface OverviewDTO {
+    id: string;
+    type: ReportType;
+    date: Date;
+    gameNumber: string;
+    competition: string;
+    teamA: string;
+    teamB: string;
+    coach?: CoachDTO;
+    reportee?: Reportee;
+    relevantReferee?: RefereeDTO;
+    referee1?: RefereeDTO;
+    referee2?: RefereeDTO;
+    referee3?: RefereeDTO;
+    relevantRefereeIds: number[];
+    finished: boolean;
+    visibleForReferee: boolean;
 }
 
 export interface RefereeDTO {
@@ -161,4 +210,9 @@ export enum Federation {
 export enum UserRole {
     COACH = "COACH",
     REFEREE = "REFEREE",
+}
+
+export enum ReportType {
+    COACHING = "COACHING",
+    GAME_DISCUSSION = "GAME_DISCUSSION",
 }

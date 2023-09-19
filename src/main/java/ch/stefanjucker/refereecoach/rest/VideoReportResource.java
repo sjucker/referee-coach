@@ -11,6 +11,7 @@ import ch.stefanjucker.refereecoach.dto.CopyVideoCommentDTO;
 import ch.stefanjucker.refereecoach.dto.CopyVideoReportDTO;
 import ch.stefanjucker.refereecoach.dto.CreateRepliesDTO;
 import ch.stefanjucker.refereecoach.dto.CreateVideoReportDTO;
+import ch.stefanjucker.refereecoach.dto.OverviewDTO;
 import ch.stefanjucker.refereecoach.dto.SearchRequestDTO;
 import ch.stefanjucker.refereecoach.dto.SearchResponseDTO;
 import ch.stefanjucker.refereecoach.dto.TagDTO;
@@ -70,11 +71,11 @@ public class VideoReportResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<VideoReportDTO>> getAllReports(@AuthenticationPrincipal UserDetails principal,
-                                                              @RequestParam @DateTimeFormat(iso = DATE) LocalDate from,
-                                                              @RequestParam @DateTimeFormat(iso = DATE) LocalDate to) {
+    public ResponseEntity<List<OverviewDTO>> getAllReports(@AuthenticationPrincipal UserDetails principal,
+                                                           @RequestParam @DateTimeFormat(iso = DATE) LocalDate from,
+                                                           @RequestParam @DateTimeFormat(iso = DATE) LocalDate to) {
         log.info("GET /video-report?from={}&to={}", from, to);
-        return ResponseEntity.ok(videoReportService.findAll(from, to, principal.getUsername()));
+        return ResponseEntity.ok(searchService.findAll(from, to, principal.getUsername()));
     }
 
     @GetMapping("/{id}")

@@ -18,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Set;
 
 @Entity
 @Table(name = "video_report")
@@ -109,6 +110,10 @@ public class VideoReport {
             case SECOND_REFEREE -> basketplanGame.getReferee2();
             case THIRD_REFEREE -> basketplanGame.getReferee3();
         };
+    }
+
+    public Set<Long> relevantRefereeIds() {
+        return Set.of(relevantReferee().getId());
     }
 
 }
