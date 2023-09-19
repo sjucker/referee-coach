@@ -17,8 +17,7 @@ export class AdminComponent implements OnInit {
     ngOnInit(): void {
         this.adminService.getAllReferees().subscribe(value => {
             this.referees = value;
-        })
+        });
     }
-
 
 }
