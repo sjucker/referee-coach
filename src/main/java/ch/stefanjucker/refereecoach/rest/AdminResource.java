@@ -27,7 +27,7 @@ public class AdminResource {
     }
 
     @GetMapping(value = "/referee", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<RefereeDTO>> game(@AuthenticationPrincipal UserDetails principal) {
+    public ResponseEntity<List<RefereeDTO>> getReferee(@AuthenticationPrincipal UserDetails principal) {
         log.info("GET /api/admin/referee");
 
         if (!adminService.isAdmin(principal.getUsername())) {
@@ -36,7 +36,6 @@ public class AdminResource {
         }
 
         return ResponseEntity.ok(adminService.getAllReferess());
-
     }
 
 }
