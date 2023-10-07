@@ -105,13 +105,13 @@ export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy
             if (decision && this.gameDiscussion) {
                 this.saving = true;
                 this.gameDiscussionService.comment(this.gameDiscussion.id, this.replies, this.newComments).subscribe({
-                    next: _ => {
+                    next: () => {
                         this.showMessage("Comments saved");
                         this.replies = [];
                         this.newComments = [];
                         this.saving = false;
                     },
-                    error: _ => {
+                    error: () => {
                         this.showMessage("Comments could not be saved...");
                         this.saving = false;
                     }

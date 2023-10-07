@@ -62,20 +62,20 @@ export class VideoReportService {
         return this.httpClient.put<VideoReportDTO>(`${this.baseUrl}/video-report/${dto.id}`, dto);
     }
 
-    deleteVideoReport(id: string): Observable<any> {
-        return this.httpClient.delete<any>(`${this.baseUrl}/video-report/${id}`);
+    deleteVideoReport(id: string): Observable<unknown> {
+        return this.httpClient.delete<unknown>(`${this.baseUrl}/video-report/${id}`);
     }
 
     getVideoReportDiscussion(id: string): Observable<VideoReportDiscussionDTO> {
         return this.httpClient.get<VideoReportDiscussionDTO>(`${this.baseUrl}/video-report/${id}/discussion`);
     }
 
-    reply(id: string, replies: CommentReplyDTO[], newComments: VideoCommentDTO[]): Observable<any> {
+    reply(id: string, replies: CommentReplyDTO[], newComments: VideoCommentDTO[]): Observable<unknown> {
         const request: CreateRepliesDTO = {
             replies: replies,
             newComments: newComments
         };
-        return this.httpClient.post<CreateRepliesDTO>(`${this.baseUrl}/video-report/${id}/discussion`, request);
+        return this.httpClient.post<unknown>(`${this.baseUrl}/video-report/${id}/discussion`, request);
     }
 
     export(): Observable<Blob> {

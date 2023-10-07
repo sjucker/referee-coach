@@ -126,13 +126,13 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
             if (decision && this.dto) {
                 this.saving = true;
                 this.videoReportService.reply(this.dto.videoReportId, this.replies, this.newComments).subscribe({
-                    next: _ => {
+                    next: () => {
                         this.showMessage("Replies saved");
                         this.replies = [];
                         this.newComments = [];
                         this.saving = false;
                     },
-                    error: _ => {
+                    error: () => {
                         this.showMessage("Replies could not be saved...");
                         this.saving = false;
                     }

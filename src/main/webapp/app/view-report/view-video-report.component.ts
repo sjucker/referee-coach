@@ -43,7 +43,7 @@ export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestro
             next: result => {
                 this.dto = result;
             },
-            error: _ => {
+            error: () => {
                 this.notFound = true;
             }
         });

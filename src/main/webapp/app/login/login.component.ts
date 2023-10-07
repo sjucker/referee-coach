@@ -33,7 +33,7 @@ export class LoginComponent {
                     this.authenticationService.setCredentials(response);
                     this.router.navigate(['/']);
                 },
-                error: _ => {
+                error: () => {
                     this.snackBar.open('Email/Password is not correct!', undefined, {
                         duration: 3000,
                         horizontalPosition: "center",
