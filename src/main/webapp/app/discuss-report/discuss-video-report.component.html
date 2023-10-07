@@ -18,6 +18,10 @@
             <mat-icon>home</mat-icon>
         </a>
     </mat-toolbar>
+    <div class="loading-indicator">
+        <mat-progress-bar mode="indeterminate" color="accent" *ngIf="(!dto && !notFound) || saving"></mat-progress-bar>
+    </div>
+
     <div *ngIf="dto">
         <mat-card appearance="outlined">
             <mat-card-header>
