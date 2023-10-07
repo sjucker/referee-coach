@@ -234,10 +234,24 @@
                     </execution>
 
                     <execution>
-                        <id>npm install</id>
+                        <id>npm ci</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
+                        <configuration>
+                            <arguments>ci</arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>ng lint</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <arguments>run-script lint</arguments>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

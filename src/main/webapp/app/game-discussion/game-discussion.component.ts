@@ -50,7 +50,7 @@ export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy
             next: value => {
                 this.gameDiscussion = value;
             },
-            error: _ => {
+            error: () => {
                 this.notFound = true;
             }
         });
