@@ -19,10 +19,7 @@ export class VideoReportRatingComponent {
     }
 
     @Output()
-    changed = new EventEmitter<any>();
-
-    constructor() {
-    }
+    changed = new EventEmitter<void>();
 
     rating() {
         if (this.dto.score) {

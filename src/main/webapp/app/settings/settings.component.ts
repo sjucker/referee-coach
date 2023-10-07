@@ -36,10 +36,10 @@ export class SettingsComponent {
                     this.changePasswordForm.value.oldPassword!,
                     this.changePasswordForm.value.newPassword1!
                 ).subscribe({
-                    next: response => {
+                    next: () => {
                         this.success = true;
                     },
-                    error: err => {
+                    error: () => {
                         this.error = true;
                         this.errorMessage = 'Could not change the existing password!'
                     }

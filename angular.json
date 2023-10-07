@@ -109,23 +109,6 @@
             "browserTarget": "referee-coach-ui:build"
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/main/webapp/test.ts",
-            "polyfills": "src/main/webapp/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/main/webapp/favicon.svg",
-              "src/main/webapp/assets"
-            ],
-            "styles": [
-              "src/main/webapp/styles.scss"
-            ],
-            "scripts": []
-          }
-        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {

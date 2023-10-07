@@ -127,7 +127,7 @@ export class MainComponent implements OnInit {
                     this.dtos.filter = currentFilter;
                 }
             },
-            error: _ => {
+            error: () => {
                 this.snackBar.open("An unexpected error occurred, reports could not be loaded.", undefined, {
                     duration: 3000,
                     horizontalPosition: "center",
@@ -237,7 +237,7 @@ export class MainComponent implements OnInit {
                     this.creating = false;
                     this.edit(response.id, ReportType.COACHING);
                 },
-                error: _ => {
+                error: () => {
                     this.creating = false;
                     this.snackBar.open("An unexpected error occurred, report could not be created.", undefined, {
                         duration: 3000,
@@ -263,7 +263,7 @@ export class MainComponent implements OnInit {
                     this.creating = false;
                     this.discuss(response);
                 },
-                error: _ => {
+                error: () => {
                     this.creating = false;
                     this.snackBar.open("An unexpected error occurred, report could not be created.", undefined, {
                         duration: 3000,
@@ -351,7 +351,7 @@ export class MainComponent implements OnInit {
                     next: response => {
                         this.edit(response.id, ReportType.COACHING);
                     },
-                    error: _ => {
+                    error: () => {
                         this.reportsLoaded = true;
                         this.snackBar.open("An unexpected error occurred, report could not be copied.", undefined, {
                             duration: 3000,
@@ -379,7 +379,7 @@ export class MainComponent implements OnInit {
             if (confirm) {
                 this.reportsLoaded = false;
                 this.videoReportService.deleteVideoReport(report.id).subscribe({
-                    next: _ => {
+                    next: () => {
                         this.loadVideoReports();
                         this.snackBar.open("Report successfully deleted", undefined, {
                             duration: 3000,
@@ -387,7 +387,7 @@ export class MainComponent implements OnInit {
                             verticalPosition: "top"
                         });
                     },
-                    error: _ => {
+                    error: () => {
                         this.snackBar.open("Report could not be deleted", undefined, {
                             duration: 3000,
                             horizontalPosition: "center",
@@ -419,7 +419,7 @@ export class MainComponent implements OnInit {
             next: response => {
                 saveAs(response, "export.xlsx");
             },
-            error: _ => {
+            error: () => {
                 this.snackBar.open("An unexpected error occurred, export could not be created!", undefined, {
                     duration: 3000,
                     horizontalPosition: "center",

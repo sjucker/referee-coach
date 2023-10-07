@@ -1,14 +1,5 @@
 import {Injectable} from '@angular/core';
-import {
-    CommentReplyDTO,
-    CreateGameDiscussionCommentDTO,
-    CreateGameDiscussionDTO,
-    CreateRepliesDTO,
-    Federation,
-    GameDiscussionCommentDTO,
-    GameDiscussionDTO,
-    VideoReportDTO
-} from "../rest";
+import {CommentReplyDTO, CreateGameDiscussionCommentDTO, CreateGameDiscussionDTO, Federation, GameDiscussionCommentDTO, GameDiscussionDTO} from "../rest";
 import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
@@ -23,23 +14,23 @@ export class GameDiscussionService {
     constructor(private readonly httpClient: HttpClient) {
     }
 
-    createGameDiscussion(gameNumber: string): Observable<any> {
+    createGameDiscussion(gameNumber: string): Observable<GameDiscussionDTO> {
         const request: CreateGameDiscussionDTO = {
             gameNumber: gameNumber,
             federation: Federation.SBL
         };
-        return this.httpClient.post<VideoReportDTO>(`${this.baseUrl}/game-discussion`, request);
+        return this.httpClient.post<GameDiscussionDTO>(`${this.baseUrl}/game-discussion`, request);
     }
 
     getGameDiscussion(id: string) {
         return this.httpClient.get<GameDiscussionDTO>(`${this.baseUrl}/game-discussion/${id}`);
     }
 
-    comment(id: string, replies: CommentReplyDTO[], newComments: GameDiscussionCommentDTO[]): Observable<any> {
+    comment(id: string, replies: CommentReplyDTO[], newComments: GameDiscussionCommentDTO[]): Observable<GameDiscussionDTO> {
         const request: CreateGameDiscussionCommentDTO = {
             replies: replies,
             newComments: newComments
         };
-        return this.httpClient.post<CreateRepliesDTO>(`${this.baseUrl}/game-discussion/${id}/comment`, request);
+        return this.httpClient.post<GameDiscussionDTO>(`${this.baseUrl}/game-discussion/${id}/comment`, request);
     }
 }

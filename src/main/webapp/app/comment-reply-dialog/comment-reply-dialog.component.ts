@@ -13,7 +13,7 @@ export interface CommentReplyDialogData {
 })
 export class CommentReplyDialogComponent {
 
-    reply: String = '';
+    reply: string = '';
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: CommentReplyDialogData,
                 private authenticationService: AuthenticationService) {

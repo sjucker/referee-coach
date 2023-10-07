@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {YouTubePlayer} from "@angular/youtube-player";
-import {BasketplanService} from "../service/basketplan.service";
 import {VideoReportService} from "../service/video-report.service";
 import {OfficiatingMode, Reportee, TagDTO, VideoCommentDTO, VideoReportDTO} from "../rest";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -32,8 +31,7 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
     availableTags: Observable<TagDTO[]> = of([]);
 
-    constructor(private readonly basketplanService: BasketplanService,
-                private readonly videoReportService: VideoReportService,
+    constructor(private readonly videoReportService: VideoReportService,
                 private route: ActivatedRoute,
                 private router: Router,
                 public dialog: MatDialog,
@@ -56,7 +54,7 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
                     }
                     this.report = dto;
                 },
-                error: _ => {
+                error: () => {
                     this.notFound = true;
                 }
             });
@@ -104,7 +102,7 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.saving = false;
                     this.showMessage("Successfully saved!");
                 },
-                error: _ => {
+                error: () => {
                     this.saving = false;
                     this.showMessage("An unexpected error occurred, report could not be saved.");
                 }
@@ -125,7 +123,7 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
                                     this.router.navigate([VIEW_PATH, response.id]);
                                 }
                             },
-                            error: _ => {
+                            error: () => {
                                 this.showMessage("An unexpected error occurred, report could not be finished.");
                             }
                         });
@@ -186,10 +184,10 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
         }).afterClosed().subscribe((reportee?: Reportee) => {
             if (reportee) {
                 this.videoReportService.copyVideoComment(videoComment, reportee).subscribe({
-                    next: _ => {
+                    next: () => {
                         this.showMessage("Successfully copied!");
                     },
-                    error: _ => {
+                    error: () => {
                         this.showMessage("An unexpected error occurred, comment could not be copied.");
                     }
                 })
@@ -241,13 +239,13 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    getAverage(): number | undefined {
-        return (this.report?.image.score!
-            + this.report?.fitness.score!
-            + this.report?.mechanics.score!
-            + this.report?.fouls.score!
-            + this.report?.violations.score!
-            + this.report?.gameManagement.score!) / 6;
+    getAverage(): number {
+        return ((this.report?.image.score ?? 0)
+            + (this.report?.fitness.score ?? 0)
+            + (this.report?.mechanics.score ?? 0)
+            + (this.report?.fouls.score ?? 0)
+            + (this.report?.violations.score ?? 0)
+            + (this.report?.gameManagement.score ?? 0)) / 6;
     }
 
     selectTag(videoComment: VideoCommentDTO, tag: TagDTO) {

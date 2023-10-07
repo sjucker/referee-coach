@@ -2,8 +2,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./target/out-tsc/app",
-    "types": []
+    "outDir": "./target/out-tsc/app"
   },
   "files": [
     "src/main/webapp/main.ts",

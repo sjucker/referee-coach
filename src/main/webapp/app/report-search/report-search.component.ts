@@ -73,7 +73,7 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.results.paginator = this.paginator
                 }
             },
-            error: _ => {
+            error: () => {
                 this.searching = false;
                 this.snackBar.open("An unexpected error occurred", undefined, {
                     duration: 3000,
