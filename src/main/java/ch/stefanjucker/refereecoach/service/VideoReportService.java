@@ -3,6 +3,7 @@ package ch.stefanjucker.refereecoach.service;
 import static ch.stefanjucker.refereecoach.domain.VideoComment.COMMENT_MAX_LENGTH;
 import static ch.stefanjucker.refereecoach.domain.VideoReport.CURRENT_VERSION;
 import static ch.stefanjucker.refereecoach.util.DateUtil.now;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
 
@@ -247,9 +248,19 @@ public class VideoReportService {
         var videoReport = videoReportRepository.findById(videoReportId).orElseThrow();
 
         List<VideoCommentDTO> videoCommentDTOs = new ArrayList<>();
-        for (var videoComment : videoCommentRepository.findVideoCommentsByGameNumberAndCoach(videoReport.getBasketplanGame()
-                                                                                                        .getGameNumber(), videoReport.getCoach()
-                                                                                                                                     .getId())) {
+        Set<Integer> timestamps = new HashSet<>();
+        for (var videoComment : videoCommentRepository.findByVideoReportId(videoReportId).stream()
+                                                      .filter(VideoComment::isRequiresReply)
+                                                      .toList()) {
+            var replies = videoCommentReplyRepository.findByVideoCommentIdOrderByRepliedAt(videoComment.getId());
+            videoCommentDTOs.add(DTO_MAPPER.toDTO(videoComment, DTO_MAPPER.toDTO(replies)));
+            timestamps.add(videoComment.getTimestamp());
+        }
+
+        for (var videoComment : videoCommentRepository.findVideoCommentsByGameNumberAndCoach(videoReport.getBasketplanGame().getGameNumber(),
+                                                                                             videoReport.getCoach().getId()).stream()
+                                                      .filter(videoComment -> !timestamps.contains(videoComment.getTimestamp()))
+                                                      .toList()) {
             var replies = videoCommentReplyRepository.findByVideoCommentIdOrderByRepliedAt(videoComment.getId());
             videoCommentDTOs.add(DTO_MAPPER.toDTO(videoComment, DTO_MAPPER.toDTO(replies)));
         }
@@ -258,7 +269,9 @@ public class VideoReportService {
                                             DTO_MAPPER.toDTO(videoReport.getBasketplanGame()),
                                             DTO_MAPPER.toDTO(videoReport.getCoach()),
                                             videoReport.relevantReferee().getName(),
-                                            videoCommentDTOs);
+                                            videoCommentDTOs.stream()
+                                                            .sorted(comparing(VideoCommentDTO::timestamp))
+                                                            .toList());
     }
 
     private boolean isUnfinishedReportOwnedByUser(VideoReport videoReport, Coach coach) {
@@ -284,7 +297,7 @@ public class VideoReportService {
             if (StringUtils.isNotEmpty(newComment.comment())) {
                 videoCommentRepository.save(new VideoComment(null, newComment.timestamp(),
                                                              abbreviate("%s: %s".formatted(repliedBy, newComment.comment()), COMMENT_MAX_LENGTH),
-                                                             id, new HashSet<>()));
+                                                             id, false, new HashSet<>()));
                 newCommentsMade = true;
             }
         }

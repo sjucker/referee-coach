@@ -20,6 +20,7 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
     @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
+    @ViewChild('videoCommentsContainer') videoCommentsContainer?: ElementRef<HTMLDivElement>;
 
     videoWidth?: number;
     videoHeight?: number;
@@ -112,30 +113,39 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
     finish() {
         if (this.report) {
-            if (this.isValid()) {
-                this.dialog.open(VideoReportFinishDialogComponent).afterClosed().subscribe(decision => {
-                    if (decision && this.report) {
-                        this.report = {...this.report, finished: true}
-                        this.videoReportService.saveVideoReport(this.report).subscribe({
-                            next: response => {
-                                this.unsavedChanges = false;
-                                if (response.finished) {
-                                    this.router.navigate([VIEW_PATH, response.id]);
-                                }
-                            },
-                            error: () => {
-                                this.showMessage("An unexpected error occurred, report could not be finished.");
-                            }
-                        });
-                    }
-                })
-            } else {
+            if (!this.isCriteriaValid()) {
                 this.showMessage("Report is not yet completed, please add a comment for each criteria.")
+                return;
             }
+
+            if (!this.isVideoCommentsValid()) {
+                this.showMessage("Please flag at least 4 video comments to require reply from referee.");
+                return;
+            }
+
+            this.dialog.open(VideoReportFinishDialogComponent).afterClosed().subscribe(decision => {
+                if (decision && this.report) {
+                    this.report = {...this.report, finished: true}
+                    this.saving = true;
+                    this.videoReportService.saveVideoReport(this.report).subscribe({
+                        next: response => {
+                            this.unsavedChanges = false;
+                            this.saving = false;
+                            if (response.finished) {
+                                this.router.navigate([VIEW_PATH, response.id]);
+                            }
+                        },
+                        error: () => {
+                            this.saving = false;
+                            this.showMessage("An unexpected error occurred, report could not be finished.");
+                        }
+                    });
+                }
+            });
         }
     }
 
-    private isValid(): boolean {
+    private isCriteriaValid(): boolean {
         if (this.report) {
             return this.isNotEmpty(this.report.general.comment) &&
                 this.isNotEmpty(this.report.image.comment) &&
@@ -151,6 +161,13 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
         return false;
     }
 
+    private isVideoCommentsValid(): boolean {
+        if (this.report && this.report.basketplanGame.youtubeId) {
+            return this.report.videoComments.filter(value => value.requiresReply).length > 3;
+        }
+        return true;
+    }
+
     private isNotEmpty(value?: string): boolean {
         return !!value && value.length > 0;
     }
@@ -159,10 +176,17 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
         this.report!.videoComments.push({
             id: undefined,
             comment: '',
+            requiresReply: false,
             timestamp: Math.round(this.youtube!.getCurrentTime()),
             replies: [],
             tags: []
-        })
+        });
+
+        setTimeout(() => {
+            if (this.videoCommentsContainer) {
+                this.videoCommentsContainer.nativeElement.scrollTop = this.videoCommentsContainer.nativeElement.scrollHeight;
+            }
+        }, 200);
     }
 
     deleteComment(videoComment: VideoCommentDTO) {

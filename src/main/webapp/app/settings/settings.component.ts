@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {AuthenticationService} from "../service/authentication.service";
-import {UserRole} from "../rest";
 
 @Component({
     selector: 'app-settings',
@@ -49,7 +48,7 @@ export class SettingsComponent {
     }
 
     isCoach(): boolean {
-        return this.authenticationService.getRole() === UserRole.COACH;
+        return this.authenticationService.isCoach();
     }
 
 }

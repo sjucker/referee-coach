@@ -1,30 +1,34 @@
 @import "../../variables";
 @import "../../responsive";
 
-
 .mat-mdc-radio-button ~ .mat-radio-button {
-    margin-left: 16px;
+  margin-left: 16px;
 }
 
 .reportee {
-    color: $primary-color;
+  color: $primary-color;
 }
 
 .spacer {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 
 .video-comments-container {
-    max-height: 470px;
+  max-height: 470px;
+  scroll-behavior: smooth;
+
+  @include responsive('lt-lg') {
+    margin-top: 10px;
+  }
 }
 
 .criteria-container {
-    @include responsive('gt-sm') {
-        gap: 10px;
-    }
+  @include responsive('gt-sm') {
+    gap: 10px;
+  }
 }
 
 .youtube-container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }

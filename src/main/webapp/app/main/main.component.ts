@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {BasketplanGameDTO, CoachDTO, GameDiscussionDTO, OfficiatingMode, OverviewDTO, RefereeDTO, Reportee, ReportType, UserRole} from "../rest";
+import {BasketplanGameDTO, CoachDTO, GameDiscussionDTO, OfficiatingMode, OverviewDTO, RefereeDTO, Reportee, ReportType} from "../rest";
 import {VideoReportService} from "../service/video-report.service";
 import {BasketplanService} from "../service/basketplan.service";
 import {Router} from "@angular/router";
@@ -433,11 +433,11 @@ export class MainComponent implements OnInit {
     }
 
     isCoach(): boolean {
-        return this.authenticationService.getRole() === UserRole.COACH;
+        return this.authenticationService.isCoach();
     }
 
     isReferee(): boolean {
-        return this.authenticationService.getRole() === UserRole.REFEREE;
+        return this.authenticationService.isReferee();
     }
 
     get displayedColumns(): string[] {

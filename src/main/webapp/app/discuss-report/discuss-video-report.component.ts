@@ -21,6 +21,7 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
 
     @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
     @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
+    @ViewChild('videoCommentsContainer') videoCommentsContainer?: ElementRef<HTMLDivElement>;
 
     videoWidth?: number;
     videoHeight?: number;
@@ -84,6 +85,13 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
         return this.authenticationService.isLoggedIn();
     }
 
+    isReferee(): boolean {
+        return this.authenticationService.isReferee();
+    }
+
+    isCoach(): boolean {
+        return this.authenticationService.isCoach();
+    }
 
     is2PO(): boolean {
         return this.dto?.basketplanGame.officiatingMode === OfficiatingMode.OFFICIATING_2PO;
@@ -176,6 +184,7 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
             const newComment = {
                 id: undefined,
                 comment: '',
+                requiresReply: false,
                 timestamp: timestamp,
                 replies: [],
                 tags: []
@@ -183,6 +192,20 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
 
             this.dto!.videoComments.push(newComment);
             this.newComments.push(newComment);
+
+            setTimeout(() => {
+                if (this.videoCommentsContainer) {
+                    this.videoCommentsContainer.nativeElement.scrollTop = this.videoCommentsContainer.nativeElement.scrollHeight;
+                }
+            }, 200);
         }
+    }
+
+    requiresReply(videoComment: VideoCommentDTO): boolean {
+        return (!this.isLoggedIn() || this.isReferee()) && videoComment.requiresReply && videoComment.replies.length < 1;
+    }
+
+    flaggedForReply(videoComment: VideoCommentDTO): boolean {
+        return this.isCoach() && videoComment.requiresReply;
     }
 }

@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from
 import {ActivatedRoute, Router} from "@angular/router";
 import {VideoReportService} from "../service/video-report.service";
 import {YouTubePlayer} from "@angular/youtube-player";
-import {OfficiatingMode, Reportee, VideoReportDTO} from "../rest";
+import {OfficiatingMode, Reportee, VideoCommentDTO, VideoReportDTO} from "../rest";
 import {AuthenticationService} from "../service/authentication.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -95,7 +95,26 @@ export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestro
         return this.authenticationService.isLoggedIn();
     }
 
+    isReferee(): boolean {
+        return this.authenticationService.isReferee();
+    }
+
+    isCoach(): boolean {
+        return this.authenticationService.isCoach();
+    }
+
+
     navigateToDiscussion(): void {
-        this.router.navigate([DISCUSS_PATH, this.dto?.id])
+        this.router.navigate([DISCUSS_PATH, this.dto?.id]).catch(reason => {
+            console.error(reason);
+        });
+    }
+
+    requiresReply(videoComment: VideoCommentDTO): boolean {
+        return (!this.isLoggedIn() || this.isReferee()) && videoComment.requiresReply && videoComment.replies.length < 1;
+    }
+
+    flaggedForReply(videoComment: VideoCommentDTO): boolean {
+        return this.isCoach() && videoComment.requiresReply;
     }
 }
