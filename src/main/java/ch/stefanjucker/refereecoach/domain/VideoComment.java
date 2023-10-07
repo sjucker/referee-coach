@@ -46,6 +46,9 @@ public class VideoComment {
     @Column(name = "video_report_id", nullable = false)
     private String videoReportId;
 
+    // since v3
+    private boolean requiresReply;
+
     @ManyToMany(cascade = MERGE)
     @JoinTable(
             name = "video_report_comment_tags",

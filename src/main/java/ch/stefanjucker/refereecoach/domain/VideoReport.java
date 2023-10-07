@@ -3,6 +3,7 @@ package ch.stefanjucker.refereecoach.domain;
 import static jakarta.persistence.EnumType.STRING;
 
 import ch.stefanjucker.refereecoach.dto.Reportee;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -25,10 +27,13 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 @NoArgsConstructor
 public class VideoReport {
-
-    public static final int CURRENT_VERSION = 2;
+    // v1: initial report
+    // v2: scores/ratings
+    // v3: mandatory replies for comments, finishedAt
+    public static final int CURRENT_VERSION = 3;
 
     @Id
     @Column(nullable = false)
@@ -101,6 +106,9 @@ public class VideoReport {
 
     @Column(nullable = false)
     private boolean finished;
+
+    // since v3
+    private LocalDateTime finishedAt;
 
     private int version;
 

@@ -20,3 +20,24 @@ p {
   margin-left: 10px;
   font-size: 10px;
 }
+
+.video-comments-container {
+  flex: 1;
+
+  .mat-mdc-card-title {
+    display: flex;
+    align-items: center;
+  }
+
+  .mat-mdc-card {
+    &.important {
+      border: solid 1px $primary-color;
+    }
+  }
+
+  .mat-icon {
+    &.important {
+      color: $primary-color;
+    }
+  }
+}

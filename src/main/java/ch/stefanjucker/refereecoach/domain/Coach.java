@@ -4,6 +4,7 @@ import static ch.stefanjucker.refereecoach.dto.UserRole.COACH;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ch.stefanjucker.refereecoach.dto.UserRole;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 @NoArgsConstructor
 public class Coach implements HasNameEmail, HasLogin {
 

@@ -1,5 +1,7 @@
 package ch.stefanjucker.refereecoach.mapper;
 
+import static ch.stefanjucker.refereecoach.util.DateUtil.now;
+
 import ch.stefanjucker.refereecoach.domain.BasketplanGame;
 import ch.stefanjucker.refereecoach.domain.Coach;
 import ch.stefanjucker.refereecoach.domain.CriteriaEvaluation;
@@ -76,6 +78,13 @@ public interface DTOMapper {
         videoReport.setPointsToImproveComment(dto.pointsToImproveComment());
 
         videoReport.setFinished(dto.finished());
+        if (videoReport.isFinished()) {
+            videoReport.setFinishedAt(now());
+            if (videoReport.getVersion() == 2) {
+                // finishedAt exists since V3, migrate V2 reports to V3 (started as V2 but finished as V3)
+                videoReport.setVersion(3);
+            }
+        }
     }
 
 }

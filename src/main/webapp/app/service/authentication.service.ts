@@ -75,4 +75,12 @@ export class AuthenticationService {
         return UserRole[localStorage.getItem(this.role) as keyof typeof UserRole]
     }
 
+    isCoach(): boolean {
+        return this.getRole() === UserRole.COACH;
+    }
+
+    isReferee(): boolean {
+        return this.getRole() === UserRole.REFEREE;
+    }
+
 }

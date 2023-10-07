@@ -106,7 +106,7 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
             this.videoWidth = Math.min(contentWidth, 720);
             this.videoHeight = this.videoWidth * 0.6;
-        })
-    }
+        });
+    };
 
 }

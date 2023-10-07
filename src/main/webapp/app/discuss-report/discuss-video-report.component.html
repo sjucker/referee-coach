@@ -59,14 +59,24 @@
                                         [videoId]="dto.basketplanGame.youtubeId"
                                         [width]="videoWidth"
                                         [height]="videoHeight"></youtube-player>
-                        <button (click)="addVideoComment()" color="primary" mat-flat-button *ngIf="!isLoggedIn()">
+                        <button (click)="addVideoComment()" color="primary" mat-flat-button *ngIf="!isLoggedIn() || isReferee()">
                             Create additional comment for current timestamp
                         </button>
                     </div>
-                    <div style="flex: 1" class="video-comments-container">
-                        <mat-card appearance="outlined" *ngFor="let videoComment of dto.videoComments; index as i;">
+                    <div class="video-comments-container" #videoCommentsContainer>
+                        <mat-card appearance="outlined" *ngFor="let videoComment of dto.videoComments; index as i;"
+                                  [ngClass]="{'important': requiresReply(videoComment)}">
                             <mat-card-header>
-                                <mat-card-title [ngClass]="videoComment.id ? '' : 'new-comment'">Video Comment #{{i + 1}}</mat-card-title>
+                                <mat-card-title [ngClass]="{'new-comment': !videoComment.id}">
+                                    <div>Video Comment #{{i + 1}}</div>
+                                    <mat-icon *ngIf="requiresReply(videoComment)"
+                                              class="important"
+                                              matTooltip="This comment requires a reply from you.">priority_high
+                                    </mat-icon>
+                                    <mat-icon *ngIf="flaggedForReply(videoComment)"
+                                              matTooltip="This comment requires a reply from the referee.">priority_high
+                                    </mat-icon>
+                                </mat-card-title>
                             </mat-card-header>
                             <mat-card-content *ngIf="videoComment.id">
                                 <p>{{videoComment.comment}}</p>

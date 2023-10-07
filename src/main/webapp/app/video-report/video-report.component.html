@@ -222,9 +222,14 @@
                     </button>
                 </div>
 
-                <div style="flex: 1" class="video-comments-container">
+                <div style="flex: 1" class="video-comments-container" #videoCommentsContainer>
                     <mat-card appearance="outlined" *ngFor="let videoComment of report.videoComments; index as i;">
                         <mat-card-content>
+                            <mat-checkbox [(ngModel)]="videoComment.requiresReply"
+                                          (ngModelChange)="onChange()"
+                                          matTooltip="If selected, this comment is highlighted and the referee must reply to it.">
+                                Require reply from referee
+                            </mat-checkbox>
                             <mat-form-field appearance="fill" color="accent">
                                 <mat-label>Comment</mat-label>
                                 <textarea [(ngModel)]="videoComment.comment"

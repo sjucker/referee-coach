@@ -141,6 +141,7 @@ export interface VideoCommentDTO {
     id?: number;
     timestamp: number;
     comment: string;
+    requiresReply: boolean;
     replies: VideoCommentReplyDTO[];
     tags: TagDTO[];
 }
