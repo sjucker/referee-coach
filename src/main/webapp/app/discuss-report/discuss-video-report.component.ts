@@ -50,7 +50,7 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
             next: result => {
                 this.dto = result;
             },
-            error: _ => {
+            error: () => {
                 this.notFound = true;
             }
         });
