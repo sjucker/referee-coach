@@ -17,6 +17,9 @@
             <mat-icon>home</mat-icon>
         </a>
     </mat-toolbar>
+    <div class="loading-indicator">
+        <mat-progress-bar mode="indeterminate" color="accent" *ngIf="(!report && !notFound) || saving"></mat-progress-bar>
+    </div>
 
     <mat-card appearance="outlined" *ngIf="report">
         <mat-card-header>
