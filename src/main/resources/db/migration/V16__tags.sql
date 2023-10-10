@@ -1,0 +1,8 @@
+UPDATE tags
+SET name = 'PPL - PROCESS THE PLAY'
+WHERE name = 'PTP - PROCESS THE PLAY';
+
+INSERT INTO tags (name)
+VALUES ('ROTATION'),
+       ('REPORTING'),
+       ('HCC - HEAD COACH''S CHALLENGE');
