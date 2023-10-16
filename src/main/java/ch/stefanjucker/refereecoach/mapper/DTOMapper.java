@@ -52,10 +52,12 @@ public interface DTOMapper {
     @Mapping(target = "coach", ignore = true)
     @Mapping(target = "reportee", ignore = true)
     @Mapping(target = "finished", ignore = true)
+    @Mapping(target = "finishedAt", ignore = true)
     VideoReport copy(VideoReport videoReport);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "videoReportId", ignore = true)
+    @Mapping(target = "requiresReply", ignore = true)
     VideoComment copy(VideoComment videoComment);
 
     BasketplanGameDTO toDTO(BasketplanGame basketplanGame);
