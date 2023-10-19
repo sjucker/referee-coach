@@ -1,5 +1,8 @@
 package ch.stefanjucker.refereecoach.service;
 
+import static ch.stefanjucker.refereecoach.Fixtures.COACH_EMAIL;
+import static ch.stefanjucker.refereecoach.Fixtures.coach;
+import static ch.stefanjucker.refereecoach.Fixtures.referee;
 import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
 import static ch.stefanjucker.refereecoach.dto.Reportee.FIRST_REFEREE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,12 +38,19 @@ class SearchServiceTest extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        coachRepository.save(coach());
+        refereeRepository.save(referee("Carr Ashley"));
+        refereeRepository.save(referee("Balletta Davide"));
+        refereeRepository.save(referee("Cid Prades Josep"));
+        refereeRepository.save(referee("Some Referee"));
     }
 
     @AfterEach
     void tearDown() {
         videoReportRepository.deleteAll();
         gameDiscussionRepository.deleteAll();
+        coachRepository.deleteAll();
+        refereeRepository.deleteAll();
     }
 
     @Test
@@ -57,7 +67,7 @@ class SearchServiceTest extends AbstractIntegrationTest {
         saveGameDiscussion("5", LocalDate.of(2023, 9, 22));
         saveGameDiscussion("6", LocalDate.of(2023, 9, 23));
 
-        var result = searchService.findAll(LocalDate.of(2023, 9, 22), LocalDate.of(2023, 9, 30), "stefan.jucker@gmail.com");
+        var result = searchService.findAll(LocalDate.of(2023, 9, 22), LocalDate.of(2023, 9, 30), COACH_EMAIL);
 
         assertThat(result).hasSize(4)
                           .extracting(OverviewDTO::id)
@@ -74,7 +84,7 @@ class SearchServiceTest extends AbstractIntegrationTest {
         saveGameDiscussion("5", LocalDate.of(2023, 9, 22));
         saveGameDiscussion("6", LocalDate.of(2023, 9, 23));
 
-        var result = searchService.findAll(LocalDate.of(2023, 9, 22), LocalDate.of(2023, 9, 30), "sebastien.clivaz@swissbasketball.ch");
+        var result = searchService.findAll(LocalDate.of(2023, 9, 22), LocalDate.of(2023, 9, 30), "Some Referee");
 
         assertThat(result).isEmpty();
     }
@@ -82,7 +92,7 @@ class SearchServiceTest extends AbstractIntegrationTest {
     private void saveVideoReport(String id, LocalDate date) {
         var videoReport = new VideoReport();
         videoReport.setId(id);
-        videoReport.setCoach(coachRepository.findByEmail("stefan.jucker@gmail.com").orElseThrow());
+        videoReport.setCoach(coachRepository.findByEmail(COACH_EMAIL).orElseThrow());
         videoReport.setReportee(FIRST_REFEREE);
         var basketplanGame = getBasketplanGame(id, date);
         videoReport.setBasketplanGame(basketplanGame);

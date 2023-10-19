@@ -1,5 +1,6 @@
 package ch.stefanjucker.refereecoach.service;
 
+import static ch.stefanjucker.refereecoach.Fixtures.referee;
 import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
 import static ch.stefanjucker.refereecoach.service.BasketplanService.Federation.SBL;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -19,6 +20,7 @@ import ch.stefanjucker.refereecoach.dto.CreateGameDiscussionCommentDTO;
 import ch.stefanjucker.refereecoach.dto.GameDiscussionCommentDTO;
 import ch.stefanjucker.refereecoach.util.DateUtil;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,18 +41,23 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
     @Autowired
     private GameDiscussionService gameDiscussionService;
 
+    @BeforeEach
+    void setUp() {
+        refereeRepository.save(referee("Michaelides Markos"));
+        refereeRepository.save(referee("Demierre Martin"));
+        refereeRepository.save(referee("Balletta Davide"));
+    }
+
     @AfterEach
     void tearDown() {
         gameDiscussionRepository.deleteAll();
+        refereeRepository.deleteAll();
     }
 
     @Test
     void create() {
-        // given
-        var referee = refereeRepository.findById(1L).orElseThrow();
-
         // when
-        var result = gameDiscussionService.create(SBL, GAME_NUMBER, referee);
+        var result = gameDiscussionService.create(SBL, GAME_NUMBER, refereeRepository.findByName("Demierre Martin").orElseThrow());
 
         // then
         assertThat(result.id()).isNotBlank();
@@ -65,13 +72,13 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
 
     @Test
     void create_UnknownGameNumber() {
-        var referee = refereeRepository.findById(1L).orElseThrow();
+        var referee = refereeRepository.findByName("Michaelides Markos").orElseThrow();
         assertThatThrownBy(() -> gameDiscussionService.create(SBL, "00-00000", referee)).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     void create_AlreadyExisting() {
-        var referee = refereeRepository.findById(1L).orElseThrow();
+        var referee = refereeRepository.findByName("Michaelides Markos").orElseThrow();
         saveGameDiscussion(GAME_NUMBER);
 
         assertThatIllegalStateException().isThrownBy(() -> gameDiscussionService.create(SBL, GAME_NUMBER, referee));
@@ -79,7 +86,7 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
 
     @Test
     void create_RefNotInGame() {
-        var referee = refereeRepository.findById(2L).orElseThrow();
+        var referee = refereeRepository.findByName("Michaelides Markos").orElseThrow();
         saveGameDiscussion(GAME_NUMBER);
 
         assertThatIllegalStateException().isThrownBy(() -> gameDiscussionService.create(SBL, GAME_NUMBER, referee));
@@ -87,11 +94,11 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
 
     @Test
     void addComments() {
-        // given
-        var referee = refereeRepository.findByName("Balletta Davide").orElseThrow();
+        var referee1 = refereeRepository.findByName("Balletta Davide").orElseThrow();
+        var referee2 = refereeRepository.findByName("Michaelides Markos").orElseThrow();
 
         // when
-        var result = gameDiscussionService.create(SBL, GAME_NUMBER, referee);
+        var result = gameDiscussionService.create(SBL, GAME_NUMBER, referee1);
         gameDiscussionService.addComments(result.id(), new CreateGameDiscussionCommentDTO(
                 List.of(),
                 List.of(new GameDiscussionCommentDTO(
@@ -100,12 +107,12 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
                         "first comment",
                         List.of()
                 ))
-        ), referee);
+        ), referee1);
         result = gameDiscussionService.get(result.id()).orElseThrow();
         gameDiscussionService.addComments(result.id(), new CreateGameDiscussionCommentDTO(
                 List.of(new CommentReplyDTO(result.comments().get(0).id(), "first reply")),
                 List.of()
-        ), refereeRepository.findByName("Michaelides Markos").orElseThrow());
+        ), referee2);
 
         // then
         assertThat(gameDiscussionService.get(result.id())).hasValueSatisfying(gameDiscussionDTO -> {

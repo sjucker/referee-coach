@@ -1,9 +1,9 @@
 package ch.stefanjucker.refereecoach.domain.repository;
 
+import static ch.stefanjucker.refereecoach.Fixtures.coach;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.stefanjucker.refereecoach.AbstractIntegrationTest;
-import ch.stefanjucker.refereecoach.domain.Coach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,12 +16,7 @@ class CoachRepositoryTest extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        var coach = new Coach();
-        coach.setEmail("coach@referee-coach.ch");
-        coach.setName("Coach");
-        coach.setPassword("password");
-        coach.setAdmin(false);
-        coachRepository.save(coach);
+        coachRepository.save(coach());
     }
 
     @AfterEach
