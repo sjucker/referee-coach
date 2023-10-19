@@ -1,5 +1,6 @@
 package ch.stefanjucker.refereecoach.domain.repository;
 
+import static ch.stefanjucker.refereecoach.Fixtures.referee;
 import static ch.stefanjucker.refereecoach.domain.VideoReport.CURRENT_VERSION;
 import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
 import static ch.stefanjucker.refereecoach.dto.Reportee.FIRST_REFEREE;
@@ -37,6 +38,7 @@ class VideoCommentRepositoryTest extends AbstractIntegrationTest {
     void tearDown() {
         videoCommentRepository.deleteAll();
         videoReportRepository.deleteAll();
+        refereeRepository.deleteAll();
         coachRepository.deleteAll();
     }
 
@@ -45,6 +47,9 @@ class VideoCommentRepositoryTest extends AbstractIntegrationTest {
         // given
         var coach1 = coachRepository.save(createCoach("coach1"));
         var coach2 = coachRepository.save(createCoach("coach2"));
+        refereeRepository.save(referee("ref1"));
+        refereeRepository.save(referee("ref2"));
+        refereeRepository.save(referee("ref3"));
 
         var videoReport1 = videoReportRepository.save(createVideoReport("vr1", coach1, "g1", FIRST_REFEREE));
         var videoReport2 = videoReportRepository.save(createVideoReport("vr2", coach1, "g1", SECOND_REFEREE));
@@ -87,9 +92,9 @@ class VideoCommentRepositoryTest extends AbstractIntegrationTest {
         basketplanGame.setTeamB("");
         basketplanGame.setOfficiatingMode(OFFICIATING_3PO);
         basketplanGame.setYoutubeId("");
-        basketplanGame.setReferee1(refereeRepository.findByName("Balletta Davide").orElseThrow());
-        basketplanGame.setReferee2(refereeRepository.findByName("Carr Ashley").orElseThrow());
-        basketplanGame.setReferee3(refereeRepository.findByName("Cid Prades Josep").orElseThrow());
+        basketplanGame.setReferee1(refereeRepository.findByName("ref1").orElseThrow());
+        basketplanGame.setReferee2(refereeRepository.findByName("ref2").orElseThrow());
+        basketplanGame.setReferee3(refereeRepository.findByName("ref3").orElseThrow());
         return basketplanGame;
     }
 

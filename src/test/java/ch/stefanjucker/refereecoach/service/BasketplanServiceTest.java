@@ -1,11 +1,11 @@
 package ch.stefanjucker.refereecoach.service;
 
+import static ch.stefanjucker.refereecoach.Fixtures.referee;
 import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
 import static ch.stefanjucker.refereecoach.service.BasketplanService.Federation.SBL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import ch.stefanjucker.refereecoach.domain.Referee;
 import ch.stefanjucker.refereecoach.domain.repository.RefereeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,9 +36,9 @@ class BasketplanServiceTest {
     @Test
     void findGameByNumber() {
         // given
-        when(refereeRepository.findByName("Stojcev Bosko")).thenReturn(Optional.of(new Referee()));
-        when(refereeRepository.findByName("Balletta Davide")).thenReturn(Optional.of(new Referee()));
-        when(refereeRepository.findByName("Vitalini Fabiano")).thenReturn(Optional.of(new Referee()));
+        when(refereeRepository.findByName("Stojcev Bosko")).thenReturn(Optional.of(referee("bosko")));
+        when(refereeRepository.findByName("Balletta Davide")).thenReturn(Optional.of(referee("davide")));
+        when(refereeRepository.findByName("Vitalini Fabiano")).thenReturn(Optional.of(referee("fabiano")));
 
         // when
         var game = basketplanService.findGameByNumber(SBL, "22-00249");

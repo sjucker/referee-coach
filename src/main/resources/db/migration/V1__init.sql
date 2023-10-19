@@ -8,6 +8,5 @@ CREATE TABLE user
     CONSTRAINT pk_user PRIMARY KEY (id)
 );
 
-ALTER TABLE user ADD CONSTRAINT uc_user_email UNIQUE (email);
-
-INSERT INTO user (email, name, password, admin) VALUE ('stefan.jucker@gmail.com', 'Stefan Jucker', '{noop}pass', 1);
+ALTER TABLE user
+    ADD CONSTRAINT uc_user_email UNIQUE (email);

@@ -14,7 +14,7 @@ import org.testcontainers.utility.DockerImageName;
 @SpringBootTest
 public abstract class AbstractIntegrationTest {
 
-    static final MySQLContainer MYSQL_CONTAINER = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.31"));
+    static final MySQLContainer MYSQL_CONTAINER = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.32"));
 
     @DynamicPropertySource
     static void dataSourceProperties(DynamicPropertyRegistry registry) {
