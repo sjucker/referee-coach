@@ -9,6 +9,7 @@ import ch.stefanjucker.refereecoach.domain.Referee;
 import ch.stefanjucker.refereecoach.domain.repository.CoachRepository;
 import ch.stefanjucker.refereecoach.domain.repository.GameDiscussionRepository;
 import ch.stefanjucker.refereecoach.domain.repository.RefereeRepository;
+import ch.stefanjucker.refereecoach.domain.repository.VideoCommentReplyRepository;
 import ch.stefanjucker.refereecoach.domain.repository.VideoCommentRepository;
 import ch.stefanjucker.refereecoach.domain.repository.VideoReportRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -38,6 +39,8 @@ public abstract class AbstractIntegrationTest {
     protected VideoReportRepository videoReportRepository;
     @Autowired
     protected VideoCommentRepository videoCommentRepository;
+    @Autowired
+    protected VideoCommentReplyRepository videoCommentReplyRepository;
 
     protected Coach coach1;
     protected Coach coach2;
@@ -78,6 +81,7 @@ public abstract class AbstractIntegrationTest {
 
     @AfterEach
     void tearDown() {
+        videoCommentReplyRepository.deleteAll();
         videoCommentRepository.deleteAll();
         videoReportRepository.deleteAll();
         gameDiscussionRepository.deleteAll();
