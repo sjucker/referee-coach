@@ -1,8 +1,6 @@
 package ch.stefanjucker.refereecoach.domain.repository;
 
-import static ch.stefanjucker.refereecoach.Fixtures.referee;
-import static ch.stefanjucker.refereecoach.domain.VideoReport.CURRENT_VERSION;
-import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
+import static ch.stefanjucker.refereecoach.Fixtures.videoReport;
 import static ch.stefanjucker.refereecoach.dto.Reportee.FIRST_REFEREE;
 import static ch.stefanjucker.refereecoach.dto.Reportee.SECOND_REFEREE;
 import static ch.stefanjucker.refereecoach.dto.Reportee.THIRD_REFEREE;
@@ -10,47 +8,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.atIndex;
 
 import ch.stefanjucker.refereecoach.AbstractIntegrationTest;
-import ch.stefanjucker.refereecoach.domain.BasketplanGame;
 import ch.stefanjucker.refereecoach.domain.Coach;
-import ch.stefanjucker.refereecoach.domain.CriteriaEvaluation;
 import ch.stefanjucker.refereecoach.domain.VideoComment;
 import ch.stefanjucker.refereecoach.domain.VideoReport;
 import ch.stefanjucker.refereecoach.dto.Reportee;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 class VideoCommentRepositoryTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private CoachRepository coachRepository;
-    @Autowired
-    private RefereeRepository refereeRepository;
-    @Autowired
-    private VideoReportRepository videoReportRepository;
-    @Autowired
-    private VideoCommentRepository videoCommentRepository;
-
-    @AfterEach
-    void tearDown() {
-        videoCommentRepository.deleteAll();
-        videoReportRepository.deleteAll();
-        refereeRepository.deleteAll();
-        coachRepository.deleteAll();
-    }
-
     @Test
     void findVideoCommentsByGameNumberAndCoach() {
         // given
-        var coach1 = coachRepository.save(createCoach("coach1"));
-        var coach2 = coachRepository.save(createCoach("coach2"));
-        refereeRepository.save(referee("ref1"));
-        refereeRepository.save(referee("ref2"));
-        refereeRepository.save(referee("ref3"));
-
         var videoReport1 = videoReportRepository.save(createVideoReport("vr1", coach1, "g1", FIRST_REFEREE));
         var videoReport2 = videoReportRepository.save(createVideoReport("vr2", coach1, "g1", SECOND_REFEREE));
         var videoReport3 = videoReportRepository.save(createVideoReport("vr3", coach1, "g1", THIRD_REFEREE));
@@ -78,30 +49,8 @@ class VideoCommentRepositoryTest extends AbstractIntegrationTest {
                           .satisfies(videoComment -> assertThat(videoComment.getComment()).isEqualTo("Comment 1/1"), atIndex(0));
     }
 
-    private Coach createCoach(String email) {
-        return new Coach(null, email, "Coach 1", "", false, null);
-    }
-
-    private BasketplanGame getBasketplanGame(String id) {
-        var basketplanGame = new BasketplanGame();
-        basketplanGame.setGameNumber(id);
-        basketplanGame.setDate(LocalDate.now());
-        basketplanGame.setCompetition("");
-        basketplanGame.setResult("");
-        basketplanGame.setTeamA("");
-        basketplanGame.setTeamB("");
-        basketplanGame.setOfficiatingMode(OFFICIATING_3PO);
-        basketplanGame.setYoutubeId("");
-        basketplanGame.setReferee1(refereeRepository.findByName("ref1").orElseThrow());
-        basketplanGame.setReferee2(refereeRepository.findByName("ref2").orElseThrow());
-        basketplanGame.setReferee3(refereeRepository.findByName("ref3").orElseThrow());
-        return basketplanGame;
-    }
-
     private VideoReport createVideoReport(String id, Coach coach, String gameNumber, Reportee reportee) {
-        return new VideoReport(id, coach, reportee, getBasketplanGame(gameNumber),
-                               new CriteriaEvaluation(), new CriteriaEvaluation(), new CriteriaEvaluation(), new CriteriaEvaluation(),
-                               new CriteriaEvaluation(), new CriteriaEvaluation(), new CriteriaEvaluation(), null, null, false, null, CURRENT_VERSION);
+        return videoReport(id, gameNumber, LocalDate.now(), coach, referee1, referee2, referee3, reportee);
     }
 
 }

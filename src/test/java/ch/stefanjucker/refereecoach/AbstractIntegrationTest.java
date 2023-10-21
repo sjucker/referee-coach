@@ -1,7 +1,19 @@
 package ch.stefanjucker.refereecoach;
 
+import static ch.stefanjucker.refereecoach.Fixtures.coach;
+import static ch.stefanjucker.refereecoach.Fixtures.referee;
 import static org.mockito.Mockito.mock;
 
+import ch.stefanjucker.refereecoach.domain.Coach;
+import ch.stefanjucker.refereecoach.domain.Referee;
+import ch.stefanjucker.refereecoach.domain.repository.CoachRepository;
+import ch.stefanjucker.refereecoach.domain.repository.GameDiscussionRepository;
+import ch.stefanjucker.refereecoach.domain.repository.RefereeRepository;
+import ch.stefanjucker.refereecoach.domain.repository.VideoCommentRepository;
+import ch.stefanjucker.refereecoach.domain.repository.VideoReportRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +27,25 @@ import org.testcontainers.utility.DockerImageName;
 public abstract class AbstractIntegrationTest {
 
     static final MySQLContainer MYSQL_CONTAINER = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.32"));
+
+    @Autowired
+    protected CoachRepository coachRepository;
+    @Autowired
+    protected RefereeRepository refereeRepository;
+    @Autowired
+    protected GameDiscussionRepository gameDiscussionRepository;
+    @Autowired
+    protected VideoReportRepository videoReportRepository;
+    @Autowired
+    protected VideoCommentRepository videoCommentRepository;
+
+    protected Coach coach1;
+    protected Coach coach2;
+    protected Referee referee1;
+    protected Referee referee2;
+    protected Referee referee3;
+    protected Referee referee4;
+    protected Referee referee5;
 
     @DynamicPropertySource
     static void dataSourceProperties(DynamicPropertyRegistry registry) {
@@ -32,6 +63,26 @@ public abstract class AbstractIntegrationTest {
         public JavaMailSender javaMailSender() {
             return mock(JavaMailSender.class);
         }
+    }
+
+    @BeforeEach
+    void setUp() {
+        coach1 = coachRepository.save(coach("Fabrizio Pizio"));
+        coach2 = coachRepository.save(coach("Caspar Schaudt"));
+        referee1 = refereeRepository.save(referee("Carr Ashley"));
+        referee2 = refereeRepository.save(referee("Balletta Davide"));
+        referee3 = refereeRepository.save(referee("Cid Prades Josep"));
+        referee4 = refereeRepository.save(referee("Michaelides Markos"));
+        referee5 = refereeRepository.save(referee("Demierre Martin"));
+    }
+
+    @AfterEach
+    void tearDown() {
+        videoCommentRepository.deleteAll();
+        videoReportRepository.deleteAll();
+        gameDiscussionRepository.deleteAll();
+        coachRepository.deleteAll();
+        refereeRepository.deleteAll();
     }
 
 }

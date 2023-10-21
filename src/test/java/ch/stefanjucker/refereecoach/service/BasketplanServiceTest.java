@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import ch.stefanjucker.refereecoach.domain.repository.RefereeRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,16 +28,12 @@ class BasketplanServiceTest {
         basketplanService = new BasketplanService(refereeRepository);
     }
 
-    @AfterEach
-    void tearDown() {
-    }
-
     @Test
     void findGameByNumber() {
         // given
-        when(refereeRepository.findByName("Stojcev Bosko")).thenReturn(Optional.of(referee("bosko")));
-        when(refereeRepository.findByName("Balletta Davide")).thenReturn(Optional.of(referee("davide")));
-        when(refereeRepository.findByName("Vitalini Fabiano")).thenReturn(Optional.of(referee("fabiano")));
+        when(refereeRepository.findByName("Stojcev Bosko")).thenReturn(Optional.of(referee("Stojcev Bosko")));
+        when(refereeRepository.findByName("Balletta Davide")).thenReturn(Optional.of(referee("Balletta Davide")));
+        when(refereeRepository.findByName("Vitalini Fabiano")).thenReturn(Optional.of(referee("Balletta Davide")));
 
         // when
         var game = basketplanService.findGameByNumber(SBL, "22-00249");

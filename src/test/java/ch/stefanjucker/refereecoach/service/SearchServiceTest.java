@@ -1,23 +1,12 @@
 package ch.stefanjucker.refereecoach.service;
 
-import static ch.stefanjucker.refereecoach.Fixtures.COACH_EMAIL;
-import static ch.stefanjucker.refereecoach.Fixtures.coach;
-import static ch.stefanjucker.refereecoach.Fixtures.referee;
-import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
+import static ch.stefanjucker.refereecoach.Fixtures.gameDiscussion;
+import static ch.stefanjucker.refereecoach.Fixtures.videoReport;
 import static ch.stefanjucker.refereecoach.dto.Reportee.FIRST_REFEREE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.stefanjucker.refereecoach.AbstractIntegrationTest;
-import ch.stefanjucker.refereecoach.domain.BasketplanGame;
-import ch.stefanjucker.refereecoach.domain.GameDiscussion;
-import ch.stefanjucker.refereecoach.domain.VideoReport;
-import ch.stefanjucker.refereecoach.domain.repository.CoachRepository;
-import ch.stefanjucker.refereecoach.domain.repository.GameDiscussionRepository;
-import ch.stefanjucker.refereecoach.domain.repository.RefereeRepository;
-import ch.stefanjucker.refereecoach.domain.repository.VideoReportRepository;
 import ch.stefanjucker.refereecoach.dto.OverviewDTO;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,32 +15,7 @@ import java.time.LocalDate;
 class SearchServiceTest extends AbstractIntegrationTest {
 
     @Autowired
-    private VideoReportRepository videoReportRepository;
-    @Autowired
-    private GameDiscussionRepository gameDiscussionRepository;
-    @Autowired
-    private RefereeRepository refereeRepository;
-    @Autowired
-    private CoachRepository coachRepository;
-    @Autowired
     private SearchService searchService;
-
-    @BeforeEach
-    void setUp() {
-        coachRepository.save(coach());
-        refereeRepository.save(referee("Carr Ashley"));
-        refereeRepository.save(referee("Balletta Davide"));
-        refereeRepository.save(referee("Cid Prades Josep"));
-        refereeRepository.save(referee("Some Referee"));
-    }
-
-    @AfterEach
-    void tearDown() {
-        videoReportRepository.deleteAll();
-        gameDiscussionRepository.deleteAll();
-        coachRepository.deleteAll();
-        refereeRepository.deleteAll();
-    }
 
     @Test
     void search() {
@@ -67,7 +31,7 @@ class SearchServiceTest extends AbstractIntegrationTest {
         saveGameDiscussion("5", LocalDate.of(2023, 9, 22));
         saveGameDiscussion("6", LocalDate.of(2023, 9, 23));
 
-        var result = searchService.findAll(LocalDate.of(2023, 9, 22), LocalDate.of(2023, 9, 30), COACH_EMAIL);
+        var result = searchService.findAll(LocalDate.of(2023, 9, 22), LocalDate.of(2023, 9, 30), coach1.getEmail());
 
         assertThat(result).hasSize(4)
                           .extracting(OverviewDTO::id)
@@ -84,42 +48,16 @@ class SearchServiceTest extends AbstractIntegrationTest {
         saveGameDiscussion("5", LocalDate.of(2023, 9, 22));
         saveGameDiscussion("6", LocalDate.of(2023, 9, 23));
 
-        var result = searchService.findAll(LocalDate.of(2023, 9, 22), LocalDate.of(2023, 9, 30), "Some Referee");
+        var result = searchService.findAll(LocalDate.of(2023, 9, 22), LocalDate.of(2023, 9, 30), referee5.getEmail());
 
         assertThat(result).isEmpty();
     }
 
     private void saveVideoReport(String id, LocalDate date) {
-        var videoReport = new VideoReport();
-        videoReport.setId(id);
-        videoReport.setCoach(coachRepository.findByEmail(COACH_EMAIL).orElseThrow());
-        videoReport.setReportee(FIRST_REFEREE);
-        var basketplanGame = getBasketplanGame(id, date);
-        videoReport.setBasketplanGame(basketplanGame);
-
-        videoReportRepository.save(videoReport);
-    }
-
-    private BasketplanGame getBasketplanGame(String id, LocalDate date) {
-        var basketplanGame = new BasketplanGame();
-        basketplanGame.setGameNumber(id);
-        basketplanGame.setDate(date);
-        basketplanGame.setCompetition("");
-        basketplanGame.setResult("");
-        basketplanGame.setTeamA("");
-        basketplanGame.setTeamB("");
-        basketplanGame.setOfficiatingMode(OFFICIATING_3PO);
-        basketplanGame.setYoutubeId("");
-        basketplanGame.setReferee1(refereeRepository.findByName("Balletta Davide").orElseThrow());
-        basketplanGame.setReferee2(refereeRepository.findByName("Carr Ashley").orElseThrow());
-        basketplanGame.setReferee3(refereeRepository.findByName("Cid Prades Josep").orElseThrow());
-        return basketplanGame;
+        videoReportRepository.save(videoReport(id, "", date, coach1, referee1, referee2, referee3, FIRST_REFEREE));
     }
 
     private void saveGameDiscussion(String id, LocalDate date) {
-        var gameDiscussion = new GameDiscussion();
-        gameDiscussion.setId(id);
-        gameDiscussion.setBasketplanGame(getBasketplanGame(id, date));
-        gameDiscussionRepository.save(gameDiscussion);
+        gameDiscussionRepository.save(gameDiscussion(id, "1", date, referee1, referee2, referee3));
     }
 }
