@@ -22,7 +22,7 @@ public interface VideoReportRepository extends JpaRepository<VideoReport, String
     List<VideoReport> findAll(LocalDate from, LocalDate to);
 
     @Query(value = """
-            select r.id
+            select distinct r.id
             from video_report r
                      join video_report_comment c on c.video_report_id = r.id
                      join referee ref on ref.id = case

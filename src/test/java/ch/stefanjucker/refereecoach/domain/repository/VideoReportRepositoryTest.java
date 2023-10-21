@@ -47,6 +47,8 @@ class VideoReportRepositoryTest extends AbstractIntegrationTest {
 
         var videoComment3 = videoCommentRepository.save(videoComment("5", true)).getId();
         videoCommentReplyRepository.save(videoCommentReply(videoComment3, referee2.getName())); // only "other" referee replied
+        videoCommentRepository.save(videoComment("5", true)); // make sure multiple comments are only registered once for report
+        videoCommentRepository.save(videoComment("5", true));
 
         // when
         var result = videoReportRepository.findReportIdsWithMissingReplies(now().minusDays(2));
