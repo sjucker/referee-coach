@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -19,4 +20,25 @@ public interface VideoReportRepository extends JpaRepository<VideoReport, String
             ORDER BY v.basketplanGame.date DESC,v.basketplanGame.gameNumber DESC, v.reportee DESC
             """)
     List<VideoReport> findAll(LocalDate from, LocalDate to);
+
+    @Query(value = """
+            select r.id
+            from video_report r
+                     join video_report_comment c on c.video_report_id = r.id
+                     join referee ref on ref.id = case
+                                                      when r.reportee = 'FIRST_REFEREE' then r.referee1_id
+                                                      when r.reportee = 'SECOND_REFEREE' then r.referee2_id
+                                                      else r.referee3_id end
+            where r.version > 2
+              and r.youtube_id is not null
+              and r.finished_at < ?1
+              and r.reminder_sent = 0
+              and c.requires_reply = 1
+              and not exists(select 1
+                             from video_report_comment_reply
+                             where video_report_comment_id = c.id
+                               and replied_by = ref.name);
+            """,
+            nativeQuery = true)
+    List<String> findReportIdsWithMissingReplies(LocalDateTime dateTime);
 }

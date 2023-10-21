@@ -112,6 +112,8 @@ public class VideoReport {
 
     private int version;
 
+    private boolean reminderSent;
+
     public Referee relevantReferee() {
         return switch (reportee) {
             case FIRST_REFEREE -> basketplanGame.getReferee1();

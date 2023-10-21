@@ -6,6 +6,8 @@
 
 * Start DB in Docker container:  
   `docker compose -p referee-coach -f src/main/docker/mysql.yml down && docker compose -p referee-coach -f src/main/docker/mysql.yml up --build`
+* For test:
+  `docker compose -p referee-coach -f src/test/docker/mysql-test.yml up --build`
 
 ## Heroku
 

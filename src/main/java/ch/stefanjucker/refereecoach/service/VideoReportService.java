@@ -175,7 +175,7 @@ public class VideoReportService {
         videoCommentRepository.deleteAllById(existingVideoCommentIds);
 
         if (videoReport.isFinished()) {
-            SimpleMailMessage simpleMessage = new SimpleMailMessage();
+            var simpleMessage = new SimpleMailMessage();
             try {
                 var referee = videoReport.relevantReferee();
                 log.info("finishing {}, send email to {}", videoReport, referee.getEmail());
@@ -319,7 +319,7 @@ public class VideoReportService {
     }
 
     private void sendDiscussionEmail(String repliedBy, HasNameEmail recipient, String reportId, boolean newCommentsMade) {
-        SimpleMailMessage simpleMessage = new SimpleMailMessage();
+        var simpleMessage = new SimpleMailMessage();
         try {
             simpleMessage.setSubject("[Referee Coach] New Video Report Discussion");
             simpleMessage.setFrom(environment.getRequiredProperty("spring.mail.username"));
@@ -352,5 +352,41 @@ public class VideoReportService {
                              .map(DTO_MAPPER::toDTO)
                              .toList();
 
+    }
+
+    public void sendReminderEmails() {
+        // referee has 48 hours to reply to required comments
+        for (var videoReportId : videoReportRepository.findReportIdsWithMissingReplies(now().minusDays(2))) {
+            var videoReport = videoReportRepository.findById(videoReportId).orElseThrow();
+            sendReminderEmail(videoReport.relevantReferee(), videoReportId);
+            videoReport.setReminderSent(true);
+            videoReportRepository.save(videoReport);
+        }
+    }
+
+    private void sendReminderEmail(HasNameEmail recipient, String reportId) {
+        var simpleMessage = new SimpleMailMessage();
+        try {
+            simpleMessage.setSubject("[Referee Coach] Reminder Required Replies");
+            simpleMessage.setFrom(environment.getRequiredProperty("spring.mail.username"));
+            simpleMessage.setBcc(properties.getBccMail());
+
+            if (properties.isOverrideRecipient()) {
+                simpleMessage.setTo(properties.getOverrideRecipientMail());
+                simpleMessage.setSubject(simpleMessage.getSubject() + " (%s)".formatted(recipient.getEmail()));
+            } else {
+                simpleMessage.setTo(recipient.getEmail());
+                simpleMessage.setCc(properties.getCcMail());
+            }
+
+            simpleMessage.setText("Hi %s%n%nThis is a reminder that you have not yet replied to all important comments.%nPlease visit: %s/#/discuss/%s".formatted(
+                    recipient.getName(), properties.getBaseUrl(), reportId));
+
+            log.info("sending reminder email to {}, text: {}", recipient.getEmail(), simpleMessage.getText());
+
+            mailSender.send(simpleMessage);
+        } catch (MailException e) {
+            log.error("could not send reminder email to: " + Arrays.toString(simpleMessage.getTo()), e);
+        }
     }
 }
