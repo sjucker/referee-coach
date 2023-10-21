@@ -4,6 +4,7 @@ import static ch.stefanjucker.refereecoach.Fixtures.videoComment;
 import static ch.stefanjucker.refereecoach.Fixtures.videoReport;
 import static ch.stefanjucker.refereecoach.dto.Reportee.SECOND_REFEREE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 import ch.stefanjucker.refereecoach.AbstractIntegrationTest;
@@ -39,7 +40,7 @@ class VideoReportServiceTest extends AbstractIntegrationTest {
         assertThat(videoReportRepository.findById("1")).hasValueSatisfying(vr -> assertThat(vr.isReminderSent()).isTrue());
 
         var captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
-        verify(javaMailSender).send(captor.capture());
+        verify(javaMailSender, atLeastOnce()).send(captor.capture());
         assertThat(captor.getValue()).satisfies(simpleMailMessage -> {
             assertThat(simpleMailMessage.getTo()).contains(referee2.getEmail());
             assertThat(simpleMailMessage.getSubject()).isEqualTo("[Referee Coach] Reminder Required Replies");
