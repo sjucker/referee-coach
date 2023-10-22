@@ -389,4 +389,17 @@ public class VideoReportService {
             log.error("could not send reminder email to: " + Arrays.toString(simpleMessage.getTo()), e);
         }
     }
+
+    public void updateMissingScores() {
+        for (var videoReport : videoReportRepository.findReportsWithMissingResult().stream()
+                                                    // do not make too many calls to Basketplan at once
+                                                    .limit(50)
+                                                    .toList()) {
+            basketplanService.findGameByNumber(videoReport.getBasketplanGame().getGameNumber()).ifPresent(dto -> {
+                log.info("update result of video report {} from {} to {}", videoReport.getId(), videoReport.getBasketplanGame().getResult(), dto.result());
+                videoReport.getBasketplanGame().setResult(dto.result());
+                videoReportRepository.save(videoReport);
+            });
+        }
+    }
 }

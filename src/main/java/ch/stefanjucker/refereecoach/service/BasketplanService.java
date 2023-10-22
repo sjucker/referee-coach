@@ -2,6 +2,7 @@ package ch.stefanjucker.refereecoach.service;
 
 import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_2PO;
 import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
+import static ch.stefanjucker.refereecoach.service.BasketplanService.Federation.SBL;
 import static javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING;
 
 import ch.stefanjucker.refereecoach.domain.Referee;
@@ -36,6 +37,10 @@ public class BasketplanService {
 
     public BasketplanService(RefereeRepository refereeRepository) {
         this.refereeRepository = refereeRepository;
+    }
+
+    public Optional<BasketplanGameDTO> findGameByNumber(String gameNumber) {
+        return findGameByNumber(SBL, gameNumber);
     }
 
     public Optional<BasketplanGameDTO> findGameByNumber(Federation federation, String gameNumber) {

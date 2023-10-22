@@ -33,7 +33,7 @@ class BasketplanServiceTest {
         // given
         when(refereeRepository.findByName("Stojcev Bosko")).thenReturn(Optional.of(referee("Stojcev Bosko")));
         when(refereeRepository.findByName("Balletta Davide")).thenReturn(Optional.of(referee("Balletta Davide")));
-        when(refereeRepository.findByName("Vitalini Fabiano")).thenReturn(Optional.of(referee("Balletta Davide")));
+        when(refereeRepository.findByName("Vitalini Fabiano")).thenReturn(Optional.of(referee("Vitalini Fabiano")));
 
         // when
         var game = basketplanService.findGameByNumber(SBL, "22-00249");

@@ -49,6 +49,8 @@ public abstract class AbstractIntegrationTest {
     protected Referee referee3;
     protected Referee referee4;
     protected Referee referee5;
+    protected Referee referee6;
+    protected Referee referee7;
 
     @DynamicPropertySource
     static void dataSourceProperties(DynamicPropertyRegistry registry) {
@@ -77,6 +79,8 @@ public abstract class AbstractIntegrationTest {
         referee3 = refereeRepository.save(referee("Cid Prades Josep"));
         referee4 = refereeRepository.save(referee("Michaelides Markos"));
         referee5 = refereeRepository.save(referee("Demierre Martin"));
+        referee6 = refereeRepository.save(referee("Stojcev Bosko"));
+        referee7 = refereeRepository.save(referee("Vitalini Fabiano"));
     }
 
     @AfterEach

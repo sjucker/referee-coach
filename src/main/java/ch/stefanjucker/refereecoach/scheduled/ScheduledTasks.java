@@ -22,4 +22,10 @@ public class ScheduledTasks {
         log.info("checking for video report that are missing required replies");
         videoReportService.sendReminderEmails();
     }
+
+    @Scheduled(initialDelay = 0, fixedRate = 60, timeUnit = MINUTES)
+    public void updateMissingScores() {
+        log.info("checking for video report that are missing final score");
+        videoReportService.updateMissingScores();
+    }
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 class VideoReportServiceTest extends AbstractIntegrationTest {
@@ -52,5 +53,20 @@ class VideoReportServiceTest extends AbstractIntegrationTest {
                             Please visit: https://app.referee-coach.ch/#/discuss/1
                             """);
         });
+    }
+
+    @Test
+    void updateMissingScores() {
+        // given
+        var videoReport = videoReport("1", "22-00249", LocalDate.of(2022, 10, 1), coach1, referee1, referee2, referee3, SECOND_REFEREE);
+        videoReport.setFinished(true);
+        videoReport.getBasketplanGame().setResult("? - ?");
+        videoReportRepository.save(videoReport);
+
+        // when
+        videoReportService.updateMissingScores();
+
+        // then
+        assertThat(videoReportRepository.findById("1")).hasValueSatisfying(vr -> assertThat(vr.getBasketplanGame().getResult()).isEqualTo("82 - 98"));
     }
 }

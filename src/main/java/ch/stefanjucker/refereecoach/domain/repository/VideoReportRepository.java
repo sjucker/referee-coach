@@ -41,4 +41,11 @@ public interface VideoReportRepository extends JpaRepository<VideoReport, String
             """,
             nativeQuery = true)
     List<String> findReportIdsWithMissingReplies(LocalDateTime dateTime);
+
+    @Query(value = """
+            select vr from VideoReport vr
+            where vr.basketplanGame.result like '?%'
+              and vr.finished = true
+            """)
+    List<VideoReport> findReportsWithMissingResult();
 }
