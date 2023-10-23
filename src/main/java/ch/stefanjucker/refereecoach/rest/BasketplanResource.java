@@ -57,13 +57,17 @@ public class BasketplanResource {
             var game = basketplanService.findGameByNumber(federation, gameNumber);
 
             // check that referee did participate in this game and that there is a youtube-link
-            if (game.map(dto -> dto.containsReferee(user.getId()) && StringUtils.isNotBlank(dto.youtubeId())).orElse(false)) {
-                return ResponseEntity.of(game);
+            if (game.map(dto -> dto.containsReferee(user.getId())).orElse(false)) {
+                if (game.map(dto -> StringUtils.isNotBlank(dto.youtubeId())).orElse(false)) {
+                    return ResponseEntity.of(game);
+                } else {
+                    return ResponseEntity.badRequest().build();
+                }
             } else {
                 return ResponseEntity.notFound().build();
             }
-
         } catch (Exception e) {
+            log.error("gameForReferee failed unexpectedly", e);
             return ResponseEntity.internalServerError().build();
         }
     }

@@ -202,6 +202,8 @@ export class MainComponent implements OnInit {
                 error: error => {
                     if (error.status === 404) {
                         this.problemDescription = 'No game found for given game number that is relevant for you';
+                    } else if (error.status === 400) {
+                        this.problemDescription = 'Game does not contain a YouTube link'
                     } else {
                         this.problemDescription = 'An unexpected error occurred'
                     }
