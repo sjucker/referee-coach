@@ -64,16 +64,16 @@ public class GameDiscussionService {
         this.environment = environment;
     }
 
-    public GameDiscussionDTO create(Federation federation, String gameNumber, HasLogin referee) {
+    public GameDiscussionDTO create(Federation federation, String gameNumber, String youtubeId, HasLogin referee) {
         if (gameDiscussionRepository.findByBasketplanGameGameNumber(gameNumber).isPresent()) {
             throw new IllegalStateException("there exists already a game discussion for game number: %s".formatted(gameNumber));
         }
 
-        var game = basketplanService.findGameByNumber(federation, gameNumber).orElseThrow();
-        if (game.youtubeId() == null) {
-            throw new IllegalStateException("game %s must have a YouTube-URL".formatted(game.gameNumber()));
+        if (StringUtils.isBlank(youtubeId)) {
+            throw new IllegalArgumentException("invalid youtubeId given: %s".formatted(youtubeId));
         }
 
+        var game = basketplanService.findGameByNumber(federation, gameNumber).orElseThrow();
         if (game.referee1() != null && game.referee1().id().equals(referee.getId()) ||
                 game.referee2() != null && game.referee2().id().equals(referee.getId()) ||
                 game.referee3() != null && game.referee3().id().equals(referee.getId())) {
@@ -81,6 +81,7 @@ public class GameDiscussionService {
             var gameDiscussion = new GameDiscussion();
             gameDiscussion.setId(getUuid());
             var basketplanGame = DTO_MAPPER.fromDTO(game);
+            basketplanGame.setYoutubeId(youtubeId);
             gameDiscussion.setBasketplanGame(basketplanGame);
             gameDiscussion = gameDiscussionRepository.save(gameDiscussion);
 

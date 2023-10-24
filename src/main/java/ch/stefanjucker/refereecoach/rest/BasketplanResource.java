@@ -5,7 +5,6 @@ import ch.stefanjucker.refereecoach.service.BasketplanService;
 import ch.stefanjucker.refereecoach.service.BasketplanService.Federation;
 import ch.stefanjucker.refereecoach.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -56,13 +55,9 @@ public class BasketplanResource {
         try {
             var game = basketplanService.findGameByNumber(federation, gameNumber);
 
-            // check that referee did participate in this game and that there is a youtube-link
+            // check that referee did participate in this game
             if (game.map(dto -> dto.containsReferee(user.getId())).orElse(false)) {
-                if (game.map(dto -> StringUtils.isNotBlank(dto.youtubeId())).orElse(false)) {
-                    return ResponseEntity.of(game);
-                } else {
-                    return ResponseEntity.badRequest().build();
-                }
+                return ResponseEntity.of(game);
             } else {
                 return ResponseEntity.notFound().build();
             }

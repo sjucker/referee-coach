@@ -25,6 +25,7 @@ import java.util.UUID;
 class GameDiscussionServiceTest extends AbstractIntegrationTest {
 
     private static final String GAME_NUMBER = "22-14091";
+    private static final String YOUTUBE_ID = "UAY2tl8tXAc";
 
     @Autowired
     private GameDiscussionService gameDiscussionService;
@@ -32,7 +33,7 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
     @Test
     void create() {
         // when
-        var result = gameDiscussionService.create(SBL, GAME_NUMBER, referee5);
+        var result = gameDiscussionService.create(SBL, GAME_NUMBER, YOUTUBE_ID, referee5);
 
         // then
         assertThat(result.id()).isNotBlank();
@@ -47,25 +48,25 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
 
     @Test
     void create_UnknownGameNumber() {
-        assertThatThrownBy(() -> gameDiscussionService.create(SBL, "00-00000", referee5)).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> gameDiscussionService.create(SBL, "00-00000", "", referee5)).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     void create_AlreadyExisting() {
         saveGameDiscussion();
 
-        assertThatIllegalStateException().isThrownBy(() -> gameDiscussionService.create(SBL, GAME_NUMBER, referee5));
+        assertThatIllegalStateException().isThrownBy(() -> gameDiscussionService.create(SBL, GAME_NUMBER, YOUTUBE_ID, referee5));
     }
 
     @Test
     void create_RefNotInGame() {
-        assertThatIllegalStateException().isThrownBy(() -> gameDiscussionService.create(SBL, GAME_NUMBER, referee1));
+        assertThatIllegalStateException().isThrownBy(() -> gameDiscussionService.create(SBL, GAME_NUMBER, YOUTUBE_ID, referee1));
     }
 
     @Test
     void addComments() {
         // when
-        var result = gameDiscussionService.create(SBL, GAME_NUMBER, referee2);
+        var result = gameDiscussionService.create(SBL, GAME_NUMBER, YOUTUBE_ID, referee2);
         gameDiscussionService.addComments(result.id(), new CreateGameDiscussionCommentDTO(
                 List.of(),
                 List.of(new GameDiscussionCommentDTO(

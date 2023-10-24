@@ -67,6 +67,17 @@
                     <button color="primary" mat-flat-button type="submit" [disabled]="searching">Search</button>
                 </form>
 
+                <div *ngIf="game && youtubeIdInputNeeded">
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-label>YouTube URL</mat-label>
+                        <input [(ngModel)]="youtubeUrlInput" (ngModelChange)="parseYouTubeUrl()"
+                               autocomplete="off" matInput name="youtubeUrl" type="text">
+                    </mat-form-field>
+                    <div *ngIf="problemDescription">
+                        {{problemDescription}}
+                    </div>
+                </div>
+
                 <div *ngIf="game">
                     <div class="referee-start-discussion">
                         <div>{{game.date | date: 'dd.MM.yyyy'}}, {{game.competition}}: {{game.teamA}} - {{game.teamB}}</div>
@@ -74,10 +85,7 @@
                         <div *ngIf="game.referee2">{{game.referee2.name}}</div>
                         <div *ngIf="game.referee3">{{game.referee3.name}}</div>
                     </div>
-                    <button color="primary" mat-flat-button [disabled]="creating" (click)="createGameDiscussion()">Start</button>
-                </div>
-                <div *ngIf="problemDescription">
-                    {{problemDescription}}
+                    <button color="primary" mat-flat-button [disabled]="!youtubeId || creating" (click)="createGameDiscussion()">Start</button>
                 </div>
             </div>
         </mat-card-content>

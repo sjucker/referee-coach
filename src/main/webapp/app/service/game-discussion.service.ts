@@ -14,9 +14,10 @@ export class GameDiscussionService {
     constructor(private readonly httpClient: HttpClient) {
     }
 
-    createGameDiscussion(gameNumber: string): Observable<GameDiscussionDTO> {
+    createGameDiscussion(gameNumber: string, youtubeId: string): Observable<GameDiscussionDTO> {
         const request: CreateGameDiscussionDTO = {
             gameNumber: gameNumber,
+            youtubeId: youtubeId,
             federation: Federation.SBL
         };
         return this.httpClient.post<GameDiscussionDTO>(`${this.baseUrl}/game-discussion`, request);

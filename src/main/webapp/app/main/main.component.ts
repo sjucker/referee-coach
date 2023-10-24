@@ -197,13 +197,13 @@ export class MainComponent implements OnInit {
         this.basketplanService.searchGameForReferee(this.gameNumberInput.trim()).subscribe({
                 next: dto => {
                     this.game = dto;
+                    this.youtubeId = this.game.youtubeId;
+                    this.youtubeIdInputNeeded = !this.youtubeId;
                     this.searching = false;
                 },
                 error: error => {
                     if (error.status === 404) {
                         this.problemDescription = 'No game found for given game number that is relevant for you';
-                    } else if (error.status === 400) {
-                        this.problemDescription = 'Game does not contain a YouTube link'
                     } else {
                         this.problemDescription = 'An unexpected error occurred'
                     }
@@ -258,9 +258,9 @@ export class MainComponent implements OnInit {
     }
 
     createGameDiscussion() {
-        if (this.game) {
+        if (this.game && this.youtubeId) {
             this.creating = true;
-            this.gameDiscussionService.createGameDiscussion(this.game.gameNumber).subscribe({
+            this.gameDiscussionService.createGameDiscussion(this.game.gameNumber, this.youtubeId).subscribe({
                 next: response => {
                     this.creating = false;
                     this.discuss(response);
@@ -275,7 +275,7 @@ export class MainComponent implements OnInit {
                 }
             })
         } else {
-            this.snackBar.open("Please search for a game or select a referee", undefined, {
+            this.snackBar.open("Please search for a game", undefined, {
                 duration: 3000,
                 horizontalPosition: "center",
                 verticalPosition: "top"

@@ -47,6 +47,7 @@ export interface CreateGameDiscussionCommentDTO {
 export interface CreateGameDiscussionDTO {
     federation: Federation;
     gameNumber: string;
+    youtubeId: string;
 }
 
 export interface CreateRepliesDTO {
