@@ -41,7 +41,11 @@ public class GameDiscussionResource {
         var referee = loginService.find(principal.getUsername()).orElseThrow();
         log.info("POST /api/game-discussion {} ({})", dto, referee);
 
-        return ResponseEntity.ok(gameDiscussionService.create(dto.federation(), dto.gameNumber(), dto.youtubeId(), referee));
+        try {
+            return ResponseEntity.ok(gameDiscussionService.create(dto.federation(), dto.gameNumber(), dto.youtubeId(), referee));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @GetMapping(path = "/{id}")

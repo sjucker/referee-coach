@@ -265,13 +265,21 @@ export class MainComponent implements OnInit {
                     this.creating = false;
                     this.discuss(response);
                 },
-                error: () => {
+                error: err => {
                     this.creating = false;
-                    this.snackBar.open("An unexpected error occurred, report could not be created.", undefined, {
-                        duration: 3000,
-                        horizontalPosition: "center",
-                        verticalPosition: "top"
-                    })
+                    if (err.status === 204) {
+                        this.snackBar.open("There is already a game discussion for this game number.", undefined, {
+                            duration: 3000,
+                            horizontalPosition: "center",
+                            verticalPosition: "top"
+                        });
+                    } else {
+                        this.snackBar.open("An unexpected error occurred, report could not be created.", undefined, {
+                            duration: 3000,
+                            horizontalPosition: "center",
+                            verticalPosition: "top"
+                        });
+                    }
                 }
             })
         } else {

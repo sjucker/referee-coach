@@ -66,11 +66,11 @@ public class GameDiscussionService {
 
     public GameDiscussionDTO create(Federation federation, String gameNumber, String youtubeId, HasLogin referee) {
         if (gameDiscussionRepository.findByBasketplanGameGameNumber(gameNumber).isPresent()) {
-            throw new IllegalStateException("there exists already a game discussion for game number: %s".formatted(gameNumber));
+            throw new IllegalArgumentException("there exists already a game discussion for game number: %s".formatted(gameNumber));
         }
 
         if (StringUtils.isBlank(youtubeId)) {
-            throw new IllegalArgumentException("invalid youtubeId given: %s".formatted(youtubeId));
+            throw new IllegalStateException("invalid youtubeId given: %s".formatted(youtubeId));
         }
 
         var game = basketplanService.findGameByNumber(federation, gameNumber).orElseThrow();
