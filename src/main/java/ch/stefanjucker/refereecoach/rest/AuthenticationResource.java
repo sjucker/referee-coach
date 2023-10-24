@@ -64,8 +64,8 @@ public class AuthenticationResource {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails principal,
-                                            @RequestBody @Valid ChangePasswordRequestDTO request) {
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails principal,
+                                               @RequestBody @Valid ChangePasswordRequestDTO request) {
         var user = loginService.find(principal.getUsername()).orElseThrow();
 
         log.info("POST /api/authenticate/change-password {}", user.getEmail());

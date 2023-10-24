@@ -32,12 +32,12 @@ export class AuthenticationService {
         localStorage.clear();
     }
 
-    changePassword(oldPassword: string, newPassword: string): Observable<never> {
+    changePassword(oldPassword: string, newPassword: string): Observable<void> {
         const request: ChangePasswordRequestDTO = {
             oldPassword: oldPassword,
             newPassword: newPassword
         }
-        return this.httpClient.post<never>(`${this.baseUrl}/authenticate/change-password`, request);
+        return this.httpClient.post<void>(`${this.baseUrl}/authenticate/change-password`, request);
     }
 
     setCredentials(dto: LoginResponseDTO): void {
