@@ -10,7 +10,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -50,52 +49,38 @@ public class VideoReport {
     @Embedded
     private BasketplanGame basketplanGame;
 
-    @AttributeOverrides({
-            @AttributeOverride(name = "comment", column = @Column(name = "general_comment")),
-            @AttributeOverride(name = "score", column = @Column(name = "general_score"))
-    })
+    @AttributeOverride(name = "comment", column = @Column(name = "general_comment"))
+    @AttributeOverride(name = "score", column = @Column(name = "general_score"))
     @Embedded
     private CriteriaEvaluation general = new CriteriaEvaluation("", 7.0);
 
-    @AttributeOverrides({
-            @AttributeOverride(name = "comment", column = @Column(name = "image_comment")),
-            @AttributeOverride(name = "score", column = @Column(name = "image_score"))
-    })
+    @AttributeOverride(name = "comment", column = @Column(name = "image_comment"))
+    @AttributeOverride(name = "score", column = @Column(name = "image_score"))
     @Embedded
     private CriteriaEvaluation image = new CriteriaEvaluation("", 7.0);
 
-    @AttributeOverrides({
-            @AttributeOverride(name = "comment", column = @Column(name = "fitness_comment")),
-            @AttributeOverride(name = "score", column = @Column(name = "fitness_score"))
-    })
+    @AttributeOverride(name = "comment", column = @Column(name = "fitness_comment"))
+    @AttributeOverride(name = "score", column = @Column(name = "fitness_score"))
     @Embedded
     private CriteriaEvaluation fitness = new CriteriaEvaluation("", 7.0);
 
-    @AttributeOverrides({
-            @AttributeOverride(name = "comment", column = @Column(name = "mechanics_comment")),
-            @AttributeOverride(name = "score", column = @Column(name = "mechanics_score"))
-    })
+    @AttributeOverride(name = "comment", column = @Column(name = "mechanics_comment"))
+    @AttributeOverride(name = "score", column = @Column(name = "mechanics_score"))
     @Embedded
     private CriteriaEvaluation mechanics = new CriteriaEvaluation("", 7.0);
 
-    @AttributeOverrides({
-            @AttributeOverride(name = "comment", column = @Column(name = "fouls_comment")),
-            @AttributeOverride(name = "score", column = @Column(name = "fouls_score"))
-    })
+    @AttributeOverride(name = "comment", column = @Column(name = "fouls_comment"))
+    @AttributeOverride(name = "score", column = @Column(name = "fouls_score"))
     @Embedded
     private CriteriaEvaluation fouls = new CriteriaEvaluation("", 7.0);
 
-    @AttributeOverrides({
-            @AttributeOverride(name = "comment", column = @Column(name = "violations_comment")),
-            @AttributeOverride(name = "score", column = @Column(name = "violations_score"))
-    })
+    @AttributeOverride(name = "comment", column = @Column(name = "violations_comment"))
+    @AttributeOverride(name = "score", column = @Column(name = "violations_score"))
     @Embedded
     private CriteriaEvaluation violations = new CriteriaEvaluation("", 7.0);
 
-    @AttributeOverrides({
-            @AttributeOverride(name = "comment", column = @Column(name = "game_management_comment")),
-            @AttributeOverride(name = "score", column = @Column(name = "game_management_score"))
-    })
+    @AttributeOverride(name = "comment", column = @Column(name = "game_management_comment"))
+    @AttributeOverride(name = "score", column = @Column(name = "game_management_score"))
     @Embedded
     private CriteriaEvaluation gameManagement = new CriteriaEvaluation("", 7.0);
 

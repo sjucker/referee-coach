@@ -119,8 +119,8 @@ public class VideoReportResource {
 
     @PostMapping(path = "/copy-comment", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @Secured({"COACH"})
-    public ResponseEntity<?> copyComment(@AuthenticationPrincipal UserDetails principal,
-                                         @RequestBody @Valid CopyVideoCommentDTO dto) {
+    public ResponseEntity<Void> copyComment(@AuthenticationPrincipal UserDetails principal,
+                                            @RequestBody @Valid CopyVideoCommentDTO dto) {
         var coach = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
         log.info("POST /video-report/copy-comment {} ({})", dto, coach);
 
@@ -153,8 +153,8 @@ public class VideoReportResource {
 
     @DeleteMapping(path = "/{id}")
     @Secured({"COACH"})
-    public ResponseEntity<?> deleteVideoReport(@AuthenticationPrincipal UserDetails principal,
-                                               @PathVariable String id) {
+    public ResponseEntity<Void> deleteVideoReport(@AuthenticationPrincipal UserDetails principal,
+                                                  @PathVariable String id) {
         var coach = coachRepository.findByEmail(principal.getUsername()).orElseThrow();
         log.info("DELETE /video-report/{} ({})", id, coach);
 

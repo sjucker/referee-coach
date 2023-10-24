@@ -50,20 +50,20 @@ export class VideoReportService {
         return this.httpClient.post<VideoReportDTO>(`${this.baseUrl}/video-report/copy`, request)
     }
 
-    copyVideoComment(videoComment: VideoCommentDTO, reportee: Reportee) {
+    copyVideoComment(videoComment: VideoCommentDTO, reportee: Reportee): Observable<void> {
         const request: CopyVideoCommentDTO = {
             sourceId: videoComment.id!,
             reportee: reportee,
         };
-        return this.httpClient.post<VideoReportDTO>(`${this.baseUrl}/video-report/copy-comment`, request)
+        return this.httpClient.post<void>(`${this.baseUrl}/video-report/copy-comment`, request)
     }
 
     saveVideoReport(dto: VideoReportDTO): Observable<VideoReportDTO> {
         return this.httpClient.put<VideoReportDTO>(`${this.baseUrl}/video-report/${dto.id}`, dto);
     }
 
-    deleteVideoReport(id: string): Observable<unknown> {
-        return this.httpClient.delete<unknown>(`${this.baseUrl}/video-report/${id}`);
+    deleteVideoReport(id: string): Observable<void> {
+        return this.httpClient.delete<void>(`${this.baseUrl}/video-report/${id}`);
     }
 
     getVideoReportDiscussion(id: string): Observable<VideoReportDiscussionDTO> {

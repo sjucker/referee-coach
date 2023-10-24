@@ -18,11 +18,11 @@ import java.util.Optional;
 @Service
 public class JwtService {
 
-    private final SignatureAlgorithm signatureAlgorithm = HS256;
+    private static final SignatureAlgorithm SIGNATURE_ALGORITHM = HS256;
     private final SecretKeySpec secretKey;
 
     public JwtService(RefereeCoachProperties properties) {
-        this.secretKey = new SecretKeySpec(properties.getJwtSecret().getBytes(UTF_8), signatureAlgorithm.getJcaName());
+        this.secretKey = new SecretKeySpec(properties.getJwtSecret().getBytes(UTF_8), SIGNATURE_ALGORITHM.getJcaName());
     }
 
     public String createJwt(String email) {
@@ -30,7 +30,7 @@ public class JwtService {
 
         return Jwts.builder()
                    .setClaims(claims)
-                   .signWith(secretKey, signatureAlgorithm)
+                   .signWith(secretKey, SIGNATURE_ALGORITHM)
                    .compact();
     }
 
