@@ -44,6 +44,10 @@ public interface DTOMapper {
     @Mapping(target = "replies", source = "replyDTOs")
     VideoCommentDTO toDTO(VideoComment videoComment, List<VideoCommentReplyDTO> replyDTOs);
 
+    @Mapping(target = "replies", source = "replyDTOs")
+    @Mapping(target = "requiresReply", ignore = true)
+    VideoCommentDTO toDTOIgnoreRequiresReply(VideoComment videoComment, List<VideoCommentReplyDTO> replyDTOs);
+
     VideoComment fromDTO(VideoCommentDTO dto, String videoReportId);
 
     List<VideoCommentReplyDTO> toDTO(List<VideoCommentReply> videoCommentReply);

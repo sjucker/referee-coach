@@ -262,7 +262,8 @@ public class VideoReportService {
                                                       .filter(videoComment -> !timestamps.contains(videoComment.getTimestamp()))
                                                       .toList()) {
             var replies = videoCommentReplyRepository.findByVideoCommentIdOrderByRepliedAt(videoComment.getId());
-            videoCommentDTOs.add(DTO_MAPPER.toDTO(videoComment, DTO_MAPPER.toDTO(replies)));
+            // all comments that require a reply where added above, so ignore the flag for those that are added now (required flag could be from other referee)
+            videoCommentDTOs.add(DTO_MAPPER.toDTOIgnoreRequiresReply(videoComment, DTO_MAPPER.toDTO(replies)));
         }
 
         return new VideoReportDiscussionDTO(videoReport.getId(),
