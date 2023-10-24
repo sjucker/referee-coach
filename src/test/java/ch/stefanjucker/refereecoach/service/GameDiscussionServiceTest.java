@@ -3,6 +3,7 @@ package ch.stefanjucker.refereecoach.service;
 import static ch.stefanjucker.refereecoach.service.BasketplanService.Federation.SBL;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.atIndex;
@@ -55,7 +56,7 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
     void create_AlreadyExisting() {
         saveGameDiscussion();
 
-        assertThatIllegalStateException().isThrownBy(() -> gameDiscussionService.create(SBL, GAME_NUMBER, YOUTUBE_ID, referee5));
+        assertThatIllegalArgumentException().isThrownBy(() -> gameDiscussionService.create(SBL, GAME_NUMBER, YOUTUBE_ID, referee5));
     }
 
     @Test
