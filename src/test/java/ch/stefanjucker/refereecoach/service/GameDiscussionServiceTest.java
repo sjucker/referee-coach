@@ -48,7 +48,7 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
 
     @Test
     void create_UnknownGameNumber() {
-        assertThatThrownBy(() -> gameDiscussionService.create(SBL, "00-00000", "", referee5)).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> gameDiscussionService.create(SBL, "00-00000", YOUTUBE_ID, referee5)).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
