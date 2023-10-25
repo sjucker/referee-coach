@@ -41,7 +41,7 @@ public class AuthenticationResource {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Void> forgotPassword(@RequestBody ForgotPasswordRequestDTO request) {
-        log.info("POST POST /api/authenticate/forgot-password {}", request.email());
+        log.info("POST /api/authenticate/forgot-password {}", request.email());
 
         loginService.forgotPassword(request.email());
 
