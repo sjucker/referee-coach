@@ -1,6 +1,6 @@
 package ch.stefanjucker.refereecoach.security;
 
-import ch.stefanjucker.refereecoach.service.LoginService;
+import ch.stefanjucker.refereecoach.service.UserService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -14,15 +14,15 @@ import java.util.ArrayList;
 @Service
 public class UserAuthService implements UserDetailsService {
 
-    private final LoginService loginService;
+    private final UserService userService;
 
-    public UserAuthService(LoginService loginService) {
-        this.loginService = loginService;
+    public UserAuthService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = loginService.find(username).orElse(null);
+        var user = userService.find(username).orElse(null);
         if (user != null) {
             ArrayList<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority(user.getRole().name()));

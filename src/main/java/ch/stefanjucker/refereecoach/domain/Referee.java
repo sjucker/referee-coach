@@ -45,6 +45,9 @@ public class Referee implements HasNameEmail, HasLogin {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
+    @Column(name = "password_reset_token")
+    private String passwordResetToken;
+
     @Override
     public boolean isAdmin() {
         return false;

@@ -5,7 +5,7 @@ import ch.stefanjucker.refereecoach.dto.CreateGameDiscussionDTO;
 import ch.stefanjucker.refereecoach.dto.GameDiscussionDTO;
 import ch.stefanjucker.refereecoach.dto.VideoCommentReplyDTO;
 import ch.stefanjucker.refereecoach.service.GameDiscussionService;
-import ch.stefanjucker.refereecoach.service.LoginService;
+import ch.stefanjucker.refereecoach.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -25,12 +25,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/game-discussion")
 public class GameDiscussionResource {
 
-    private final LoginService loginService;
+    private final UserService userService;
     private final GameDiscussionService gameDiscussionService;
 
-    public GameDiscussionResource(LoginService loginService,
+    public GameDiscussionResource(UserService userService,
                                   GameDiscussionService gameDiscussionService) {
-        this.loginService = loginService;
+        this.userService = userService;
         this.gameDiscussionService = gameDiscussionService;
     }
 
@@ -38,7 +38,7 @@ public class GameDiscussionResource {
     @Secured({"REFEREE"})
     public ResponseEntity<GameDiscussionDTO> createGameDiscussion(@AuthenticationPrincipal UserDetails principal,
                                                                   @RequestBody @Valid CreateGameDiscussionDTO dto) {
-        var referee = loginService.find(principal.getUsername()).orElseThrow();
+        var referee = userService.find(principal.getUsername()).orElseThrow();
         log.info("POST /api/game-discussion {} ({})", dto, referee);
 
         try {
@@ -52,7 +52,7 @@ public class GameDiscussionResource {
     @Secured({"COACH", "REFEREE"})
     public ResponseEntity<GameDiscussionDTO> getGameDiscussion(@AuthenticationPrincipal UserDetails principal,
                                                                @PathVariable String id) {
-        var user = loginService.find(principal.getUsername()).orElseThrow();
+        var user = userService.find(principal.getUsername()).orElseThrow();
         log.info("GET /api/game-discussion/{} ({})", id, user);
 
         return ResponseEntity.of(gameDiscussionService.get(id));
@@ -64,7 +64,7 @@ public class GameDiscussionResource {
                                                             @PathVariable String id,
                                                             @RequestBody @Valid CreateGameDiscussionCommentDTO dto) {
 
-        var user = loginService.find(principal.getUsername()).orElseThrow();
+        var user = userService.find(principal.getUsername()).orElseThrow();
         log.info("POST /api/game-discussion//{}/comment {} {}", id, dto, user);
 
         gameDiscussionService.addComments(id, dto, user);

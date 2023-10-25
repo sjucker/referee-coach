@@ -21,6 +21,10 @@ public interface HasLogin {
 
     void setLastLogin(LocalDateTime lastLogin);
 
+    String getPasswordResetToken();
+
+    void setPasswordResetToken(String token);
+
     boolean isAdmin();
 
     UserRole getRole();

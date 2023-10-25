@@ -19,8 +19,8 @@ import ch.stefanjucker.refereecoach.dto.VideoCommentReplyDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDiscussionDTO;
 import ch.stefanjucker.refereecoach.service.ExportService;
-import ch.stefanjucker.refereecoach.service.LoginService;
 import ch.stefanjucker.refereecoach.service.SearchService;
+import ch.stefanjucker.refereecoach.service.UserService;
 import ch.stefanjucker.refereecoach.service.VideoReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -54,18 +54,18 @@ public class VideoReportResource {
 
     private final VideoReportService videoReportService;
     private final CoachRepository coachRepository;
-    private final LoginService loginService;
+    private final UserService userService;
     private final ExportService exportService;
     private final SearchService searchService;
 
     public VideoReportResource(VideoReportService videoReportService,
                                CoachRepository coachRepository,
-                               LoginService loginService,
+                               UserService userService,
                                ExportService exportService,
                                SearchService searchService) {
         this.videoReportService = videoReportService;
         this.coachRepository = coachRepository;
-        this.loginService = loginService;
+        this.userService = userService;
         this.exportService = exportService;
         this.searchService = searchService;
     }
@@ -142,7 +142,7 @@ public class VideoReportResource {
 
         HasLogin user = null;
         if (principal != null) {
-            user = loginService.find(principal.getUsername()).orElseThrow();
+            user = userService.find(principal.getUsername()).orElseThrow();
         }
         log.info("POST /video-report/{}/discussion {} {}", id, dto, user);
 

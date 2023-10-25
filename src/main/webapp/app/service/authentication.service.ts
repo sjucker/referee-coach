@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {ChangePasswordRequestDTO, LoginRequestDTO, LoginResponseDTO, UserRole} from "../rest";
+import {ChangePasswordRequestDTO, ForgotPasswordRequestDTO, LoginRequestDTO, LoginResponseDTO, ResetPasswordRequestDTO, UserRole} from "../rest";
 import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
 
@@ -30,6 +30,22 @@ export class AuthenticationService {
 
     logout(): void {
         localStorage.clear();
+    }
+
+    forgotPassword(email: string): Observable<void> {
+        const request: ForgotPasswordRequestDTO = {
+            email: email
+        };
+        return this.httpClient.post<void>(`${this.baseUrl}/authenticate/forgot-password`, request);
+    }
+
+    resetPassword(email: string, token: string, newPassword: string): Observable<void> {
+        const request: ResetPasswordRequestDTO = {
+            email: email,
+            token: token,
+            newPassword: newPassword
+        };
+        return this.httpClient.post<void>(`${this.baseUrl}/authenticate/reset-password`, request);
     }
 
     changePassword(oldPassword: string, newPassword: string): Observable<void> {

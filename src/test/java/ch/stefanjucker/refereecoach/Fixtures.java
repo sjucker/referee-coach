@@ -23,11 +23,11 @@ public final class Fixtures {
     }
 
     public static Coach coach(String email) {
-        return new Coach(null, email, email, "", false, null);
+        return new Coach(null, email, email, "", false, null, null);
     }
 
     public static Referee referee(String name) {
-        return new Referee(null, name, name, GROUP_1, "", null);
+        return new Referee(null, name, name, GROUP_1, "", null, null);
     }
 
     public static VideoReport videoReport(String id, Coach coach, Referee referee1, Referee referee2, Referee referee3, Reportee reportee) {

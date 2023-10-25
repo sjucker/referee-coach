@@ -44,6 +44,10 @@ public class Coach implements HasNameEmail, HasLogin {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
+    @Column(name = "password_reset_token")
+    @ToString.Exclude
+    private String passwordResetToken;
+
     @Override
     public UserRole getRole() {
         return COACH;
