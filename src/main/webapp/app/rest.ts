@@ -68,6 +68,10 @@ export interface CriteriaEvaluationDTO {
     rating?: string;
 }
 
+export interface ForgotPasswordRequestDTO {
+    email: string;
+}
+
 export interface GameDiscussionCommentDTO {
     id?: number;
     timestamp: number;
@@ -123,6 +127,12 @@ export interface OverviewDTO {
 export interface RefereeDTO {
     id: number;
     name: string;
+}
+
+export interface ResetPasswordRequestDTO {
+    email: string;
+    token: string;
+    newPassword: string;
 }
 
 export interface SearchRequestDTO {

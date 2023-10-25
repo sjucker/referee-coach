@@ -32,16 +32,16 @@ public class SearchService {
 
     private final VideoReportRepository videoReportRepository;
     private final GameDiscussionRepository gameDiscussionRepository;
-    private final LoginService loginService;
+    private final UserService userService;
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public SearchService(VideoReportRepository videoReportRepository,
                          GameDiscussionRepository gameDiscussionRepository,
-                         LoginService loginService,
+                         UserService userService,
                          DataSource dataSource) {
         this.videoReportRepository = videoReportRepository;
         this.gameDiscussionRepository = gameDiscussionRepository;
-        this.loginService = loginService;
+        this.userService = userService;
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
@@ -72,7 +72,7 @@ public class SearchService {
     }
 
     public List<OverviewDTO> findAll(LocalDate from, LocalDate to, String email) {
-        var user = loginService.find(email).orElseThrow();
+        var user = userService.find(email).orElseThrow();
         // TODO improvement: filter already in DB query
         return Stream.concat(getCoachingsStream(from, to), getGameDiscussionsStream(from, to))
                      // coach see everything, referee only own reports

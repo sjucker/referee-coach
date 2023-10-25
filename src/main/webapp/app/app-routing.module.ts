@@ -13,8 +13,12 @@ import {ReportSearchComponent} from "./report-search/report-search.component";
 import {AdminComponent} from "./admin/admin.component";
 import {GameDiscussionComponent} from "./game-discussion/game-discussion.component";
 import {HasUnsavedReplies} from "./has-unsaved-replies";
+import {ForgotPasswordComponent} from "./forgot-password/forgot-password.component";
+import {ResetPasswordComponent} from "./reset-password/reset-password.component";
 
 export const LOGIN_PATH = 'login'
+export const FORGOT_PASSWORD_PATH = 'forgot-password';
+export const RESET_PASSWORD_PATH = 'reset-passwort';
 export const EDIT_PATH = 'edit'
 export const VIEW_PATH = 'view'
 export const DISCUSS_PATH = 'discuss'
@@ -62,6 +66,10 @@ const routes: Routes = [
         component: LoginComponent
     },
     {
+        path: LOGIN_PATH + '/:email',
+        component: LoginComponent
+    },
+    {
         path: SETTINGS_PATH,
         component: SettingsComponent,
         canActivate: [authenticationGuard]
@@ -75,7 +83,15 @@ const routes: Routes = [
         path: ADMIN_PATH,
         component: AdminComponent,
         canActivate: [hasAdminRightsGuard]
-    }
+    },
+    {
+        path: FORGOT_PASSWORD_PATH,
+        component: ForgotPasswordComponent
+    },
+    {
+        path: RESET_PASSWORD_PATH + '/:email/:token',
+        component: ResetPasswordComponent
+    },
 ];
 
 @NgModule({

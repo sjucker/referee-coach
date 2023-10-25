@@ -3,15 +3,15 @@ package ch.stefanjucker.refereecoach.rest;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import ch.stefanjucker.refereecoach.dto.ChangePasswordRequestDTO;
+import ch.stefanjucker.refereecoach.dto.ForgotPasswordRequestDTO;
 import ch.stefanjucker.refereecoach.dto.LoginRequestDTO;
 import ch.stefanjucker.refereecoach.dto.LoginResponseDTO;
-import ch.stefanjucker.refereecoach.security.JwtService;
+import ch.stefanjucker.refereecoach.dto.ResetPasswordRequestDTO;
 import ch.stefanjucker.refereecoach.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,61 +24,50 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/authenticate")
 public class AuthenticationResource {
 
-    private final JwtService jwtService;
     private final LoginService loginService;
-    private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationResource(JwtService jwtService,
-                                  LoginService loginService,
-                                  PasswordEncoder passwordEncoder) {
-        this.jwtService = jwtService;
+    public AuthenticationResource(LoginService loginService) {
         this.loginService = loginService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
         log.info("POST /api/authenticate {}", request.email());
 
-        var user = loginService.find(request.email()).orElse(null);
+        return loginService.authenticate(request)
+                           .map(ResponseEntity::ok)
+                           .orElse(ResponseEntity.status(UNAUTHORIZED).build());
+    }
 
-        if (user != null) {
-            if (passwordEncoder.matches(request.password(), user.getPassword())) {
-                loginService.save(user);
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(@RequestBody ForgotPasswordRequestDTO request) {
+        log.info("POST POST /api/authenticate/forgot-password {}", request.email());
 
-                return ResponseEntity.ok(new LoginResponseDTO(
-                        user.getId(),
-                        user.getName(),
-                        user.isAdmin(),
-                        user.getRole(),
-                        jwtService.createJwt(request.email())
-                ));
-            } else {
-                log.warn("password did not match for: {}", request.email());
-            }
-        } else {
-            log.warn("no user found with email: {}", request.email());
-        }
+        loginService.forgotPassword(request.email());
 
-        return ResponseEntity.status(UNAUTHORIZED).build();
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordRequestDTO request) {
+        log.info("POST /api/authenticate/reset-password {} {}", request.email(), request.token());
+
+        var success = loginService.resetPassword(request.email(), request.token(), request.newPassword());
+
+        return success ?
+                ResponseEntity.ok().build() :
+                ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/change-password")
     public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails principal,
                                                @RequestBody @Valid ChangePasswordRequestDTO request) {
-        var user = loginService.find(principal.getUsername()).orElseThrow();
+        log.info("POST /api/authenticate/change-password {}", principal.getUsername());
 
-        log.info("POST /api/authenticate/change-password {}", user.getEmail());
+        var success = loginService.changePassword(principal.getUsername(), request);
 
-        if (passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(request.newPassword()));
-            loginService.save(user);
-            log.info("successfully changed password for: {}", user.getEmail());
-            return ResponseEntity.accepted().build();
-        } else {
-            log.warn("provided old password did not match password in database");
-        }
-
-        return ResponseEntity.badRequest().build();
+        return success ?
+                ResponseEntity.accepted().build() :
+                ResponseEntity.badRequest().build();
     }
 }

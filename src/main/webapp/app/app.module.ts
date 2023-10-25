@@ -51,6 +51,8 @@ import {TagsSelectionComponent} from './tags-selection/tags-selection.component'
 import {AdminComponent} from './admin/admin.component';
 import {GameDiscussionComponent} from './game-discussion/game-discussion.component';
 import {GameDiscussionFinishCommentsDialogComponent} from './game-discussion-finish-comments-dialog/game-discussion-finish-comments-dialog.component';
+import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
+import {ResetPasswordComponent} from './reset-password/reset-password.component';
 
 @NgModule({
     declarations: [
@@ -74,6 +76,8 @@ import {GameDiscussionFinishCommentsDialogComponent} from './game-discussion-fin
         AdminComponent,
         GameDiscussionComponent,
         GameDiscussionFinishCommentsDialogComponent,
+        ForgotPasswordComponent,
+        ResetPasswordComponent,
     ],
     imports: [
         BrowserModule,

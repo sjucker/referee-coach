@@ -68,6 +68,13 @@ public interface DTOMapper {
 
     BasketplanGame fromDTO(BasketplanGameDTO dto);
 
+    @Mapping(target = "passwordResetToken", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "level", ignore = true)
+    @Mapping(target = "lastLogin", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    Referee fromDTO(RefereeDTO dto);
+
     TagDTO toDTO(Tags tags);
 
     default void update(VideoReportDTO dto, VideoReport videoReport) {

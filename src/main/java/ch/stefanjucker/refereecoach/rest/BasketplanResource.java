@@ -3,7 +3,7 @@ package ch.stefanjucker.refereecoach.rest;
 import ch.stefanjucker.refereecoach.dto.BasketplanGameDTO;
 import ch.stefanjucker.refereecoach.service.BasketplanService;
 import ch.stefanjucker.refereecoach.service.BasketplanService.Federation;
-import ch.stefanjucker.refereecoach.service.LoginService;
+import ch.stefanjucker.refereecoach.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class BasketplanResource {
 
     private final BasketplanService basketplanService;
-    private final LoginService loginService;
+    private final UserService userService;
 
     public BasketplanResource(BasketplanService basketplanService,
-                              LoginService loginService) {
+                              UserService userService) {
         this.basketplanService = basketplanService;
-        this.loginService = loginService;
+        this.userService = userService;
     }
 
     @GetMapping("/{federation}/{gameNumber}")
@@ -45,7 +45,7 @@ public class BasketplanResource {
     public ResponseEntity<BasketplanGameDTO> gameForReferee(@AuthenticationPrincipal UserDetails principal,
                                                             @PathVariable Federation federation, @PathVariable String gameNumber) {
 
-        var user = loginService.find(principal.getUsername()).orElseThrow();
+        var user = userService.find(principal.getUsername()).orElseThrow();
         if (!user.isReferee()) {
             throw new IllegalStateException("non-referee user should not call this endpoint: %s".formatted(user));
         }
