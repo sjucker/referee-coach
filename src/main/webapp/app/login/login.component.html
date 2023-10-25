@@ -1,6 +1,9 @@
 <mat-toolbar color="primary">
-    Referee Coach - Login
+    <h1>Referee Coach - Login</h1>
 </mat-toolbar>
+<div class="loading-indicator">
+    <mat-progress-bar mode="indeterminate" color="accent" *ngIf="authenticating"></mat-progress-bar>
+</div>
 
 <mat-card>
     <mat-card-header>
