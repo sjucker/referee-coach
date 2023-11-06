@@ -45,8 +45,8 @@ public interface DTOMapper {
     VideoCommentDTO toDTO(VideoComment videoComment, List<VideoCommentReplyDTO> replyDTOs);
 
     @Mapping(target = "replies", source = "replyDTOs")
-    @Mapping(target = "requiresReply", ignore = true)
-    VideoCommentDTO toDTOIgnoreRequiresReply(VideoComment videoComment, List<VideoCommentReplyDTO> replyDTOs);
+    @Mapping(target = "requiresReply", source = "requiresReply")
+    VideoCommentDTO toDTO(VideoComment videoComment, List<VideoCommentReplyDTO> replyDTOs, boolean requiresReply);
 
     VideoComment fromDTO(VideoCommentDTO dto, String videoReportId);
 
@@ -61,7 +61,6 @@ public interface DTOMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "videoReportId", ignore = true)
-    @Mapping(target = "requiresReply", ignore = true)
     VideoComment copy(VideoComment videoComment);
 
     BasketplanGameDTO toDTO(BasketplanGame basketplanGame);

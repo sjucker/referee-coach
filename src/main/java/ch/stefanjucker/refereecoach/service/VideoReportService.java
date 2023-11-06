@@ -5,6 +5,7 @@ import static ch.stefanjucker.refereecoach.domain.VideoReport.CURRENT_VERSION;
 import static ch.stefanjucker.refereecoach.util.DateUtil.now;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
@@ -247,23 +248,17 @@ public class VideoReportService {
     public VideoReportDiscussionDTO getVideoReportDiscussion(String videoReportId) {
         var videoReport = videoReportRepository.findById(videoReportId).orElseThrow();
 
-        List<VideoCommentDTO> videoCommentDTOs = new ArrayList<>();
-        Set<Integer> timestamps = new HashSet<>();
-        for (var videoComment : videoCommentRepository.findByVideoReportId(videoReportId).stream()
-                                                      .filter(VideoComment::isRequiresReply)
-                                                      .toList()) {
-            var replies = videoCommentReplyRepository.findByVideoCommentIdOrderByRepliedAt(videoComment.getId());
-            videoCommentDTOs.add(DTO_MAPPER.toDTO(videoComment, DTO_MAPPER.toDTO(replies)));
-            timestamps.add(videoComment.getTimestamp());
-        }
+        // all comment timestamps that require a reply from the referee this report belongs to
+        Set<Integer> requiresReply = videoCommentRepository.findByVideoReportId(videoReportId).stream()
+                                                           .filter(VideoComment::isRequiresReply)
+                                                           .map(VideoComment::getTimestamp)
+                                                           .collect(toSet());
 
+        List<VideoCommentDTO> videoCommentDTOs = new ArrayList<>();
         for (var videoComment : videoCommentRepository.findVideoCommentsByGameNumberAndCoach(videoReport.getBasketplanGame().getGameNumber(),
-                                                                                             videoReport.getCoach().getId()).stream()
-                                                      .filter(videoComment -> !timestamps.contains(videoComment.getTimestamp()))
-                                                      .toList()) {
+                                                                                             videoReport.getCoach().getId())) {
             var replies = videoCommentReplyRepository.findByVideoCommentIdOrderByRepliedAt(videoComment.getId());
-            // all comments that require a reply where added above, so ignore the flag for those that are added now (required flag could be from other referee)
-            videoCommentDTOs.add(DTO_MAPPER.toDTOIgnoreRequiresReply(videoComment, DTO_MAPPER.toDTO(replies)));
+            videoCommentDTOs.add(DTO_MAPPER.toDTO(videoComment, DTO_MAPPER.toDTO(replies), requiresReply.contains(videoComment.getTimestamp())));
         }
 
         return new VideoReportDiscussionDTO(videoReport.getId(),
@@ -355,11 +350,20 @@ public class VideoReportService {
 
     }
 
+    @Transactional
     public void sendReminderEmails() {
         // referee has 48 hours to reply to required comments
-        for (var videoReportId : videoReportRepository.findReportIdsWithMissingReplies(now().minusDays(2))) {
+        for (var videoReportId : videoReportRepository.findReportIdsWithRequiredReplies(now().minusDays(2))) {
             var videoReport = videoReportRepository.findById(videoReportId).orElseThrow();
-            sendReminderEmail(videoReport.relevantReferee(), videoReportId);
+            var referee = videoReport.relevantReferee();
+            var videoReportDiscussion = getVideoReportDiscussion(videoReportId);
+            // check if there is a comment that requires a reply for which the relevant referee has not yet replied
+            if (videoReportDiscussion.videoComments().stream()
+                                     .filter(VideoCommentDTO::requiresReply)
+                                     .anyMatch(comment -> comment.replies().stream().noneMatch(reply -> reply.repliedBy().equals(referee.getName())))) {
+                sendReminderEmail(referee, videoReportId);
+            }
+            // mark report as processed, so it will not be processed again
             videoReport.setReminderSent(true);
             videoReportRepository.save(videoReport);
         }

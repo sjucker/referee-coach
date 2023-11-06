@@ -29,7 +29,7 @@ class VideoReportRepositoryTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void findReportIdsWithMissingReplies() {
+    void findReportIdsWithRequiredReplies() {
         // given
         videoReportRepository.save(createVideoReport("1", coach1, referee1, referee2, referee3, FIRST_REFEREE, true, now().minusDays(2).minusHours(1), false));
         videoReportRepository.save(createVideoReport("2", coach1, referee1, referee2, referee3, SECOND_REFEREE, true, now().minusDays(1), false));
@@ -51,10 +51,10 @@ class VideoReportRepositoryTest extends AbstractIntegrationTest {
         videoCommentRepository.save(videoComment("5", true));
 
         // when
-        var result = videoReportRepository.findReportIdsWithMissingReplies(now().minusDays(2));
+        var result = videoReportRepository.findReportIdsWithRequiredReplies(now().minusDays(2));
 
         // then
-        assertThat(result).hasSize(1).containsOnly("5");
+        assertThat(result).hasSize(2).containsOnly("1", "5");
     }
 
     private VideoReport createVideoReport(String id, Coach coach, Referee referee1, Referee referee2, Referee referee3, Reportee reportee,

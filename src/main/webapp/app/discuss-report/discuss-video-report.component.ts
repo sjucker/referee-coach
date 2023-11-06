@@ -202,7 +202,9 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
     }
 
     requiresReply(videoComment: VideoCommentDTO): boolean {
-        return (!this.isLoggedIn() || this.isReferee()) && videoComment.requiresReply && videoComment.replies.length < 1;
+        return (!this.isLoggedIn() || this.isReferee()) &&
+            videoComment.requiresReply &&
+            !videoComment.replies.some(videoComment => videoComment.repliedBy === this.dto?.referee);
     }
 
     flaggedForReply(videoComment: VideoCommentDTO): boolean {
