@@ -34,13 +34,10 @@ public interface VideoReportRepository extends JpaRepository<VideoReport, String
               and r.finished_at < ?1
               and r.reminder_sent = 0
               and c.requires_reply = 1
-              and not exists(select 1
-                             from video_report_comment_reply
-                             where video_report_comment_id = c.id
-                               and replied_by = ref.name);
+              and c.requires_reply = 1
             """,
             nativeQuery = true)
-    List<String> findReportIdsWithMissingReplies(LocalDateTime dateTime);
+    List<String> findReportIdsWithRequiredReplies(LocalDateTime dateTime);
 
     @Query(value = """
             select vr from VideoReport vr
