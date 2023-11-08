@@ -15,6 +15,7 @@
         <evaluator class="ch.qos.logback.classic.boolex.OnErrorEvaluator"/>
         <smtpHost>${smtphost}</smtpHost>
         <smtpPort>${smtpport}</smtpPort>
+        <starttls>true</starttls>
         <username>${smtpuser}</username>
         <password>${smtppassword}</password>
         <asynchronousSending>false</asynchronousSending>
