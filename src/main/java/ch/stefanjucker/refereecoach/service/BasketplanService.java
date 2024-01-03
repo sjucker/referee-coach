@@ -11,6 +11,7 @@ import ch.stefanjucker.refereecoach.dto.BasketplanGameDTO;
 import ch.stefanjucker.refereecoach.dto.RefereeDTO;
 import ch.stefanjucker.refereecoach.mapper.DTOMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -89,7 +90,7 @@ public class BasketplanService {
     private RefereeDTO getReferee(Node gameNode, String name) {
         Optional<String> refereeName = getAttributeValue(gameNode, name);
         if (refereeName.isPresent()) {
-            Optional<Referee> referee = refereeRepository.findByName(refereeName.get());
+            Optional<Referee> referee = refereeRepository.findByName(StringUtils.strip(refereeName.get()));
             if (referee.isPresent()) {
                 return DTO_MAPPER.toDTO(referee.get());
             } else {
