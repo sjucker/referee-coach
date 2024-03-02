@@ -5,30 +5,30 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.5</version>
+        <version>3.2.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ch.stefanjucker</groupId>
     <artifactId>referee-coach</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
-        <java.version>17</java.version>
-        <nodeVersion>v20.9.0</nodeVersion>
-        <npmVersion>10.1.0</npmVersion>
+        <java.version>21</java.version>
+        <nodeVersion>v20.11.1</nodeVersion>
+        <npmVersion>10.2.4</npmVersion>
 
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <jjwt.version>0.11.5</jjwt.version>
-        <poi.version>5.2.4</poi.version>
+        <poi.version>5.2.5</poi.version>
 
-        <testcontainers.version>1.19.1</testcontainers.version>
+        <testcontainers.version>1.19.6</testcontainers.version>
 
         <typescript-generator-maven-plugin.version>3.2.1263</typescript-generator-maven-plugin.version>
-        <frontend-maven-plugin.version>1.14.1</frontend-maven-plugin.version>
-        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
+        <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
         <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
-        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
 
         <sonar.organization>sjucker</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
