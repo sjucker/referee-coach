@@ -5,10 +5,10 @@ import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
 import static ch.stefanjucker.refereecoach.service.BasketplanService.Federation.SBL;
 import static javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING;
 
-import ch.stefanjucker.refereecoach.domain.Referee;
-import ch.stefanjucker.refereecoach.domain.repository.RefereeRepository;
+import ch.stefanjucker.refereecoach.domain.User;
+import ch.stefanjucker.refereecoach.domain.repository.UserRepository;
 import ch.stefanjucker.refereecoach.dto.BasketplanGameDTO;
-import ch.stefanjucker.refereecoach.dto.RefereeDTO;
+import ch.stefanjucker.refereecoach.dto.UserDTO;
 import ch.stefanjucker.refereecoach.mapper.DTOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -34,10 +34,10 @@ public class BasketplanService {
     private static final Pattern YOUTUBE_ID_PATTERN = Pattern.compile("v=([^&]+)");
     private static final String SEARCH_GAMES_URL = "https://www.basketplan.ch/showSearchGames.do?actionType=searchGames&gameNumber=%s&xmlView=true&perspective=de_default&federationId=%d";
 
-    private final RefereeRepository refereeRepository;
+    private final UserRepository userRepository;
 
-    public BasketplanService(RefereeRepository refereeRepository) {
-        this.refereeRepository = refereeRepository;
+    public BasketplanService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public Optional<BasketplanGameDTO> findGameByNumber(String gameNumber) {
@@ -87,10 +87,10 @@ public class BasketplanService {
         return Optional.empty();
     }
 
-    private RefereeDTO getReferee(Node gameNode, String name) {
+    private UserDTO getReferee(Node gameNode, String name) {
         Optional<String> refereeName = getAttributeValue(gameNode, name);
         if (refereeName.isPresent()) {
-            Optional<Referee> referee = refereeRepository.findByName(StringUtils.strip(refereeName.get()));
+            Optional<User> referee = userRepository.findByName(StringUtils.strip(refereeName.get()));
             if (referee.isPresent()) {
                 return DTO_MAPPER.toDTO(referee.get());
             } else {

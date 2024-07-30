@@ -8,7 +8,7 @@ import java.util.List;
 
 public record VideoReportDTO(@NotNull String id,
                              @NotNull BasketplanGameDTO basketplanGame,
-                             @NotNull CoachDTO coach,
+                             @NotNull UserDTO coach,
                              @NotNull Reportee reportee,
                              @NotNull CriteriaEvaluationDTO general,
                              @NotNull CriteriaEvaluationDTO image,

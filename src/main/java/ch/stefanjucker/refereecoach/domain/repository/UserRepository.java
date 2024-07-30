@@ -1,14 +1,16 @@
 package ch.stefanjucker.refereecoach.domain.repository;
 
-import ch.stefanjucker.refereecoach.domain.Coach;
+import ch.stefanjucker.refereecoach.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface CoachRepository extends JpaRepository<Coach, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<Coach> findByEmail(String email);
+    Optional<User> findByEmail(String email);
+
+    Optional<User> findByName(String name);
 
 }

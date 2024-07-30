@@ -221,6 +221,7 @@ export enum Federation {
 
 export enum UserRole {
     COACH = "COACH",
+    REFEREE_COACH = "REFEREE_COACH",
     REFEREE = "REFEREE",
 }
 

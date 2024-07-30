@@ -448,12 +448,16 @@ export class MainComponent implements OnInit {
         return this.authenticationService.isCoach();
     }
 
+    isRefereeCoach(): boolean {
+        return this.authenticationService.isRefereeCoach();
+    }
+
     isReferee(): boolean {
         return this.authenticationService.isReferee();
     }
 
     get displayedColumns(): string[] {
-        if (this.isCoach()) {
+        if (this.isCoach() || this.isRefereeCoach()) {
             return ['finished', 'date', 'gameNumber', 'competition', 'teams', 'coach', 'reportee', 'edit', 'view', 'copy', 'delete'];
         } else {
             return ['date', 'gameNumber', 'competition', 'teams', 'coach', 'view'];

@@ -12,12 +12,12 @@ public record OverviewDTO(
         @NotNull String competition,
         @NotNull String teamA,
         @NotNull String teamB,
-        CoachDTO coach,
+        UserDTO coach,
         Reportee reportee,
-        RefereeDTO relevantReferee,
-        RefereeDTO referee1,
-        RefereeDTO referee2,
-        RefereeDTO referee3,
+        UserDTO relevantReferee,
+        UserDTO referee1,
+        UserDTO referee2,
+        UserDTO referee3,
         @NotNull Set<Long> relevantRefereeIds,
         boolean finished
 ) {

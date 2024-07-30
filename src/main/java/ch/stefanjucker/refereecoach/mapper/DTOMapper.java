@@ -3,18 +3,16 @@ package ch.stefanjucker.refereecoach.mapper;
 import static ch.stefanjucker.refereecoach.util.DateUtil.now;
 
 import ch.stefanjucker.refereecoach.domain.BasketplanGame;
-import ch.stefanjucker.refereecoach.domain.Coach;
 import ch.stefanjucker.refereecoach.domain.CriteriaEvaluation;
-import ch.stefanjucker.refereecoach.domain.Referee;
 import ch.stefanjucker.refereecoach.domain.Tags;
+import ch.stefanjucker.refereecoach.domain.User;
 import ch.stefanjucker.refereecoach.domain.VideoComment;
 import ch.stefanjucker.refereecoach.domain.VideoCommentReply;
 import ch.stefanjucker.refereecoach.domain.VideoReport;
 import ch.stefanjucker.refereecoach.dto.BasketplanGameDTO;
-import ch.stefanjucker.refereecoach.dto.CoachDTO;
-import ch.stefanjucker.refereecoach.dto.RefereeDTO;
 import ch.stefanjucker.refereecoach.dto.Reportee;
 import ch.stefanjucker.refereecoach.dto.TagDTO;
+import ch.stefanjucker.refereecoach.dto.UserDTO;
 import ch.stefanjucker.refereecoach.dto.VideoCommentDTO;
 import ch.stefanjucker.refereecoach.dto.VideoCommentReplyDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDTO;
@@ -29,9 +27,7 @@ public interface DTOMapper {
 
     DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
-    RefereeDTO toDTO(Referee referee);
-
-    CoachDTO toDTO(Coach coach);
+    UserDTO toDTO(User referee);
 
     @Mapping(target = "videoComments", source = "videoCommentDTOs")
     @Mapping(target = "otherReportees", source = "otherReportees")
@@ -69,10 +65,10 @@ public interface DTOMapper {
 
     @Mapping(target = "passwordResetToken", ignore = true)
     @Mapping(target = "password", ignore = true)
-    @Mapping(target = "level", ignore = true)
     @Mapping(target = "lastLogin", ignore = true)
     @Mapping(target = "email", ignore = true)
-    Referee fromDTO(RefereeDTO dto);
+    @Mapping(target = "admin", ignore = true)
+    User fromDTO(UserDTO dto);
 
     TagDTO toDTO(Tags tags);
 

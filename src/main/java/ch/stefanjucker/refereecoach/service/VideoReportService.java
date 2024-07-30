@@ -9,9 +9,7 @@ import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
-import ch.stefanjucker.refereecoach.domain.Coach;
-import ch.stefanjucker.refereecoach.domain.HasLogin;
-import ch.stefanjucker.refereecoach.domain.HasNameEmail;
+import ch.stefanjucker.refereecoach.domain.User;
 import ch.stefanjucker.refereecoach.domain.VideoComment;
 import ch.stefanjucker.refereecoach.domain.VideoCommentReply;
 import ch.stefanjucker.refereecoach.domain.VideoReport;
@@ -78,7 +76,10 @@ public class VideoReportService {
         this.environment = environment;
     }
 
-    public VideoReportDTO create(Federation federation, String gameNumber, String youtubeId, Reportee reportee, Coach coach) {
+    public VideoReportDTO create(Federation federation, String gameNumber, String youtubeId, Reportee reportee, User coach) {
+        if (!coach.isCoach()) {
+            throw new IllegalStateException("user %s is not a coach!".formatted(coach));
+        }
         var game = basketplanService.findGameByNumber(federation, gameNumber).orElseThrow();
 
         var videoReport = new VideoReport();
@@ -103,7 +104,7 @@ public class VideoReportService {
                                     .toList();
     }
 
-    public VideoReportDTO copy(String sourceId, Reportee reportee, Coach coach) {
+    public VideoReportDTO copy(String sourceId, Reportee reportee, User coach) {
         var source = videoReportRepository.findById(sourceId).orElseThrow();
 
         var copy = DTO_MAPPER.copy(source);
@@ -124,7 +125,7 @@ public class VideoReportService {
         return DTO_MAPPER.toDTO(newVideoReport, newComments, getOtherReportees(newVideoReport));
     }
 
-    public void copyVideoComment(Long sourceId, Reportee reportee, Coach coach) {
+    public void copyVideoComment(Long sourceId, Reportee reportee, User coach) {
         // TODO check that comment does not yet exists in other report
         var source = videoCommentRepository.getReferenceById(sourceId);
         var gameNumber = videoReportRepository.getReferenceById(source.getVideoReportId()).getBasketplanGame().getGameNumber();
@@ -149,7 +150,7 @@ public class VideoReportService {
     }
 
     @Transactional
-    public VideoReportDTO update(String id, VideoReportDTO dto, Coach coach) {
+    public VideoReportDTO update(String id, VideoReportDTO dto, User coach) {
         var videoReport = videoReportRepository.findById(id).orElseThrow();
         if (!videoReport.getCoach().getEmail().equals(coach.getEmail())) {
             log.error("user {} tried to update video-report {} that does not belong to them", coach, videoReport);
@@ -234,7 +235,7 @@ public class VideoReportService {
                                     .map(videoReport -> DTO_MAPPER.toDTO(videoReport, videoCommentDTOs, getOtherReportees(videoReport)));
     }
 
-    public void delete(String id, Coach coach) {
+    public void delete(String id, User coach) {
         // verify, that us is allowed to delete this video report
         var videoReport = videoReportRepository.findById(id).orElseThrow();
         if (coach.isAdmin() || isUnfinishedReportOwnedByUser(videoReport, coach)) {
@@ -270,11 +271,11 @@ public class VideoReportService {
                                                             .toList());
     }
 
-    private boolean isUnfinishedReportOwnedByUser(VideoReport videoReport, Coach coach) {
+    private boolean isUnfinishedReportOwnedByUser(VideoReport videoReport, User coach) {
         return !videoReport.isFinished() && videoReport.getCoach().getEmail().equals(coach.getEmail());
     }
 
-    public void addReplies(HasLogin user, String id, CreateRepliesDTO dto) {
+    public void addReplies(User user, String id, CreateRepliesDTO dto) {
         var videoReport = videoReportRepository.findById(id).orElseThrow();
 
         String repliedBy;
@@ -310,11 +311,12 @@ public class VideoReportService {
         // user != coach => another coach replied
         // in both cases send to the coach
         if (user == null || user.isReferee() || (user.isCoach() && !user.getId().equals(videoReport.getCoach().getId()))) {
+            // TODO
             sendDiscussionEmail(repliedBy, videoReport.getCoach(), videoReport.getId(), newCommentsMade);
         }
     }
 
-    private void sendDiscussionEmail(String repliedBy, HasNameEmail recipient, String reportId, boolean newCommentsMade) {
+    private void sendDiscussionEmail(String repliedBy, User recipient, String reportId, boolean newCommentsMade) {
         var simpleMessage = new SimpleMailMessage();
         try {
             simpleMessage.setSubject("[Referee Coach] New Video Report Discussion");
@@ -369,7 +371,7 @@ public class VideoReportService {
         }
     }
 
-    private void sendReminderEmail(HasNameEmail recipient, String reportId) {
+    private void sendReminderEmail(User recipient, String reportId) {
         var simpleMessage = new SimpleMailMessage();
         try {
             simpleMessage.setSubject("[Referee Coach] Reminder Required Replies");

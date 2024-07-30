@@ -8,7 +8,6 @@ import static java.util.Comparator.nullsLast;
 
 import ch.stefanjucker.refereecoach.domain.repository.GameDiscussionRepository;
 import ch.stefanjucker.refereecoach.domain.repository.VideoReportRepository;
-import ch.stefanjucker.refereecoach.dto.CoachDTO;
 import ch.stefanjucker.refereecoach.dto.OverviewDTO;
 import ch.stefanjucker.refereecoach.dto.SearchRequestDTO;
 import ch.stefanjucker.refereecoach.dto.TagDTO;
@@ -57,7 +56,7 @@ public class SearchService {
                                                                   where t.tag_id in (:ids)
                                                                   group by r.game_number, r.competition, r.date, c.timestamp, c.comment, r.youtube_id
                                                                   order by r.date desc
-                                           """,
+                                          """,
                                   parameters,
                                   (rs, rowNum) -> new VideoCommentDetailDTO(
                                           rs.getString("game_number"),
@@ -75,9 +74,10 @@ public class SearchService {
         var user = userService.find(email).orElseThrow();
         // TODO improvement: filter already in DB query
         return Stream.concat(getCoachingsStream(from, to), getGameDiscussionsStream(from, to))
-                     // coach see everything, referee only own reports
+                     // coach sees everything, referee only own reports
+                     // TODO check this
                      .filter(overview -> user.isCoach() || overview.relevantRefereeIds().contains(user.getId()))
-                     // referee only see finished reports
+                     // referee only sees finished reports
                      .filter(overview -> user.isCoach() || overview.isVisibleForReferee())
                      .sorted(comparing(OverviewDTO::date).reversed()
                                                          .thenComparing(OverviewDTO::gameNumber)
@@ -96,7 +96,7 @@ public class SearchService {
                                             videoReport.getBasketplanGame().getCompetition(),
                                             videoReport.getBasketplanGame().getTeamA(),
                                             videoReport.getBasketplanGame().getTeamB(),
-                                            new CoachDTO(videoReport.getCoach().getId(), videoReport.getCoach().getName()),
+                                            DTO_MAPPER.toDTO(videoReport.getCoach()),
                                             videoReport.getReportee(),
                                             DTO_MAPPER.toDTO(videoReport.relevantReferee()),
                                             DTO_MAPPER.toDTO(videoReport.getBasketplanGame().getReferee1()),

@@ -1,10 +1,7 @@
 package ch.stefanjucker.refereecoach.service;
 
-import ch.stefanjucker.refereecoach.domain.Coach;
-import ch.stefanjucker.refereecoach.domain.HasLogin;
-import ch.stefanjucker.refereecoach.domain.Referee;
-import ch.stefanjucker.refereecoach.domain.repository.CoachRepository;
-import ch.stefanjucker.refereecoach.domain.repository.RefereeRepository;
+import ch.stefanjucker.refereecoach.domain.User;
+import ch.stefanjucker.refereecoach.domain.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,32 +11,18 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private final CoachRepository coachRepository;
-    private final RefereeRepository refereeRepository;
+    private final UserRepository userRepository;
 
-    public UserService(CoachRepository coachRepository,
-                       RefereeRepository refereeRepository) {
-        this.coachRepository = coachRepository;
-        this.refereeRepository = refereeRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public Optional<? extends HasLogin> find(String email) {
-        Optional<Coach> coach = coachRepository.findByEmail(email);
-        if (coach.isPresent()) {
-            return coach;
-        }
-
-        return refereeRepository.findByEmail(email);
+    public Optional<User> find(String email) {
+        return userRepository.findByEmail(email);
     }
 
-    public void save(HasLogin user) {
-        if (user instanceof Coach coach) {
-            coachRepository.save(coach);
-        }
-
-        if (user instanceof Referee referee) {
-            refereeRepository.save(referee);
-        }
+    public void save(User user) {
+        userRepository.save(user);
     }
 
 }
