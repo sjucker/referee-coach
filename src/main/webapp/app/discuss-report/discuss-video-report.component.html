@@ -29,24 +29,24 @@
             </mat-card-header>
             <mat-card-content>
                 <div class="game-info-container">
-                    <span>Game Number: {{dto.basketplanGame.gameNumber}}</span>
-                    <span>Competition: {{dto.basketplanGame.competition}}</span>
-                    <span>Date: {{dto.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
-                    <span>Result: {{dto.basketplanGame.result}}</span>
-                    <span>Team A: {{dto.basketplanGame.teamA}}</span>
-                    <span>Team B: {{dto.basketplanGame.teamB}}</span>
+                    <span>Game Number: {{ dto.basketplanGame.gameNumber }}</span>
+                    <span>Competition: {{ dto.basketplanGame.competition }}</span>
+                    <span>Date: {{ dto.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
+                    <span>Result: {{ dto.basketplanGame.result }}</span>
+                    <span>Team A: {{ dto.basketplanGame.teamA }}</span>
+                    <span>Team B: {{ dto.basketplanGame.teamB }}</span>
                 </div>
                 <div class="game-info-container">
-                    <span>Coach: {{dto.coach.name}}</span>
+                    <span>Coach: {{ dto.coach.name }}</span>
                 </div>
                 <div class="game-info-container" *ngIf="is3PO()">
-                    <span>Crew Chief: {{dto.basketplanGame.referee1!.name}}</span>
-                    <span>Umpire 1: {{dto.basketplanGame.referee2!.name}}</span>
-                    <span>Umpire 2: {{dto.basketplanGame.referee3!.name}}</span>
+                    <span>Crew Chief: {{ dto.basketplanGame.referee1!.name }}</span>
+                    <span>Umpire 1: {{ dto.basketplanGame.referee2!.name }}</span>
+                    <span>Umpire 2: {{ dto.basketplanGame.referee3!.name }}</span>
                 </div>
                 <div class="game-info-container" *ngIf="is2PO()">
-                    <span>Umpire 1: {{dto.basketplanGame.referee1!.name}}</span>
-                    <span>Umpire 2: {{dto.basketplanGame.referee2!.name}}</span>
+                    <span>Umpire 1: {{ dto.basketplanGame.referee1!.name }}</span>
+                    <span>Umpire 2: {{ dto.basketplanGame.referee2!.name }}</span>
                 </div>
             </mat-card-content>
         </mat-card>
@@ -68,7 +68,7 @@
                                   [ngClass]="{'important': requiresReply(videoComment)}">
                             <mat-card-header>
                                 <mat-card-title [ngClass]="{'new-comment': !videoComment.id}">
-                                    <div>Video Comment #{{i + 1}}</div>
+                                    <div>Video Comment #{{ i + 1 }}</div>
                                     <mat-icon *ngIf="requiresReply(videoComment)"
                                               class="important"
                                               matTooltip="This comment requires a reply from you.">priority_high
@@ -79,17 +79,17 @@
                                 </mat-card-title>
                             </mat-card-header>
                             <mat-card-content *ngIf="videoComment.id">
-                                <p>{{videoComment.comment}}</p>
+                                <p>{{ videoComment.comment }}</p>
                                 <hr *ngIf="videoComment.replies.length > 0">
                                 <div *ngFor="let reply of videoComment.replies">
                                     <div [class]="reply.id === 0 ? 'new-reply' : ''">
-                                        <span class="repliedBy">{{reply.repliedBy}}</span>
-                                        <span class="repliedAt">{{reply.repliedAt | date:'dd.MM.yyyy'}}</span>
+                                        <span class="repliedBy">{{ reply.repliedBy }}</span>
+                                        <span class="repliedAt">{{ reply.repliedAt | date:'dd.MM.yyyy' }}</span>
                                         <button mat-icon-button (click)="deleteReply(videoComment, reply)" *ngIf="reply.id === 0">
                                             <mat-icon color="accent">delete</mat-icon>
                                         </button>
                                     </div>
-                                    <p class="reply">{{reply.reply}}</p>
+                                    <p class="reply">{{ reply.reply }}</p>
                                 </div>
                             </mat-card-content>
                             <mat-card-content *ngIf="!videoComment.id">

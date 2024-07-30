@@ -27,24 +27,24 @@
         </mat-card-header>
         <mat-card-content>
             <div class="game-info-container">
-                <span>Game Number: {{report.basketplanGame.gameNumber}}</span>
-                <span>Competition: {{report.basketplanGame.competition}}</span>
-                <span>Date: {{report.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
-                <span>Result: {{report.basketplanGame.result}}</span>
-                <span>Team A: {{report.basketplanGame.teamA}}</span>
-                <span>Team B: {{report.basketplanGame.teamB}}</span>
+                <span>Game Number: {{ report.basketplanGame.gameNumber }}</span>
+                <span>Competition: {{ report.basketplanGame.competition }}</span>
+                <span>Date: {{ report.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
+                <span>Result: {{ report.basketplanGame.result }}</span>
+                <span>Team A: {{ report.basketplanGame.teamA }}</span>
+                <span>Team B: {{ report.basketplanGame.teamB }}</span>
             </div>
             <div class="game-info-container">
-                <span>Coach: {{report.coach.name}}</span>
+                <span>Coach: {{ report.coach.name }}</span>
             </div>
             <div class="game-info-container" *ngIf="is3PO()">
-                <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Crew Chief: {{report.basketplanGame.referee1!.name}}</span>
-                <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 1: {{report.basketplanGame.referee2!.name}}</span>
-                <span [ngClass]="isThirdUmpire() ? 'reportee' : ''">Umpire 2: {{report.basketplanGame.referee3!.name}}</span>
+                <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Crew Chief: {{ report.basketplanGame.referee1!.name }}</span>
+                <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 1: {{ report.basketplanGame.referee2!.name }}</span>
+                <span [ngClass]="isThirdUmpire() ? 'reportee' : ''">Umpire 2: {{ report.basketplanGame.referee3!.name }}</span>
             </div>
             <div class="game-info-container" *ngIf="is2PO()">
-                <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Referee 1: {{report.basketplanGame.referee1!.name}}</span>
-                <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Referee 2: {{report.basketplanGame.referee2!.name}}</span>
+                <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Referee 1: {{ report.basketplanGame.referee1!.name }}</span>
+                <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Referee 2: {{ report.basketplanGame.referee2!.name }}</span>
             </div>
         </mat-card-content>
     </mat-card>
@@ -202,7 +202,7 @@
                     [title]="'Overall'"
                     [dto]="report.general"
                     (changed)="onChange()"></app-video-report-rating>
-            | Average of all critera: {{getAverage() | number: '1.1-1'}}
+            | Average of all critera: {{ getAverage() | number: '1.1-1' }}
         </mat-card-content>
     </mat-card>
 

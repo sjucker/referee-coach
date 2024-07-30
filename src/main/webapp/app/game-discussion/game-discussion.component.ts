@@ -76,7 +76,7 @@ export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy
     @HostListener('window:beforeunload', ['$event'])
     handleClose($event: BeforeUnloadEvent) {
         if (this.hasUnsavedComments()) {
-            $event.returnValue = 'unsavedChanges';
+            $event.preventDefault();
         }
     }
 

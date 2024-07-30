@@ -2,7 +2,7 @@
     <mat-label>Tags</mat-label>
     <mat-chip-grid #chipList aria-label="Tags">
         <mat-chip-row *ngFor="let tag of selectedTags" (removed)="removeTag(tag)">
-            {{tag.name}}
+            {{ tag.name }}
             <button matChipRemove>
                 <mat-icon>cancel</mat-icon>
             </button>
@@ -15,7 +15,7 @@
     </mat-chip-grid>
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectTag($event)">
         <mat-option *ngFor="let tag of filteredTags" [value]="tag">
-            {{tag.name}}
+            {{ tag.name }}
         </mat-option>
     </mat-autocomplete>
 </mat-form-field>

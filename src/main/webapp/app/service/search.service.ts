@@ -6,16 +6,16 @@ import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class SearchService {
 
-  private baseUrl = environment.baseUrl;
+    private baseUrl = environment.baseUrl;
 
-  constructor(private readonly httpClient: HttpClient) {
-  }
+    constructor(private readonly httpClient: HttpClient) {
+    }
 
-  find(from: DateTime, to: DateTime): Observable<OverviewDTO[]> {
-    return this.httpClient.get<OverviewDTO[]>(`${this.baseUrl}/video-report?from=${from.toFormat('yyyy-MM-dd')}&to=${to.toFormat('yyyy-MM-dd')}`);
-  }
+    find(from: DateTime, to: DateTime): Observable<OverviewDTO[]> {
+        return this.httpClient.get<OverviewDTO[]>(`${this.baseUrl}/video-report?from=${from.toFormat('yyyy-MM-dd')}&to=${to.toFormat('yyyy-MM-dd')}`);
+    }
 }

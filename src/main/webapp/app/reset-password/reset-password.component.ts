@@ -30,7 +30,9 @@ export class ResetPasswordComponent implements OnInit {
         this.token = this.route.snapshot.paramMap.get('token');
 
         if (!this.email || !this.token) {
-            this.router.navigate(['/']).then();
+            this.router.navigate(['/']).catch(reason => {
+                console.error(reason);
+            });
         }
     }
 

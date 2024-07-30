@@ -411,7 +411,9 @@ export class MainComponent implements OnInit {
 
     logout() {
         this.authenticationService.logout();
-        this.router.navigate([LOGIN_PATH])
+        this.router.navigate([LOGIN_PATH]).catch(reason => {
+            console.error(reason);
+        });
     }
 
     dateFilterChanged() {

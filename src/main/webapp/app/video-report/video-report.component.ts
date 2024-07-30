@@ -51,7 +51,9 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
             this.videoReportService.getVideoReport(id).subscribe({
                 next: dto => {
                     if (dto.finished) {
-                        this.router.navigate([VIEW_PATH, dto.id]);
+                        this.router.navigate([VIEW_PATH, dto.id]).catch(reason => {
+                            console.error(reason);
+                        });
                     }
                     this.report = dto;
                 },
@@ -84,7 +86,7 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
     @HostListener('window:beforeunload', ['$event'])
     handleClose($event: BeforeUnloadEvent) {
         if (this.unsavedChanges) {
-            $event.returnValue = 'unsavedChanges';
+            $event.preventDefault();
         }
     }
 
@@ -132,7 +134,9 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
                             this.unsavedChanges = false;
                             this.saving = false;
                             if (response.finished) {
-                                this.router.navigate([VIEW_PATH, response.id]);
+                                this.router.navigate([VIEW_PATH, response.id]).catch(reason => {
+                                    console.error(reason);
+                                });
                             }
                         },
                         error: () => {

@@ -11,7 +11,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatCardModule} from "@angular/material/card";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from "@angular/common/http";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatIconModule} from "@angular/material/icon";
 import {VideoReportComponent} from './video-report/video-report.component';
@@ -79,8 +79,7 @@ import {ResetPasswordComponent} from './reset-password/reset-password.component'
         ForgotPasswordComponent,
         ResetPasswordComponent,
     ],
-    imports: [
-        BrowserModule,
+    bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         YouTubePlayerModule,
@@ -90,7 +89,6 @@ import {ResetPasswordComponent} from './reset-password/reset-password.component'
         MatInputModule,
         MatCardModule,
         FormsModule,
-        HttpClientModule,
         MatGridListModule,
         MatIconModule,
         MatRadioModule,
@@ -109,9 +107,7 @@ import {ResetPasswordComponent} from './reset-password/reset-password.component'
         MatLuxonDateModule,
         MatCheckboxModule,
         MatChipsModule,
-        MatAutocompleteModule
-    ],
-    providers: [
+        MatAutocompleteModule], providers: [
         {provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true},
         {
             provide: MAT_DATE_FORMATS, useValue: {
@@ -125,8 +121,9 @@ import {ResetPasswordComponent} from './reset-password/reset-password.component'
                     monthYearA11yLabel: 'MMMM yyyy',
                 },
             }
-        }],
-    bootstrap: [AppComponent]
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
 })
 export class AppModule {
 }
