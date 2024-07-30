@@ -79,7 +79,11 @@ import {ResetPasswordComponent} from './reset-password/reset-password.component'
         ForgotPasswordComponent,
         ResetPasswordComponent,
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
+    bootstrap: [
+        AppComponent
+    ],
+    imports: [
+        BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         YouTubePlayerModule,
@@ -107,7 +111,9 @@ import {ResetPasswordComponent} from './reset-password/reset-password.component'
         MatLuxonDateModule,
         MatCheckboxModule,
         MatChipsModule,
-        MatAutocompleteModule], providers: [
+        MatAutocompleteModule
+    ],
+    providers: [
         {provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true},
         {
             provide: MAT_DATE_FORMATS, useValue: {
