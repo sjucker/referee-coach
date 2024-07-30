@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  referee-coach-db:
+    image: postgres:16.3
+    environment:
+      - POSTGRES_USER=referee-coach
+      - POSTGRES_PASSWORD=referee-coach
+      - POSTGRES_DB=referee-coach
+    ports:
+      - "5432:5432"
