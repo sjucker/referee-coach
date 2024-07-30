@@ -18,27 +18,27 @@
             </mat-card-header>
             <mat-card-content>
                 <div class="game-info-container">
-                    <span>Game Number: {{dto.basketplanGame.gameNumber}}</span>
-                    <span>Competition: {{dto.basketplanGame.competition}}</span>
-                    <span>Date: {{dto.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
-                    <span>Result: {{dto.basketplanGame.result}}</span>
-                    <span>Team A: {{dto.basketplanGame.teamA}}</span>
-                    <span>Team B: {{dto.basketplanGame.teamB}}</span>
+                    <span>Game Number: {{ dto.basketplanGame.gameNumber }}</span>
+                    <span>Competition: {{ dto.basketplanGame.competition }}</span>
+                    <span>Date: {{ dto.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
+                    <span>Result: {{ dto.basketplanGame.result }}</span>
+                    <span>Team A: {{ dto.basketplanGame.teamA }}</span>
+                    <span>Team B: {{ dto.basketplanGame.teamB }}</span>
                 </div>
                 <div class="game-info-container">
-                    <span>Coach: {{dto.coach.name}}</span>
+                    <span>Coach: {{ dto.coach.name }}</span>
                 </div>
                 <div class="game-info-container" *ngIf="is3PO()">
-                    <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Crew Chief: {{dto.basketplanGame.referee1!.name}}</span>
-                    <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 1: {{dto.basketplanGame.referee2!.name}}</span>
-                    <span [ngClass]="isThirdUmpire() ? 'reportee' : ''">Umpire 2: {{dto.basketplanGame.referee3!.name}}</span>
+                    <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Crew Chief: {{ dto.basketplanGame.referee1!.name }}</span>
+                    <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 1: {{ dto.basketplanGame.referee2!.name }}</span>
+                    <span [ngClass]="isThirdUmpire() ? 'reportee' : ''">Umpire 2: {{ dto.basketplanGame.referee3!.name }}</span>
                 </div>
                 <div class="game-info-container" *ngIf="is2PO()">
-                    <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Umpire 1: {{dto.basketplanGame.referee1!.name}}</span>
-                    <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 2: {{dto.basketplanGame.referee2!.name}}</span>
+                    <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Umpire 1: {{ dto.basketplanGame.referee1!.name }}</span>
+                    <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 2: {{ dto.basketplanGame.referee2!.name }}</span>
                 </div>
                 <div *ngIf="dto.version > 1">
-                    <p>Overall Rating: {{dto.general.rating}}</p>
+                    <p>Overall Rating: {{ dto.general.rating }}</p>
                 </div>
             </mat-card-content>
         </mat-card>
@@ -48,7 +48,7 @@
                 <mat-card-title>General Comment</mat-card-title>
             </mat-card-header>
             <mat-card-content>
-                <p>{{dto.general.comment}}</p>
+                <p>{{ dto.general.comment }}</p>
             </mat-card-content>
         </mat-card>
 
@@ -58,8 +58,8 @@
                     <mat-card-title>Image, Approach</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                    <p>{{dto.image.comment}}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{dto.image.rating}}</p>
+                    <p>{{ dto.image.comment }}</p>
+                    <p *ngIf="dto.version > 1">Rating: {{ dto.image.rating }}</p>
                 </mat-card-content>
             </mat-card>
 
@@ -68,8 +68,8 @@
                     <mat-card-title>Fitness Condition</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                    <p>{{dto.fitness.comment}}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{dto.fitness.rating}}</p>
+                    <p>{{ dto.fitness.comment }}</p>
+                    <p *ngIf="dto.version > 1">Rating: {{ dto.fitness.rating }}</p>
                 </mat-card-content>
             </mat-card>
 
@@ -79,8 +79,8 @@
                     <mat-card-title *ngIf="is3PO()">3PO Mechanics & Individual Officiating Techniques</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                    <p>{{dto.mechanics.comment}}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{dto.mechanics.rating}}</p>
+                    <p>{{ dto.mechanics.comment }}</p>
+                    <p *ngIf="dto.version > 1">Rating: {{ dto.mechanics.rating }}</p>
                 </mat-card-content>
             </mat-card>
         </div>
@@ -92,8 +92,8 @@
                     <mat-card-title>Critera: Fouls</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                    <p>{{dto.fouls.comment}}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{dto.fouls.rating}}</p>
+                    <p>{{ dto.fouls.comment }}</p>
+                    <p *ngIf="dto.version > 1">Rating: {{ dto.fouls.rating }}</p>
                 </mat-card-content>
             </mat-card>
 
@@ -102,8 +102,8 @@
                     <mat-card-title>Critera: Violations</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                    <p>{{dto.violations.comment}}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{dto.violations.rating}}</p>
+                    <p>{{ dto.violations.comment }}</p>
+                    <p *ngIf="dto.version > 1">Rating: {{ dto.violations.rating }}</p>
                 </mat-card-content>
             </mat-card>
 
@@ -112,8 +112,8 @@
                     <mat-card-title>Game Control and Management</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                    <p>{{dto.gameManagement.comment}}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{dto.gameManagement.rating}}</p>
+                    <p>{{ dto.gameManagement.comment }}</p>
+                    <p *ngIf="dto.version > 1">Rating: {{ dto.gameManagement.rating }}</p>
                 </mat-card-content>
             </mat-card>
         </div>
@@ -123,13 +123,13 @@
                 <mat-card-header>
                     <mat-card-title>Points to Keep</mat-card-title>
                 </mat-card-header>
-                <mat-card-content><p>{{dto.pointsToKeepComment}}</p></mat-card-content>
+                <mat-card-content><p>{{ dto.pointsToKeepComment }}</p></mat-card-content>
             </mat-card>
             <mat-card appearance="outlined" style="flex: 1">
                 <mat-card-header>
                     <mat-card-title>Points to Improve</mat-card-title>
                 </mat-card-header>
-                <mat-card-content><p>{{dto.pointsToImproveComment}}</p></mat-card-content>
+                <mat-card-content><p>{{ dto.pointsToImproveComment }}</p></mat-card-content>
             </mat-card>
         </div>
         <mat-card appearance="outlined" *ngIf="!dto.textOnly">
@@ -146,7 +146,7 @@
                                   [ngClass]="{'important': requiresReply(videoComment)}">
                             <mat-card-header>
                                 <mat-card-title>
-                                    <div>Video Comment #{{i + 1}}</div>
+                                    <div>Video Comment #{{ i + 1 }}</div>
                                     <mat-icon *ngIf="requiresReply(videoComment)"
                                               class="important"
                                               matTooltip="This comment requires a reply from you. Switch to the discussion-mode to do so.">priority_high
@@ -158,7 +158,7 @@
                                 </mat-card-title>
                             </mat-card-header>
                             <mat-card-content>
-                                <p>{{videoComment.comment}}</p>
+                                <p>{{ videoComment.comment }}</p>
                             </mat-card-content>
                             <mat-card-actions>
                                 <button (click)="play(videoComment.timestamp)" color="accent" mat-stroked-button>

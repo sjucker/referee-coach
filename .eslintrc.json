@@ -15,9 +15,6 @@
         ],
         "createDefaultProgram": true
       },
-      "plugins": [
-        "deprecation"
-      ],
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -40,8 +37,7 @@
             "prefix": "app",
             "style": "kebab-case"
           }
-        ],
-        "deprecation/deprecation": "error"
+        ]
       }
     },
     {

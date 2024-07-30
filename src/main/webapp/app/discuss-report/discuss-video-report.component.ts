@@ -77,7 +77,7 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
     @HostListener('window:beforeunload', ['$event'])
     handleClose($event: BeforeUnloadEvent) {
         if (this.hasUnsavedReplies()) {
-            $event.returnValue = 'hasUnsavedReplies';
+            $event.preventDefault();
         }
     }
 

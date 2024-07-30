@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Reply to Video Comment</h2>
 <mat-dialog-content class="mat-typography">
     <p></p>
-    <p *ngIf="!isLoggedIn()">You are replying as {{data.referee}}.<br/>If you are a coach, please login first!</p>
+    <p *ngIf="!isLoggedIn()">You are replying as {{ data.referee }}.<br/>If you are a coach, please login first!</p>
     <mat-form-field appearance="fill" color="accent">
         <mat-label>Your Reply</mat-label>
         <textarea [(ngModel)]="reply"

@@ -1,12 +1,12 @@
-<h2 mat-dialog-title>{{title}}</h2>
+<h2 mat-dialog-title>{{ title }}</h2>
 <mat-dialog-content class="mat-typography">
     <mat-form-field appearance="fill">
         <mat-label>Select Referee</mat-label>
         <mat-select [(value)]="reportee">
-            <mat-option *ngFor="let r of reportees" [value]="r.reportee">{{r.name}}</mat-option>
+            <mat-option *ngFor="let r of reportees" [value]="r.reportee">{{ r.name }}</mat-option>
         </mat-select>
     </mat-form-field>
-    <p>{{description}}</p>
+    <p>{{ description }}</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button mat-flat-button [mat-dialog-close]="null">Cancel</button>
