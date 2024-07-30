@@ -2,13 +2,12 @@ package ch.stefanjucker.refereecoach;
 
 import static ch.stefanjucker.refereecoach.Fixtures.coach;
 import static ch.stefanjucker.refereecoach.Fixtures.referee;
+import static ch.stefanjucker.refereecoach.Fixtures.refereeCoach;
 import static org.mockito.Mockito.mock;
 
-import ch.stefanjucker.refereecoach.domain.Coach;
-import ch.stefanjucker.refereecoach.domain.Referee;
-import ch.stefanjucker.refereecoach.domain.repository.CoachRepository;
+import ch.stefanjucker.refereecoach.domain.User;
 import ch.stefanjucker.refereecoach.domain.repository.GameDiscussionRepository;
-import ch.stefanjucker.refereecoach.domain.repository.RefereeRepository;
+import ch.stefanjucker.refereecoach.domain.repository.UserRepository;
 import ch.stefanjucker.refereecoach.domain.repository.VideoCommentReplyRepository;
 import ch.stefanjucker.refereecoach.domain.repository.VideoCommentRepository;
 import ch.stefanjucker.refereecoach.domain.repository.VideoReportRepository;
@@ -30,9 +29,7 @@ public abstract class AbstractIntegrationTest {
     static final MySQLContainer MYSQL_CONTAINER = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.32"));
 
     @Autowired
-    protected CoachRepository coachRepository;
-    @Autowired
-    protected RefereeRepository refereeRepository;
+    protected UserRepository userRepository;
     @Autowired
     protected GameDiscussionRepository gameDiscussionRepository;
     @Autowired
@@ -42,15 +39,16 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     protected VideoCommentReplyRepository videoCommentReplyRepository;
 
-    protected Coach coach1;
-    protected Coach coach2;
-    protected Referee referee1;
-    protected Referee referee2;
-    protected Referee referee3;
-    protected Referee referee4;
-    protected Referee referee5;
-    protected Referee referee6;
-    protected Referee referee7;
+    protected User coach1;
+    protected User coach2;
+    protected User refereeCoach1;
+    protected User referee1;
+    protected User referee2;
+    protected User referee3;
+    protected User referee4;
+    protected User referee5;
+    protected User referee6;
+    protected User referee7;
 
     @DynamicPropertySource
     static void dataSourceProperties(DynamicPropertyRegistry registry) {
@@ -72,15 +70,16 @@ public abstract class AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        coach1 = coachRepository.save(coach("Fabrizio Pizio"));
-        coach2 = coachRepository.save(coach("Caspar Schaudt"));
-        referee1 = refereeRepository.save(referee("Carr Ashley"));
-        referee2 = refereeRepository.save(referee("Balletta Davide"));
-        referee3 = refereeRepository.save(referee("Cid Prades Josep"));
-        referee4 = refereeRepository.save(referee("Michaelides Markos"));
-        referee5 = refereeRepository.save(referee("Demierre Martin"));
-        referee6 = refereeRepository.save(referee("Stojcev Bosko"));
-        referee7 = refereeRepository.save(referee("Vitalini Fabiano"));
+        coach1 = userRepository.save(coach("Fabrizio Pizio"));
+        coach2 = userRepository.save(coach("Caspar Schaudt"));
+        refereeCoach1 = userRepository.save(refereeCoach("Novakovic Slobodan"));
+        referee1 = userRepository.save(referee("Carr Ashley"));
+        referee2 = userRepository.save(referee("Balletta Davide"));
+        referee3 = userRepository.save(referee("Cid Prades Josep"));
+        referee4 = userRepository.save(referee("Michaelides Markos"));
+        referee5 = userRepository.save(referee("Demierre Martin"));
+        referee6 = userRepository.save(referee("Stojcev Bosko"));
+        referee7 = userRepository.save(referee("Vitalini Fabiano"));
     }
 
     @AfterEach
@@ -89,8 +88,7 @@ public abstract class AbstractIntegrationTest {
         videoCommentRepository.deleteAll();
         videoReportRepository.deleteAll();
         gameDiscussionRepository.deleteAll();
-        coachRepository.deleteAll();
-        refereeRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
 }

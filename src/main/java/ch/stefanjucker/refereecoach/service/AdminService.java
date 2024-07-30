@@ -1,9 +1,8 @@
 package ch.stefanjucker.refereecoach.service;
 
-import ch.stefanjucker.refereecoach.domain.Coach;
-import ch.stefanjucker.refereecoach.domain.repository.CoachRepository;
-import ch.stefanjucker.refereecoach.domain.repository.RefereeRepository;
-import ch.stefanjucker.refereecoach.dto.RefereeDTO;
+import ch.stefanjucker.refereecoach.domain.User;
+import ch.stefanjucker.refereecoach.domain.repository.UserRepository;
+import ch.stefanjucker.refereecoach.dto.UserDTO;
 import ch.stefanjucker.refereecoach.mapper.DTOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,23 +15,22 @@ public class AdminService {
 
     private static final DTOMapper DTO_MAPPER = DTOMapper.INSTANCE;
 
-    private final RefereeRepository refereeRepository;
-    private final CoachRepository coachRepository;
+    private final UserRepository userRepository;
 
-    public AdminService(RefereeRepository refereeRepository, CoachRepository coachRepository) {
-        this.refereeRepository = refereeRepository;
-        this.coachRepository = coachRepository;
+    public AdminService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public boolean isAdmin(String username) {
-        return coachRepository.findByEmail(username)
-                              .map(Coach::isAdmin)
-                              .orElse(false);
+        return userRepository.findByEmail(username)
+                             .map(User::isAdmin)
+                             .orElse(false);
     }
 
-    public List<RefereeDTO> getAllReferess() {
-        return refereeRepository.findAll().stream()
-                                .map(DTO_MAPPER::toDTO)
-                                .toList();
+    public List<UserDTO> getAllReferees() {
+        return userRepository.findAll().stream()
+                             .filter(User::isReferee)
+                             .map(DTO_MAPPER::toDTO)
+                             .toList();
     }
 }

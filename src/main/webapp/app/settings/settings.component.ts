@@ -48,7 +48,7 @@ export class SettingsComponent {
     }
 
     isCoach(): boolean {
-        return this.authenticationService.isCoach();
+        return this.authenticationService.isCoach() || this.authenticationService.isRefereeCoach();
     }
 
 }

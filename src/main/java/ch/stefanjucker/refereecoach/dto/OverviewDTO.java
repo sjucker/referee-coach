@@ -2,6 +2,7 @@ package ch.stefanjucker.refereecoach.dto;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Set;
 
 public record OverviewDTO(
@@ -12,12 +13,12 @@ public record OverviewDTO(
         @NotNull String competition,
         @NotNull String teamA,
         @NotNull String teamB,
-        CoachDTO coach,
+        UserDTO coach,
         Reportee reportee,
-        RefereeDTO relevantReferee,
-        RefereeDTO referee1,
-        RefereeDTO referee2,
-        RefereeDTO referee3,
+        UserDTO relevantReferee,
+        UserDTO referee1,
+        UserDTO referee2,
+        UserDTO referee3,
         @NotNull Set<Long> relevantRefereeIds,
         boolean finished
 ) {
@@ -32,6 +33,11 @@ public record OverviewDTO(
             case COACHING -> finished;
             case GAME_DISCUSSION -> true;
         };
+    }
+
+    public Optional<Long> getCoachId() {
+        // for game discussions not available
+        return Optional.ofNullable(coach).map(UserDTO::id);
     }
 
 }

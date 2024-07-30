@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {RefereeDTO, Reportee} from "../rest";
+import {Reportee, UserDTO} from "../rest";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 interface ReporteeSelection {
@@ -9,9 +9,9 @@ interface ReporteeSelection {
 
 export interface VideoReportCopyDialogData {
     reportee: Reportee;
-    referee1?: RefereeDTO;
-    referee2?: RefereeDTO;
-    referee3?: RefereeDTO;
+    referee1?: UserDTO;
+    referee2?: UserDTO;
+    referee3?: UserDTO;
     title: string;
     description: string;
 }

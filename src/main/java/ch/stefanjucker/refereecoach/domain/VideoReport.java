@@ -40,7 +40,7 @@ public class VideoReport {
 
     @OneToOne
     @JoinColumn(name = "coach_id")
-    private Coach coach;
+    private User coach;
 
     @Enumerated(STRING)
     @Column(nullable = false)
@@ -99,7 +99,7 @@ public class VideoReport {
 
     private boolean reminderSent;
 
-    public Referee relevantReferee() {
+    public User relevantReferee() {
         return switch (reportee) {
             case FIRST_REFEREE -> basketplanGame.getReferee1();
             case SECOND_REFEREE -> basketplanGame.getReferee2();

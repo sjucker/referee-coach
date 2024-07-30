@@ -29,7 +29,7 @@ public class BasketplanResource {
     }
 
     @GetMapping("/{federation}/{gameNumber}")
-    @Secured({"COACH"})
+    @Secured({"COACH", "REFEREE_COACH"})
     public ResponseEntity<BasketplanGameDTO> game(@PathVariable Federation federation, @PathVariable String gameNumber) {
         log.info("GET /game/{}/{}", federation.getId(), gameNumber);
 
@@ -41,7 +41,7 @@ public class BasketplanResource {
     }
 
     @GetMapping("/{federation}/{gameNumber}/referee")
-    @Secured({"REFEREE"})
+    @Secured({"REFEREE", "REFEREE_COACH"})
     public ResponseEntity<BasketplanGameDTO> gameForReferee(@AuthenticationPrincipal UserDetails principal,
                                                             @PathVariable Federation federation, @PathVariable String gameNumber) {
 

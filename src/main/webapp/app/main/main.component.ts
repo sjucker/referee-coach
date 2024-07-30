@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {BasketplanGameDTO, CoachDTO, GameDiscussionDTO, OfficiatingMode, OverviewDTO, RefereeDTO, Reportee, ReportType} from "../rest";
+import {BasketplanGameDTO, GameDiscussionDTO, OfficiatingMode, OverviewDTO, Reportee, ReportType, UserDTO} from "../rest";
 import {VideoReportService} from "../service/video-report.service";
 import {BasketplanService} from "../service/basketplan.service";
 import {Router} from "@angular/router";
@@ -306,7 +306,7 @@ export class MainComponent implements OnInit {
         }
     }
 
-    isCurrentUser(coach?: CoachDTO): boolean {
+    isCurrentUser(coach?: UserDTO): boolean {
         if (coach) {
             return coach.id === this.authenticationService.getUserId();
         } else {
@@ -314,7 +314,7 @@ export class MainComponent implements OnInit {
         }
     }
 
-    getCoach(coach?: CoachDTO): string {
+    getCoach(coach?: UserDTO): string {
         if (coach) {
             return coach.name;
         } else {
@@ -322,7 +322,7 @@ export class MainComponent implements OnInit {
         }
     }
 
-    getReferee(referee?: RefereeDTO): string {
+    getReferee(referee?: UserDTO): string {
         if (referee) {
             return referee.name;
         } else {
@@ -448,12 +448,16 @@ export class MainComponent implements OnInit {
         return this.authenticationService.isCoach();
     }
 
+    isRefereeCoach(): boolean {
+        return this.authenticationService.isRefereeCoach();
+    }
+
     isReferee(): boolean {
         return this.authenticationService.isReferee();
     }
 
     get displayedColumns(): string[] {
-        if (this.isCoach()) {
+        if (this.isCoach() || this.isRefereeCoach()) {
             return ['finished', 'date', 'gameNumber', 'competition', 'teams', 'coach', 'reportee', 'edit', 'view', 'copy', 'delete'];
         } else {
             return ['date', 'gameNumber', 'competition', 'teams', 'coach', 'view'];

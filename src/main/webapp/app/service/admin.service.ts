@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {RefereeDTO} from "../rest";
+import {UserDTO} from "../rest";
 import {environment} from "../../environments/environment";
 
 @Injectable({
@@ -14,8 +14,8 @@ export class AdminService {
     constructor(private readonly httpClient: HttpClient) {
     }
 
-    getAllReferees(): Observable<RefereeDTO[]> {
-        return this.httpClient.get<RefereeDTO[]>(`${this.baseUrl}/admin/referee`);
+    getAllReferees(): Observable<UserDTO[]> {
+        return this.httpClient.get<UserDTO[]>(`${this.baseUrl}/admin/referee`);
     }
 
 }

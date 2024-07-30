@@ -1,6 +1,9 @@
 package ch.stefanjucker.refereecoach.domain;
 
 import static ch.stefanjucker.refereecoach.dto.UserRole.COACH;
+import static ch.stefanjucker.refereecoach.dto.UserRole.REFEREE;
+import static ch.stefanjucker.refereecoach.dto.UserRole.REFEREE_COACH;
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ch.stefanjucker.refereecoach.dto.UserRole;
@@ -12,23 +15,25 @@ import lombok.ToString;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "login")
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Coach implements HasNameEmail, HasLogin {
-
+public class User {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -38,18 +43,29 @@ public class Coach implements HasNameEmail, HasLogin {
     @ToString.Exclude
     private String password;
 
-    @Column(nullable = false)
-    private boolean admin;
-
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
     @Column(name = "password_reset_token")
-    @ToString.Exclude
     private String passwordResetToken;
 
-    @Override
-    public UserRole getRole() {
-        return COACH;
+    @Column(nullable = false)
+    private boolean admin;
+
+    @Column(nullable = false)
+    @Enumerated(STRING)
+    private UserRole role;
+
+    public boolean isCoach() {
+        return role == COACH;
     }
+
+    public boolean isRefereeCoach() {
+        return role == REFEREE_COACH;
+    }
+
+    public boolean isReferee() {
+        return role == REFEREE || role == REFEREE_COACH;
+    }
+
 }

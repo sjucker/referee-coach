@@ -44,15 +44,15 @@ public class BasketplanGame {
 
     @OneToOne
     @JoinColumn(name = "referee1_id")
-    private Referee referee1;
+    private User referee1;
 
     @OneToOne
     @JoinColumn(name = "referee2_id")
-    private Referee referee2;
+    private User referee2;
 
     @OneToOne
     @JoinColumn(name = "referee3_id")
-    private Referee referee3;
+    private User referee3;
 
     // can be null if report is done without video comments, text-only
     @Column(name = "youtube_id")

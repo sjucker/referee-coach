@@ -31,22 +31,22 @@ public class GameDiscussion {
     @Embedded
     private BasketplanGame basketplanGame;
 
-    public Optional<Referee> referee1() {
+    public Optional<User> referee1() {
         return Optional.ofNullable(basketplanGame.getReferee1());
     }
 
-    public Optional<Referee> referee2() {
+    public Optional<User> referee2() {
         return Optional.ofNullable(basketplanGame.getReferee2());
     }
 
-    public Optional<Referee> referee3() {
+    public Optional<User> referee3() {
         return Optional.ofNullable(basketplanGame.getReferee3());
     }
 
     public Set<Long> relevantRefereeIds() {
-        return Stream.of(referee1().map(Referee::getId).orElse(0L),
-                         referee2().map(Referee::getId).orElse(0L),
-                         referee3().map(Referee::getId).orElse(0L))
+        return Stream.of(referee1().map(User::getId).orElse(0L),
+                         referee2().map(User::getId).orElse(0L),
+                         referee3().map(User::getId).orElse(0L))
                      .collect(toSet());
 
     }

@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.atIndex;
 
 import ch.stefanjucker.refereecoach.AbstractIntegrationTest;
-import ch.stefanjucker.refereecoach.domain.Coach;
+import ch.stefanjucker.refereecoach.domain.User;
 import ch.stefanjucker.refereecoach.domain.VideoComment;
 import ch.stefanjucker.refereecoach.domain.VideoReport;
 import ch.stefanjucker.refereecoach.dto.Reportee;
@@ -49,7 +49,7 @@ class VideoCommentRepositoryTest extends AbstractIntegrationTest {
                           .satisfies(videoComment -> assertThat(videoComment.getComment()).isEqualTo("Comment 1/1"), atIndex(0));
     }
 
-    private VideoReport createVideoReport(String id, Coach coach, String gameNumber, Reportee reportee) {
+    private VideoReport createVideoReport(String id, User coach, String gameNumber, Reportee reportee) {
         return videoReport(id, gameNumber, LocalDate.now(), coach, referee1, referee2, referee3, reportee);
     }
 
