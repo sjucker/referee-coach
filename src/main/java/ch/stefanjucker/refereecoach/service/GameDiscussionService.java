@@ -8,9 +8,7 @@ import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
 import ch.stefanjucker.refereecoach.domain.GameDiscussion;
 import ch.stefanjucker.refereecoach.domain.GameDiscussionComment;
 import ch.stefanjucker.refereecoach.domain.GameDiscussionCommentReply;
-import ch.stefanjucker.refereecoach.domain.HasLogin;
-import ch.stefanjucker.refereecoach.domain.HasNameEmail;
-import ch.stefanjucker.refereecoach.domain.Referee;
+import ch.stefanjucker.refereecoach.domain.User;
 import ch.stefanjucker.refereecoach.domain.repository.GameDiscussionCommentReplyRepository;
 import ch.stefanjucker.refereecoach.domain.repository.GameDiscussionCommentRepository;
 import ch.stefanjucker.refereecoach.domain.repository.GameDiscussionRepository;
@@ -64,7 +62,10 @@ public class GameDiscussionService {
         this.environment = environment;
     }
 
-    public GameDiscussionDTO create(Federation federation, String gameNumber, String youtubeId, HasLogin referee) {
+    public GameDiscussionDTO create(Federation federation, String gameNumber, String youtubeId, User referee) {
+        if (!referee.isReferee() && !referee.isRefereeCoach()) {
+            throw new IllegalStateException("user %s is not a referee!".formatted(referee));
+        }
         if (gameDiscussionRepository.findByBasketplanGameGameNumber(gameNumber).isPresent()) {
             throw new IllegalArgumentException("there exists already a game discussion for game number: %s".formatted(gameNumber));
         }
@@ -127,7 +128,7 @@ public class GameDiscussionService {
                                        ));
     }
 
-    public void addComments(String id, CreateGameDiscussionCommentDTO dto, HasLogin user) {
+    public void addComments(String id, CreateGameDiscussionCommentDTO dto, User user) {
         var gameDiscussion = gameDiscussionRepository.findById(id).orElseThrow();
         var repliedBy = user.getName();
 
@@ -151,13 +152,13 @@ public class GameDiscussionService {
         sendCopy(repliedBy, id);
     }
 
-    private void sendEmailIfNeeded(Referee otherReferee, HasLogin commenter, String repliedBy, String id) {
+    private void sendEmailIfNeeded(User otherReferee, User commenter, String repliedBy, String id) {
         if (otherReferee != null && (commenter.isCoach() || !otherReferee.getId().equals(commenter.getId()))) {
             sendEmail(repliedBy, otherReferee, id);
         }
     }
 
-    private void sendEmail(String repliedBy, HasNameEmail recipient, String gameDiscussionId) {
+    private void sendEmail(String repliedBy, User recipient, String gameDiscussionId) {
         var simpleMessage = new SimpleMailMessage();
         try {
             simpleMessage.setSubject("[Referee Coach] New Game Discussion Comments");

@@ -1,15 +1,16 @@
 package ch.stefanjucker.refereecoach;
 
-import static ch.stefanjucker.refereecoach.domain.Referee.RefereeLevel.GROUP_1;
 import static ch.stefanjucker.refereecoach.domain.VideoReport.CURRENT_VERSION;
 import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_2PO;
 import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
+import static ch.stefanjucker.refereecoach.dto.UserRole.COACH;
+import static ch.stefanjucker.refereecoach.dto.UserRole.REFEREE;
+import static ch.stefanjucker.refereecoach.dto.UserRole.REFEREE_COACH;
 import static ch.stefanjucker.refereecoach.util.DateUtil.now;
 
 import ch.stefanjucker.refereecoach.domain.BasketplanGame;
-import ch.stefanjucker.refereecoach.domain.Coach;
 import ch.stefanjucker.refereecoach.domain.GameDiscussion;
-import ch.stefanjucker.refereecoach.domain.Referee;
+import ch.stefanjucker.refereecoach.domain.User;
 import ch.stefanjucker.refereecoach.domain.VideoComment;
 import ch.stefanjucker.refereecoach.domain.VideoCommentReply;
 import ch.stefanjucker.refereecoach.domain.VideoReport;
@@ -22,20 +23,24 @@ public final class Fixtures {
     private Fixtures() {
     }
 
-    public static Coach coach(String email) {
-        return new Coach(null, email, email, "", false, null, null);
+    public static User coach(String email) {
+        return new User(null, email, email, "", null, null, false, COACH);
     }
 
-    public static Referee referee(String name) {
-        return new Referee(null, name, name, GROUP_1, "", null, null);
+    public static User referee(String name) {
+        return new User(null, name, name, "", null, null, false, REFEREE);
     }
 
-    public static VideoReport videoReport(String id, Coach coach, Referee referee1, Referee referee2, Referee referee3, Reportee reportee) {
+    public static User refereeCoach(String name) {
+        return new User(null, name, name, "", null, null, false, REFEREE_COACH);
+    }
+
+    public static VideoReport videoReport(String id, User coach, User referee1, User referee2, User referee3, Reportee reportee) {
         return videoReport(id, "23-00712", LocalDate.now().minusDays(2), coach, referee1, referee2, referee3, reportee);
     }
 
     public static VideoReport videoReport(String id, String gameNumber, LocalDate gameDate,
-                                          Coach coach, Referee referee1, Referee referee2, Referee referee3,
+                                          User coach, User referee1, User referee2, User referee3,
                                           Reportee reportee) {
         var videoReport = new VideoReport();
         videoReport.setId(id);
@@ -66,7 +71,7 @@ public final class Fixtures {
     }
 
     public static BasketplanGame basketplanGame(String gameNumber, LocalDate date,
-                                                Referee referee1, Referee referee2, Referee referee3) {
+                                                User referee1, User referee2, User referee3) {
         var basketplanGame = new BasketplanGame();
         basketplanGame.setGameNumber(gameNumber);
         basketplanGame.setDate(date);
@@ -83,7 +88,7 @@ public final class Fixtures {
     }
 
     public static GameDiscussion gameDiscussion(String id, String gameNumber, LocalDate gameDate,
-                                                Referee referee1, Referee referee2, Referee referee3) {
+                                                User referee1, User referee2, User referee3) {
         var gameDiscussion = new GameDiscussion();
         gameDiscussion.setId(id);
         gameDiscussion.setBasketplanGame(basketplanGame(gameNumber, gameDate, referee1, referee2, referee3));

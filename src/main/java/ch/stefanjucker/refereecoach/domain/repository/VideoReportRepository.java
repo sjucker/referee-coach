@@ -25,7 +25,7 @@ public interface VideoReportRepository extends JpaRepository<VideoReport, String
             select distinct r.id
             from video_report r
                      join video_report_comment c on c.video_report_id = r.id
-                     join referee ref on ref.id = case
+                     join login ref on ref.id = case
                                                       when r.reportee = 'FIRST_REFEREE' then r.referee1_id
                                                       when r.reportee = 'SECOND_REFEREE' then r.referee2_id
                                                       else r.referee3_id end

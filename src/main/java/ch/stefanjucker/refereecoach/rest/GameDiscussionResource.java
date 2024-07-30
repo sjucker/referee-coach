@@ -35,7 +35,7 @@ public class GameDiscussionResource {
     }
 
     @PostMapping
-    @Secured({"REFEREE"})
+    @Secured({"REFEREE", "REFEREE_COACH"})
     public ResponseEntity<GameDiscussionDTO> createGameDiscussion(@AuthenticationPrincipal UserDetails principal,
                                                                   @RequestBody @Valid CreateGameDiscussionDTO dto) {
         var referee = userService.find(principal.getUsername()).orElseThrow();
@@ -49,7 +49,7 @@ public class GameDiscussionResource {
     }
 
     @GetMapping(path = "/{id}")
-    @Secured({"COACH", "REFEREE"})
+    @Secured({"COACH", "REFEREE_COACH", "REFEREE"})
     public ResponseEntity<GameDiscussionDTO> getGameDiscussion(@AuthenticationPrincipal UserDetails principal,
                                                                @PathVariable String id) {
         var user = userService.find(principal.getUsername()).orElseThrow();
@@ -59,7 +59,7 @@ public class GameDiscussionResource {
     }
 
     @PostMapping(path = "/{id}/comment")
-    @Secured({"COACH", "REFEREE"})
+    @Secured({"COACH", "REFEREE_COACH", "REFEREE"})
     public ResponseEntity<VideoCommentReplyDTO> postComment(@AuthenticationPrincipal UserDetails principal,
                                                             @PathVariable String id,
                                                             @RequestBody @Valid CreateGameDiscussionCommentDTO dto) {

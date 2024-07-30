@@ -10,8 +10,7 @@ import static ch.stefanjucker.refereecoach.util.DateUtil.now;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.stefanjucker.refereecoach.AbstractIntegrationTest;
-import ch.stefanjucker.refereecoach.domain.Coach;
-import ch.stefanjucker.refereecoach.domain.Referee;
+import ch.stefanjucker.refereecoach.domain.User;
 import ch.stefanjucker.refereecoach.domain.VideoReport;
 import ch.stefanjucker.refereecoach.dto.Reportee;
 import org.junit.jupiter.api.Test;
@@ -57,7 +56,7 @@ class VideoReportRepositoryTest extends AbstractIntegrationTest {
         assertThat(result).hasSize(2).containsOnly("1", "5");
     }
 
-    private VideoReport createVideoReport(String id, Coach coach, Referee referee1, Referee referee2, Referee referee3, Reportee reportee,
+    private VideoReport createVideoReport(String id, User coach, User referee1, User referee2, User referee3, Reportee reportee,
                                           boolean finished, LocalDateTime finishedAt, boolean reminderSent) {
         var videoReport = videoReport(id, coach, referee1, referee2, referee3, reportee);
         videoReport.setFinished(finished);

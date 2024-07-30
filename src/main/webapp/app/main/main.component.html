@@ -2,7 +2,7 @@
     <mat-toolbar color="primary">
         <h1>Referee Coach</h1>
         <span class="spacer"></span>
-        <a routerLink="/search" mat-icon-button *ngIf="isCoach()">
+        <a routerLink="/search" mat-icon-button *ngIf="isCoach() || isRefereeCoach()">
             <mat-icon>search</mat-icon>
         </a>
         <a routerLink="/settings" mat-icon-button>
@@ -14,7 +14,7 @@
         </button>
     </mat-toolbar>
 
-    <mat-card appearance="outlined" *ngIf="isCoach()">
+    <mat-card appearance="outlined" *ngIf="isCoach() || isRefereeCoach()">
         <mat-card-content>
             <div class="search-container">
                 <form (ngSubmit)="searchGame()" role="form">
@@ -120,7 +120,7 @@
             <mat-progress-bar mode="indeterminate" *ngIf="!reportsLoaded"></mat-progress-bar>
 
             <table mat-table [dataSource]="dtos" *ngIf="reportsLoaded">
-                <ng-container matColumnDef="finished" *ngIf="isCoach()">
+                <ng-container matColumnDef="finished" *ngIf="isCoach() || isRefereeCoach()">
                     <th mat-header-cell *matHeaderCellDef class="show-gt-sm"></th>
                     <td mat-cell *matCellDef="let element" class="show-gt-sm">
                         <i *ngIf="element.finished" class="material-icons">check_circle_outline</i>
@@ -158,12 +158,12 @@
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="reportee" *ngIf="isCoach()">
+                <ng-container matColumnDef="reportee" *ngIf="isCoach() || isRefereeCoach()">
                     <th mat-header-cell *matHeaderCellDef>Referee</th>
                     <td mat-cell *matCellDef="let element">{{ getReferee(element.relevantReferee) }}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="edit" *ngIf="isCoach()">
+                <ng-container matColumnDef="edit" *ngIf="isCoach() || isRefereeCoach()">
                     <th mat-header-cell *matHeaderCellDef>Edit</th>
                     <td mat-cell *matCellDef="let element">
                         <button mat-icon-button (click)="edit(element.id, element.type)" *ngIf="isEditable(element)">
@@ -172,7 +172,7 @@
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="copy" *ngIf="isCoach()">
+                <ng-container matColumnDef="copy" *ngIf="isCoach() || isRefereeCoach()">
                     <th mat-header-cell *matHeaderCellDef>Copy</th>
                     <td mat-cell *matCellDef="let element">
                         <button mat-icon-button (click)="copy(element)" *ngIf="isCoaching(element)">
@@ -190,7 +190,7 @@
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="delete" *ngIf="isCoach()">
+                <ng-container matColumnDef="delete" *ngIf="isCoach() || isRefereeCoach()">
                     <th mat-header-cell *matHeaderCellDef class="show-gt-xs">Delete</th>
                     <td mat-cell *matCellDef="let element" class="show-gt-xs">
                         <button mat-icon-button (click)="delete(element)" *ngIf="isDeletable(element)">

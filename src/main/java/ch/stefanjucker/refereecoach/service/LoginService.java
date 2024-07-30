@@ -3,7 +3,7 @@ package ch.stefanjucker.refereecoach.service;
 import static ch.stefanjucker.refereecoach.util.DateUtil.now;
 
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
-import ch.stefanjucker.refereecoach.domain.HasLogin;
+import ch.stefanjucker.refereecoach.domain.User;
 import ch.stefanjucker.refereecoach.dto.ChangePasswordRequestDTO;
 import ch.stefanjucker.refereecoach.dto.LoginRequestDTO;
 import ch.stefanjucker.refereecoach.dto.LoginResponseDTO;
@@ -79,7 +79,7 @@ public class LoginService {
                 () -> log.warn("forgot password called for unknown user: {}", email));
     }
 
-    private void sendResetPasswordEmail(HasLogin user) {
+    private void sendResetPasswordEmail(User user) {
         log.info("sending forgot-password mail to {}", user.getEmail());
         try {
             var simpleMessage = new SimpleMailMessage();

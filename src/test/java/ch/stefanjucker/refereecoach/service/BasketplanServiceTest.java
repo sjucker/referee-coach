@@ -6,7 +6,7 @@ import static ch.stefanjucker.refereecoach.service.BasketplanService.Federation.
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import ch.stefanjucker.refereecoach.domain.repository.RefereeRepository;
+import ch.stefanjucker.refereecoach.domain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,21 +19,21 @@ import java.util.Optional;
 class BasketplanServiceTest {
 
     @Mock
-    private RefereeRepository refereeRepository;
+    private UserRepository userRepository;
 
     private BasketplanService basketplanService;
 
     @BeforeEach
     void setUp() {
-        basketplanService = new BasketplanService(refereeRepository);
+        basketplanService = new BasketplanService(userRepository);
     }
 
     @Test
     void findGameByNumber() {
         // given
-        when(refereeRepository.findByName("Stojcev Bosko")).thenReturn(Optional.of(referee("Stojcev Bosko")));
-        when(refereeRepository.findByName("Balletta Davide")).thenReturn(Optional.of(referee("Balletta Davide")));
-        when(refereeRepository.findByName("Vitalini Fabiano")).thenReturn(Optional.of(referee("Vitalini Fabiano")));
+        when(userRepository.findByName("Stojcev Bosko")).thenReturn(Optional.of(referee("Stojcev Bosko")));
+        when(userRepository.findByName("Balletta Davide")).thenReturn(Optional.of(referee("Balletta Davide")));
+        when(userRepository.findByName("Vitalini Fabiano")).thenReturn(Optional.of(referee("Vitalini Fabiano")));
 
         // when
         var game = basketplanService.findGameByNumber(SBL, "22-00249");

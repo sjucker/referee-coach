@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AdminService} from "../service/admin.service";
-import {RefereeDTO} from "../rest";
+import {UserDTO} from "../rest";
 
 @Component({
     selector: 'app-admin',
@@ -9,7 +9,7 @@ import {RefereeDTO} from "../rest";
 })
 export class AdminComponent implements OnInit {
 
-    referees: RefereeDTO[] = [];
+    referees: UserDTO[] = [];
 
     constructor(private adminService: AdminService) {
     }

@@ -99,4 +99,8 @@ export class AuthenticationService {
         return this.getRole() === UserRole.REFEREE;
     }
 
+    isRefereeCoach(): boolean {
+        return this.getRole() === UserRole.REFEREE_COACH;
+    }
+
 }

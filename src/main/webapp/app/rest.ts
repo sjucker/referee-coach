@@ -8,20 +8,15 @@ export interface BasketplanGameDTO {
     teamA: string;
     teamB: string;
     officiatingMode: OfficiatingMode;
-    referee1?: RefereeDTO;
-    referee2?: RefereeDTO;
-    referee3?: RefereeDTO;
+    referee1?: UserDTO;
+    referee2?: UserDTO;
+    referee3?: UserDTO;
     youtubeId?: string;
 }
 
 export interface ChangePasswordRequestDTO {
     oldPassword: string;
     newPassword: string;
-}
-
-export interface CoachDTO {
-    id: number;
-    name: string;
 }
 
 export interface CommentReplyDTO {
@@ -113,20 +108,16 @@ export interface OverviewDTO {
     competition: string;
     teamA: string;
     teamB: string;
-    coach?: CoachDTO;
+    coach?: UserDTO;
     reportee?: Reportee;
-    relevantReferee?: RefereeDTO;
-    referee1?: RefereeDTO;
-    referee2?: RefereeDTO;
-    referee3?: RefereeDTO;
+    relevantReferee?: UserDTO;
+    referee1?: UserDTO;
+    referee2?: UserDTO;
+    referee3?: UserDTO;
     relevantRefereeIds: number[];
     finished: boolean;
     visibleForReferee: boolean;
-}
-
-export interface RefereeDTO {
-    id: number;
-    name: string;
+    coachId?: number;
 }
 
 export interface ResetPasswordRequestDTO {
@@ -146,6 +137,12 @@ export interface SearchResponseDTO {
 export interface TagDTO {
     id: number;
     name: string;
+}
+
+export interface UserDTO {
+    id: number;
+    name: string;
+    role: UserRole;
 }
 
 export interface VideoCommentDTO {
@@ -177,7 +174,7 @@ export interface VideoCommentReplyDTO {
 export interface VideoReportDTO {
     id: string;
     basketplanGame: BasketplanGameDTO;
-    coach: CoachDTO;
+    coach: UserDTO;
     reportee: Reportee;
     general: CriteriaEvaluationDTO;
     image: CriteriaEvaluationDTO;
@@ -198,7 +195,7 @@ export interface VideoReportDTO {
 export interface VideoReportDiscussionDTO {
     videoReportId: string;
     basketplanGame: BasketplanGameDTO;
-    coach: CoachDTO;
+    coach: UserDTO;
     referee: string;
     videoComments: VideoCommentDTO[];
 }
@@ -221,6 +218,7 @@ export enum Federation {
 
 export enum UserRole {
     COACH = "COACH",
+    REFEREE_COACH = "REFEREE_COACH",
     REFEREE = "REFEREE",
 }
 
