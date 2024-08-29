@@ -1,9 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="RefereeCoachServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="probasket" />
     <module name="referee-coach" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="ch.stefanjucker.refereecoach.RefereeCoachServerApplication" />
-    <option name="ACTIVE_PROFILES" value="local" />
-    <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

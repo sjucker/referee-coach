@@ -1,0 +1,11 @@
+version: '3.1'
+
+services:
+  referee-coach-db:
+    image: postgres:16.3
+    environment:
+      - POSTGRES_USER=probasket
+      - POSTGRES_PASSWORD=probasket
+      - POSTGRES_DB=probasket
+    ports:
+      - "5432:5432"

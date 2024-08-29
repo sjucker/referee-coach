@@ -332,6 +332,7 @@ dist
 # End of https://www.toptal.com/developers/gitignore/api/java,maven,angular,intellij,node
 
 src/main/resources/application-local.properties
+src/main/resources/application-probasket.properties
 /spring-boot-migrator.jar
 /.rewrite-cache/
 node

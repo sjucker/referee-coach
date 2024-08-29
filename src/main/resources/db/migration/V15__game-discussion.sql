@@ -26,11 +26,11 @@ ALTER TABLE game_discussion
 
 CREATE TABLE game_discussion_comment
 (
-    id                 BIGINT AUTO_INCREMENT NOT NULL,
-    timestamp          INT                   NOT NULL,
-    comment VARCHAR(1024) NOT NULL,
-    game_discussion_id VARCHAR(255)          NOT NULL,
-    CONSTRAINT PK_GAME_DISCUSSION_COMMENT PRIMARY KEY (id)
+    id                 BIGSERIAL
+        CONSTRAINT PK_GAME_DISCUSSION_COMMENT PRIMARY KEY,
+    timestamp          INT           NOT NULL,
+    comment            VARCHAR(1024) NOT NULL,
+    game_discussion_id VARCHAR(255)  NOT NULL
 );
 
 ALTER TABLE game_discussion_comment
@@ -38,12 +38,12 @@ ALTER TABLE game_discussion_comment
 
 CREATE TABLE game_discussion_comment_reply
 (
-    id                         BIGINT AUTO_INCREMENT NOT NULL,
-    replied_by                 VARCHAR(255)          NOT NULL,
-    replied_at                 datetime              NOT NULL,
-    reply                      VARCHAR(1024)         NOT NULL,
-    game_discussion_comment_id BIGINT                NOT NULL,
-    CONSTRAINT PK_GAME_DISCUSSION_COMMENT_REPLY PRIMARY KEY (id)
+    id                         BIGSERIAL
+        CONSTRAINT PK_GAME_DISCUSSION_COMMENT_REPLY PRIMARY KEY,
+    replied_by                 VARCHAR(255)  NOT NULL,
+    replied_at                 timestamp     NOT NULL,
+    reply                      VARCHAR(1024) NOT NULL,
+    game_discussion_comment_id BIGINT        NOT NULL
 );
 
 ALTER TABLE game_discussion_comment_reply
