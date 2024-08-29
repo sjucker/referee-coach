@@ -32,8 +32,8 @@ public interface VideoReportRepository extends JpaRepository<VideoReport, String
             where r.version > 2
               and r.youtube_id is not null
               and r.finished_at < ?1
-              and r.reminder_sent = 0
-              and c.requires_reply = 1
+              and r.reminder_sent = false
+              and c.requires_reply = true
             """,
             nativeQuery = true)
     List<String> findReportIdsWithRequiredReplies(LocalDateTime dateTime);

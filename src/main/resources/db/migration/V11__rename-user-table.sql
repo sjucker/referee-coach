@@ -1,1 +1,2 @@
-RENAME TABLE user TO coach;
+ALTER TABLE users
+    RENAME TO coach;

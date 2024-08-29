@@ -1,6 +1,7 @@
 CREATE TABLE video_report
 (
-    id                        VARCHAR(255)  NOT NULL,
+    id                        VARCHAR(255)
+        CONSTRAINT pk_video_report PRIMARY KEY,
     game_number               VARCHAR(255)  NOT NULL,
     competition               VARCHAR(255)  NOT NULL,
     date                      DATE          NOT NULL,
@@ -20,8 +21,7 @@ CREATE TABLE video_report
     game_management_comment   VARCHAR(1024) NULL,
     points_to_keep_comment    VARCHAR(1024) NULL,
     points_to_improve_comment VARCHAR(1024) NULL,
-    finished                  BIT(1)        NOT NULL,
-    CONSTRAINT pk_video_report PRIMARY KEY (id)
+    finished                  BOOLEAN       NOT NULL
 );
 
 ALTER TABLE video_report
@@ -34,7 +34,7 @@ ALTER TABLE video_report
     ADD CONSTRAINT FK_VIDEO_REPORT_ON_REFEREE3ID FOREIGN KEY (referee3_id) REFERENCES referee (id);
 
 ALTER TABLE video_report
-    ADD CONSTRAINT FK_VIDEO_REPORT_ON_REPORTERID FOREIGN KEY (reporter_id) REFERENCES user (id);
+    ADD CONSTRAINT FK_VIDEO_REPORT_ON_REPORTERID FOREIGN KEY (reporter_id) REFERENCES users (id);
 
 CREATE TABLE video_report_comment
 (

@@ -1,12 +1,12 @@
-CREATE TABLE user
+CREATE TABLE users
 (
-    id       BIGINT       NOT NULL AUTO_INCREMENT,
+    id       BIGSERIAL
+        CONSTRAINT pk_user PRIMARY KEY,
     email    VARCHAR(255) NOT NULL,
     name     VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    `admin`  BIT(1)       NOT NULL,
-    CONSTRAINT pk_user PRIMARY KEY (id)
+    admin    BOOLEAN      NOT NULL
 );
 
-ALTER TABLE user
+ALTER TABLE users
     ADD CONSTRAINT uc_user_email UNIQUE (email);
