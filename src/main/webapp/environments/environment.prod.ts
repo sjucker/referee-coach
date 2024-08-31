@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    baseUrl: 'https://app.referee-coach.ch/api'
+    baseUrl: 'https://probasket.referee-coach.ch/api'
 };
