@@ -2,7 +2,6 @@ package ch.stefanjucker.refereecoach.service;
 
 import static ch.stefanjucker.refereecoach.Fixtures.referee;
 import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
-import static ch.stefanjucker.refereecoach.service.BasketplanService.Federation.SBL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +35,7 @@ class BasketplanServiceTest {
         when(userRepository.findByName("Vitalini Fabiano")).thenReturn(Optional.of(referee("Vitalini Fabiano")));
 
         // when
-        var game = basketplanService.findGameByNumber(SBL, "22-00249");
+        var game = basketplanService.findGameByNumber("22-00249");
 
         // then
         assertThat(game).isNotEmpty()

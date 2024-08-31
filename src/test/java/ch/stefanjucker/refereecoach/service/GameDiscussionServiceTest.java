@@ -1,6 +1,5 @@
 package ch.stefanjucker.refereecoach.service;
 
-import static ch.stefanjucker.refereecoach.service.BasketplanService.Federation.SBL;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -34,7 +33,7 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
     @Test
     void create() {
         // when
-        var result = gameDiscussionService.create(SBL, GAME_NUMBER, YOUTUBE_ID, referee5);
+        var result = gameDiscussionService.create(GAME_NUMBER, YOUTUBE_ID, referee5);
 
         // then
         assertThat(result.id()).isNotBlank();
@@ -49,25 +48,25 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
 
     @Test
     void create_UnknownGameNumber() {
-        assertThatThrownBy(() -> gameDiscussionService.create(SBL, "00-00000", YOUTUBE_ID, referee5)).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> gameDiscussionService.create("00-00000", YOUTUBE_ID, referee5)).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     void create_AlreadyExisting() {
         saveGameDiscussion();
 
-        assertThatIllegalArgumentException().isThrownBy(() -> gameDiscussionService.create(SBL, GAME_NUMBER, YOUTUBE_ID, referee5));
+        assertThatIllegalArgumentException().isThrownBy(() -> gameDiscussionService.create(GAME_NUMBER, YOUTUBE_ID, referee5));
     }
 
     @Test
     void create_RefNotInGame() {
-        assertThatIllegalStateException().isThrownBy(() -> gameDiscussionService.create(SBL, GAME_NUMBER, YOUTUBE_ID, referee1));
+        assertThatIllegalStateException().isThrownBy(() -> gameDiscussionService.create(GAME_NUMBER, YOUTUBE_ID, referee1));
     }
 
     @Test
     void addComments() {
         // when
-        var result = gameDiscussionService.create(SBL, GAME_NUMBER, YOUTUBE_ID, referee2);
+        var result = gameDiscussionService.create(GAME_NUMBER, YOUTUBE_ID, referee2);
         gameDiscussionService.addComments(result.id(), new CreateGameDiscussionCommentDTO(
                 List.of(),
                 List.of(new GameDiscussionCommentDTO(
@@ -79,7 +78,7 @@ class GameDiscussionServiceTest extends AbstractIntegrationTest {
         ), referee2);
         result = gameDiscussionService.get(result.id()).orElseThrow();
         gameDiscussionService.addComments(result.id(), new CreateGameDiscussionCommentDTO(
-                List.of(new CommentReplyDTO(result.comments().get(0).id(), "first reply")),
+                List.of(new CommentReplyDTO(result.comments().getFirst().id(), "first reply")),
                 List.of()
         ), referee4);
 

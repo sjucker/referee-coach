@@ -15,11 +15,11 @@ export class BasketplanService {
     }
 
     searchGame(gameNumber: string): Observable<BasketplanGameDTO> {
-        return this.httpClient.get<BasketplanGameDTO>(`${this.baseUrl}/game/SBL/${gameNumber}`);
+        return this.httpClient.get<BasketplanGameDTO>(`${this.baseUrl}/game/${gameNumber}`);
     }
 
     searchGameForReferee(gameNumber: string): Observable<BasketplanGameDTO> {
-        return this.httpClient.get<BasketplanGameDTO>(`${this.baseUrl}/game/SBL/${gameNumber}/referee`);
+        return this.httpClient.get<BasketplanGameDTO>(`${this.baseUrl}/game/${gameNumber}/referee`);
     }
 
 }

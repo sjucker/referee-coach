@@ -17,7 +17,6 @@ import ch.stefanjucker.refereecoach.dto.GameDiscussionCommentDTO;
 import ch.stefanjucker.refereecoach.dto.GameDiscussionCommentReplyDTO;
 import ch.stefanjucker.refereecoach.dto.GameDiscussionDTO;
 import ch.stefanjucker.refereecoach.mapper.DTOMapper;
-import ch.stefanjucker.refereecoach.service.BasketplanService.Federation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +61,7 @@ public class GameDiscussionService {
         this.environment = environment;
     }
 
-    public GameDiscussionDTO create(Federation federation, String gameNumber, String youtubeId, User referee) {
+    public GameDiscussionDTO create(String gameNumber, String youtubeId, User referee) {
         if (!referee.isReferee() && !referee.isRefereeCoach()) {
             throw new IllegalStateException("user %s is not a referee!".formatted(referee));
         }
@@ -74,7 +73,7 @@ public class GameDiscussionService {
             throw new IllegalStateException("invalid youtubeId given: %s".formatted(youtubeId));
         }
 
-        var game = basketplanService.findGameByNumber(federation, gameNumber).orElseThrow();
+        var game = basketplanService.findGameByNumber(gameNumber).orElseThrow();
         if (game.referee1() != null && game.referee1().id().equals(referee.getId()) ||
                 game.referee2() != null && game.referee2().id().equals(referee.getId()) ||
                 game.referee3() != null && game.referee3().id().equals(referee.getId())) {

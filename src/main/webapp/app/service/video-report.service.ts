@@ -7,7 +7,6 @@ import {
     CopyVideoReportDTO,
     CreateRepliesDTO,
     CreateVideoReportDTO,
-    Federation,
     Reportee,
     SearchRequestDTO,
     SearchResponseDTO,
@@ -37,7 +36,6 @@ export class VideoReportService {
             gameNumber: gameNumber,
             youtubeId: youtubeId,
             reportee: reportee,
-            federation: Federation.SBL
         };
         return this.httpClient.post<VideoReportDTO>(`${this.baseUrl}/video-report`, request);
     }

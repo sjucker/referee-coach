@@ -94,7 +94,7 @@ public class VideoReportResource {
         var coach = userRepository.findByEmail(principal.getUsername()).orElseThrow();
         log.info("POST /video-report {} ({})", dto, coach);
 
-        return ResponseEntity.ok(videoReportService.create(dto.federation(), dto.gameNumber(), dto.youtubeId(), dto.reportee(), coach));
+        return ResponseEntity.ok(videoReportService.create(dto.gameNumber(), dto.youtubeId(), dto.reportee(), coach));
     }
 
     @PostMapping(path = "/copy", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
