@@ -42,7 +42,7 @@ public class GameDiscussionResource {
         log.info("POST /api/game-discussion {} ({})", dto, referee);
 
         try {
-            return ResponseEntity.ok(gameDiscussionService.create(dto.federation(), dto.gameNumber(), dto.youtubeId(), referee));
+            return ResponseEntity.ok(gameDiscussionService.create(dto.gameNumber(), dto.youtubeId(), referee));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.noContent().build();
         }

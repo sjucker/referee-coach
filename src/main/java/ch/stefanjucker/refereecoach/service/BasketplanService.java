@@ -2,7 +2,6 @@ package ch.stefanjucker.refereecoach.service;
 
 import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_2PO;
 import static ch.stefanjucker.refereecoach.dto.OfficiatingMode.OFFICIATING_3PO;
-import static ch.stefanjucker.refereecoach.service.BasketplanService.Federation.SBL;
 import static javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING;
 
 import ch.stefanjucker.refereecoach.domain.User;
@@ -32,7 +31,7 @@ public class BasketplanService {
     private static final DTOMapper DTO_MAPPER = DTOMapper.INSTANCE;
 
     private static final Pattern YOUTUBE_ID_PATTERN = Pattern.compile("v=([^&]+)");
-    private static final String SEARCH_GAMES_URL = "https://www.basketplan.ch/showSearchGames.do?actionType=searchGames&gameNumber=%s&xmlView=true&perspective=de_default&federationId=%d";
+    private static final String SEARCH_GAMES_URL = "https://www.basketplan.ch/showSearchGames.do?actionType=searchGames&gameNumber=%s&xmlView=true&perspective=de_default";
 
     private final UserRepository userRepository;
 
@@ -41,10 +40,6 @@ public class BasketplanService {
     }
 
     public Optional<BasketplanGameDTO> findGameByNumber(String gameNumber) {
-        return findGameByNumber(SBL, gameNumber);
-    }
-
-    public Optional<BasketplanGameDTO> findGameByNumber(Federation federation, String gameNumber) {
         // TODO validate arguments
 
         try {
@@ -52,7 +47,7 @@ public class BasketplanService {
 
             dbf.setFeature(FEATURE_SECURE_PROCESSING, true);
             DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(SEARCH_GAMES_URL.formatted(gameNumber, federation.getId()));
+            Document doc = db.parse(SEARCH_GAMES_URL.formatted(gameNumber));
             doc.getDocumentElement().normalize();
 
             NodeList games = doc.getDocumentElement().getElementsByTagName("game");
@@ -112,20 +107,4 @@ public class BasketplanService {
         var node = parentNode.getAttributes().getNamedItem(name);
         return node != null ? Optional.ofNullable(node.getNodeValue()) : Optional.empty();
     }
-
-    public enum Federation {
-        SBL(12),
-        PROBASKET(10);
-
-        private final int id;
-
-        Federation(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
-    }
-
 }

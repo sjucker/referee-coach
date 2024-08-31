@@ -40,7 +40,6 @@ export interface CreateGameDiscussionCommentDTO {
 }
 
 export interface CreateGameDiscussionDTO {
-    federation: Federation;
     gameNumber: string;
     youtubeId: string;
 }
@@ -51,7 +50,6 @@ export interface CreateRepliesDTO {
 }
 
 export interface CreateVideoReportDTO {
-    federation: Federation;
     gameNumber: string;
     youtubeId?: string;
     reportee: Reportee;
@@ -209,11 +207,6 @@ export enum Reportee {
     FIRST_REFEREE = "FIRST_REFEREE",
     SECOND_REFEREE = "SECOND_REFEREE",
     THIRD_REFEREE = "THIRD_REFEREE",
-}
-
-export enum Federation {
-    SBL = "SBL",
-    PROBASKET = "PROBASKET",
 }
 
 export enum UserRole {

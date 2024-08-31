@@ -24,7 +24,6 @@ import ch.stefanjucker.refereecoach.dto.VideoCommentDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDiscussionDTO;
 import ch.stefanjucker.refereecoach.mapper.DTOMapper;
-import ch.stefanjucker.refereecoach.service.BasketplanService.Federation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -77,11 +76,11 @@ public class VideoReportService {
         this.environment = environment;
     }
 
-    public VideoReportDTO create(Federation federation, String gameNumber, String youtubeId, Reportee reportee, User user) {
+    public VideoReportDTO create(String gameNumber, String youtubeId, Reportee reportee, User user) {
         if (!user.isCoach() && !user.isRefereeCoach()) {
             throw new IllegalStateException("user %s is not a coach!".formatted(user));
         }
-        var game = basketplanService.findGameByNumber(federation, gameNumber).orElseThrow();
+        var game = basketplanService.findGameByNumber(gameNumber).orElseThrow();
 
         var videoReport = new VideoReport();
         videoReport.setId(getUuid());

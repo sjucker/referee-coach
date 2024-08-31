@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {CommentReplyDTO, CreateGameDiscussionCommentDTO, CreateGameDiscussionDTO, Federation, GameDiscussionCommentDTO, GameDiscussionDTO} from "../rest";
+import {CommentReplyDTO, CreateGameDiscussionCommentDTO, CreateGameDiscussionDTO, GameDiscussionCommentDTO, GameDiscussionDTO} from "../rest";
 import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
@@ -18,7 +18,6 @@ export class GameDiscussionService {
         const request: CreateGameDiscussionDTO = {
             gameNumber: gameNumber,
             youtubeId: youtubeId,
-            federation: Federation.SBL
         };
         return this.httpClient.post<GameDiscussionDTO>(`${this.baseUrl}/game-discussion`, request);
     }
