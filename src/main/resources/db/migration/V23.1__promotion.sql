@@ -1,0 +1,2 @@
+ALTER TABLE video_report
+    ADD COLUMN promotion BOOLEAN NOT NULL DEFAULT FALSE;

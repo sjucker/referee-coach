@@ -29,6 +29,7 @@ public interface DTOMapper {
 
     UserDTO toDTO(User referee);
 
+    @Mapping(target = "shouldBePromoted", source = "videoReport.promotion")
     @Mapping(target = "videoComments", source = "videoCommentDTOs")
     @Mapping(target = "otherReportees", source = "otherReportees")
     VideoReportDTO toDTO(VideoReport videoReport, List<VideoCommentDTO> videoCommentDTOs, List<Reportee> otherReportees);
@@ -84,6 +85,8 @@ public interface DTOMapper {
 
         videoReport.setPointsToKeepComment(dto.pointsToKeepComment());
         videoReport.setPointsToImproveComment(dto.pointsToImproveComment());
+
+        videoReport.setPromotion(dto.shouldBePromoted());
 
         videoReport.setFinished(dto.finished());
         if (videoReport.isFinished()) {

@@ -53,6 +53,7 @@ public class ExportService {
             headerRow.createCell(columnIndex++).setCellValue("Critera: Violations");
             headerRow.createCell(columnIndex++).setCellValue("Game Control and Management");
             headerRow.createCell(columnIndex++).setCellValue("Overall Score");
+            headerRow.createCell(columnIndex++).setCellValue("Promotion?");
 
             for (var videoReport : videoReportRepository.findAll(by(desc("basketplanGame.date"),
                                                                     desc("basketplanGame.gameNumber"),
@@ -78,6 +79,7 @@ public class ExportService {
                     row.createCell(columnIndex++).setCellValue(videoReport.getViolations().getScore());
                     row.createCell(columnIndex++).setCellValue(videoReport.getGameManagement().getScore());
                     row.createCell(columnIndex++).setCellValue(videoReport.getGeneral().getScore());
+                    row.createCell(columnIndex++).setCellValue(videoReport.isPromotion() ? "x" : "");
                 }
 
             }
