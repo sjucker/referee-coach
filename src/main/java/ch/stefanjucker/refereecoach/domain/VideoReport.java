@@ -99,6 +99,9 @@ public class VideoReport {
 
     private boolean reminderSent;
 
+    // whether the referee should be promoted
+    private boolean promotion;
+
     public User relevantReferee() {
         return switch (reportee) {
             case FIRST_REFEREE -> basketplanGame.getReferee1();

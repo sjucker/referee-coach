@@ -203,6 +203,9 @@
                     [dto]="report.general"
                     (changed)="onChange()"></app-video-report-rating>
             | Average of all critera: {{ getAverage() | number: '1.1-1' }}
+            <br/>
+            <br/>
+            <mat-checkbox [(ngModel)]="report.shouldBePromoted" (change)="onChange()">Should be promoted!</mat-checkbox>
         </mat-card-content>
     </mat-card>
 

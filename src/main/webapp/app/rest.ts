@@ -185,6 +185,7 @@ export interface VideoReportDTO {
     pointsToImproveComment?: string;
     videoComments: VideoCommentDTO[];
     otherReportees: Reportee[];
+    shouldBePromoted: boolean;
     finished: boolean;
     version: number;
     textOnly: boolean;
