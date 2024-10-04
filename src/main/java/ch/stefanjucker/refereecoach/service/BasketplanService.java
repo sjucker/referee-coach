@@ -59,6 +59,10 @@ public class BasketplanService {
                 var guestTeamNode = ((Element) gameNode).getElementsByTagName("guestTeam").item(0);
                 var resultNode = ((Element) gameNode).getElementsByTagName("result").item(0);
 
+                if (!getAttributeValue(gameNode, "hasRefereesToDisplay").map(Boolean::parseBoolean).orElse(false)) {
+                    log.error("referees not available for game {}", gameNumber);
+                }
+
                 return Optional.of(new BasketplanGameDTO(
                         gameNumber,
                         getAttributeValue(leagueHoldingNode, "name").orElse("?"),
