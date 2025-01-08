@@ -1,9 +1,10 @@
 @use '@angular/material' as mat;
-@import "responsive";
-@import "variables";
+@use "responsive";
+@use "variables";
 
 @include mat.all-component-typographies();
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 $my-primary: mat.m2-define-palette(mat.$m2-pink-palette, 700, 100, 900);
 $my-accent: mat.m2-define-palette(mat.$m2-blue-grey-palette, A200, A100, A400);
@@ -44,7 +45,7 @@ mat-form-field {
   display: flex;
   flex-direction: column;
 
-  @include responsive('gt-sm') {
+  @include responsive.responsive('gt-sm') {
     flex-direction: row;
     gap: 20px;
   }
@@ -54,7 +55,7 @@ mat-form-field {
   display: flex;
   flex-direction: column;
 
-  @include responsive('gt-md') {
+  @include responsive.responsive('gt-md') {
     flex-direction: row;
     justify-content: space-around;
   }
@@ -65,7 +66,7 @@ mat-form-field {
   flex-direction: column;
   align-items: stretch;
 
-  @include responsive('gt-md') {
+  @include responsive.responsive('gt-md') {
     flex-direction: row;
   }
 }
@@ -73,7 +74,7 @@ mat-form-field {
 .show-gt-sm {
   display: none;
 
-  @include responsive(gt-sm) {
+  @include responsive.responsive(gt-sm) {
     display: table-cell;
   }
 }
@@ -81,7 +82,7 @@ mat-form-field {
 .show-gt-xs {
   display: none;
 
-  @include responsive(gt-xs) {
+  @include responsive.responsive(gt-xs) {
     display: table-cell;
   }
 }
@@ -105,13 +106,13 @@ table {
     gap: 10px;
   }
 
-  @include responsive('gt-sm') {
+  @include responsive.responsive('gt-sm') {
     .mat-mdc-card {
       margin-top: 0;
     }
   }
 
-  @include responsive('lt-md') {
+  @include responsive.responsive('lt-md') {
     .mat-mdc-card {
       margin-left: 0;
       margin-right: 0;
@@ -129,5 +130,5 @@ table {
 }
 
 a {
-  color: $primary-color;
+  color: variables.$primary-color;
 }

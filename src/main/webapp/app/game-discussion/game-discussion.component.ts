@@ -15,7 +15,8 @@ import {GameDiscussionFinishCommentsDialogComponent} from "../game-discussion-fi
 @Component({
     selector: 'app-game-discussion',
     templateUrl: './game-discussion.component.html',
-    styleUrls: ['./game-discussion.component.scss']
+    styleUrls: ['./game-discussion.component.scss'],
+    standalone: false
 })
 export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy, HasUnsavedReplies {
 

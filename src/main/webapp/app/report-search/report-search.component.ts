@@ -10,7 +10,8 @@ import {Observable, of, share} from "rxjs";
 @Component({
     selector: 'app-report-search',
     templateUrl: './report-search.component.html',
-    styleUrls: ['./report-search.component.scss']
+    styleUrls: ['./report-search.component.scss'],
+    standalone: false
 })
 export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 

@@ -9,7 +9,8 @@ export interface CommentReplyDialogData {
 @Component({
     selector: 'app-comment-reply-dialog',
     templateUrl: './comment-reply-dialog.component.html',
-    styleUrls: ['./comment-reply-dialog.component.scss']
+    styleUrls: ['./comment-reply-dialog.component.scss'],
+    standalone: false
 })
 export class CommentReplyDialogComponent {
 

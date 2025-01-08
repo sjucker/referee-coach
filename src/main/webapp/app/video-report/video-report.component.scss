@@ -1,12 +1,12 @@
-@import "../../variables";
-@import "../../responsive";
+@use "../../variables";
+@use "../../responsive";
 
 .mat-mdc-radio-button ~ .mat-radio-button {
   margin-left: 16px;
 }
 
 .reportee {
-  color: $primary-color;
+  color: variables.$primary-color;
 }
 
 .spacer {
@@ -17,13 +17,13 @@
   max-height: 470px;
   scroll-behavior: smooth;
 
-  @include responsive('lt-lg') {
+  @include responsive.responsive('lt-lg') {
     margin-top: 10px;
   }
 }
 
 .criteria-container {
-  @include responsive('gt-sm') {
+  @include responsive.responsive('gt-sm') {
     gap: 10px;
   }
 }

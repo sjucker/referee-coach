@@ -19,7 +19,8 @@ export interface VideoReportCopyDialogData {
 @Component({
     selector: 'app-video-report-copy-dialog',
     templateUrl: './video-report-copy-dialog.component.html',
-    styleUrls: ['./video-report-copy-dialog.component.scss']
+    styleUrls: ['./video-report-copy-dialog.component.scss'],
+    standalone: false
 })
 export class VideoReportCopyDialogComponent implements OnInit {
 

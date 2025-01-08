@@ -1,5 +1,5 @@
-@import '../../variables';
-@import '../../responsive';
+@use '../../variables';
+@use '../../responsive';
 
 .spacer {
   flex: 1 1 auto;
@@ -11,14 +11,14 @@
   flex-direction: column;
   gap: 10px;
 
-  @include responsive(gt-sm) {
+  @include responsive.responsive(gt-sm) {
     flex-direction: row;
     gap: 20px;
   }
 }
 
 .current-user {
-  color: $primary-color;
+  color: variables.$primary-color;
 }
 
 .referee-start-discussion {
