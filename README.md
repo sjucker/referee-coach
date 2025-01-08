@@ -22,3 +22,18 @@ They use the same codebase, but have different config vars (Heroku Dashboard -> 
 Also, for the STAGING-app we must activate another Maven profile, so the frontend-maven-plugin runs the correct build-configuration (that uses
 the `environment.staging.ts`). If no specific Maven profile is defined, production build is triggered. The profile is activated using the `MAVEN_CUSTOM_OPTS`
 config var (only needed for STAGING).
+
+## Updates
+
+* Maven Wrapper
+    * `mvn wrapper:wrapper -Dmaven=3.9.9`
+* Update Maven Parent
+    * `mvn -U versions:display-parent-updates`
+    * `mvn -U versions:update-parent`
+* Update Versions in Properties
+    * `mvn -U versions:display-property-updates`
+    * `mvn -U versions:update-properties`
+* Download Sources
+  * `mvn dependency:resolve-sources`
+* Build
+    * `mvn clean verify`
