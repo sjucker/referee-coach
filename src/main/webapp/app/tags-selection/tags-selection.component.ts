@@ -7,7 +7,8 @@ import {Observable, of} from "rxjs";
 @Component({
     selector: 'app-tags-selection',
     templateUrl: './tags-selection.component.html',
-    styleUrls: ['./tags-selection.component.scss']
+    styleUrls: ['./tags-selection.component.scss'],
+    standalone: false
 })
 export class TagsSelectionComponent implements OnInit {
 

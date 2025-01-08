@@ -15,7 +15,8 @@ import {HasUnsavedReplies} from "../has-unsaved-replies";
 @Component({
     selector: 'app-discuss-video-report',
     templateUrl: './discuss-video-report.component.html',
-    styleUrls: ['./discuss-video-report.component.scss']
+    styleUrls: ['./discuss-video-report.component.scss'],
+    standalone: false
 })
 export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDestroy, HasUnsavedReplies {
 

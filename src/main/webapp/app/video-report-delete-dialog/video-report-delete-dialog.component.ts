@@ -5,7 +5,8 @@ import {OverviewDTO} from "../rest";
 @Component({
     selector: 'app-video-report-delete-dialog',
     templateUrl: './video-report-delete-dialog.component.html',
-    styleUrls: ['./video-report-delete-dialog.component.scss']
+    styleUrls: ['./video-report-delete-dialog.component.scss'],
+    standalone: false
 })
 export class VideoReportDeleteDialogComponent {
 

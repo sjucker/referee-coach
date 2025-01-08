@@ -11,7 +11,8 @@ import {DISCUSS_PATH} from "../app-routing.module";
 @Component({
     selector: 'app-view-video-report',
     templateUrl: './view-video-report.component.html',
-    styleUrls: ['./view-video-report.component.scss']
+    styleUrls: ['./view-video-report.component.scss'],
+    standalone: false
 })
 export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 

@@ -1,5 +1,5 @@
-@import '../../variables';
-@import '../../responsive';
+@use '../../variables';
+@use '../../responsive';
 
 .spacer {
   flex: 1 1 auto;
@@ -13,7 +13,7 @@ table {
   display: flex;
   flex-direction: column;
 
-  @include responsive('gt-md') {
+  @include responsive.responsive('gt-md') {
     flex-direction: row;
     gap: 20px;
   }

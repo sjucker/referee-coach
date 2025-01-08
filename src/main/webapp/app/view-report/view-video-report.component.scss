@@ -1,11 +1,11 @@
-@import "../../variables";
+@use "../../variables";
 
 p {
   white-space: pre-wrap;
 }
 
 .reportee {
-  color: $primary-color;
+  color: variables.$primary-color;
 }
 
 .spacer {
@@ -31,13 +31,13 @@ p {
 
   .mat-mdc-card {
     &.important {
-      border: solid 1px $primary-color;
+      border: solid 1px variables.$primary-color;
     }
   }
 
   .mat-icon {
     &.important {
-      color: $primary-color;
+      color: variables.$primary-color;
     }
   }
 }

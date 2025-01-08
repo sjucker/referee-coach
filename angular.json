@@ -18,12 +18,15 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular/build:application",
           "options": {
-            "outputPath": "target/webapp",
+            "outputPath": {
+              "base": "target/webapp"
+            },
             "index": "src/main/webapp/index.html",
-            "main": "src/main/webapp/main.ts",
-            "polyfills": "src/main/webapp/polyfills.ts",
+            "polyfills": [
+              "src/main/webapp/polyfills.ts"
+            ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/main/webapp/favicon.svg",
@@ -35,7 +38,8 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "file-saver"
-            ]
+            ],
+            "browser": "src/main/webapp/main.ts"
           },
           "configurations": {
             "production": {
@@ -81,9 +85,7 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -92,21 +94,21 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "referee-coach-ui:build:production"
+              "buildTarget": "referee-coach-ui:build:production"
             },
             "development": {
-              "browserTarget": "referee-coach-ui:build:development"
+              "buildTarget": "referee-coach-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "@angular/build:extract-i18n",
           "options": {
-            "browserTarget": "referee-coach-ui:build"
+            "buildTarget": "referee-coach-ui:build"
           }
         },
         "lint": {

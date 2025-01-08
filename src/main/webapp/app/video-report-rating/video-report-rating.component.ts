@@ -4,7 +4,8 @@ import {CriteriaEvaluationDTO} from "../rest";
 @Component({
     selector: 'app-video-report-rating',
     templateUrl: './video-report-rating.component.html',
-    styleUrls: ['./video-report-rating.component.scss']
+    styleUrls: ['./video-report-rating.component.scss'],
+    standalone: false
 })
 export class VideoReportRatingComponent {
 

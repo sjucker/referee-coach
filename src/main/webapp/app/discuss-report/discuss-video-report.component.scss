@@ -1,5 +1,5 @@
-@import "../../variables";
-@import "../../responsive";
+@use "../../variables";
+@use "../../responsive";
 
 p {
   white-space: pre-wrap;
@@ -20,7 +20,7 @@ p {
 
 .new-reply,
 .new-comment {
-  color: $accent-color;
+  color: variables.$accent-color;
 }
 
 .new-reply {
@@ -40,13 +40,13 @@ p {
 .show-gt-sm {
   display: none;
 
-  @include responsive('gt-sm') {
+  @include responsive.responsive('gt-sm') {
     display: inherit;
   }
 }
 
 .hide-gt-sm {
-  @include responsive('gt-sm') {
+  @include responsive.responsive('gt-sm') {
     display: none;
   }
 }
@@ -66,13 +66,13 @@ p {
 
   .mat-mdc-card {
     &.important {
-      border: solid 1px $primary-color;
+      border: solid 1px variables.$primary-color;
     }
   }
 
   .mat-icon {
     &.important {
-      color: $primary-color;
+      color: variables.$primary-color;
     }
   }
 }

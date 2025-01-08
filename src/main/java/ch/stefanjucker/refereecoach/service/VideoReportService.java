@@ -143,7 +143,8 @@ public class VideoReportService {
     private String getUuid() {
         String uuid;
         do {
-            uuid = RandomStringUtils.randomAlphabetic(10);
+            // insecure is good enough for this use-case
+            uuid = RandomStringUtils.insecure().nextAlphabetic(10);
         } while (videoReportRepository.existsById(uuid));
 
         return uuid;
