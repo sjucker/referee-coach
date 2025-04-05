@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, input, OnInit, output, ViewChild} from '@angular/core';
 import {TagDTO} from "../rest";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger} from "@angular/material/autocomplete";
@@ -26,11 +26,9 @@ export class TagsSelectionComponent implements OnInit {
 
     selectedTags: TagDTO[] = [];
 
-    @Output()
-    selected = new EventEmitter<TagDTO>();
+    readonly selected = output<TagDTO>();
 
-    @Output()
-    removed = new EventEmitter<TagDTO>();
+    readonly removed = output<TagDTO>();
 
     filteredTags: TagDTO[] = [];
     tagController = new FormControl('');

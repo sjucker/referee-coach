@@ -1,4 +1,4 @@
-import {Component, EventEmitter, input, Output} from '@angular/core';
+import {Component, input, output} from '@angular/core';
 import {CriteriaEvaluationDTO} from "../rest";
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {FormsModule} from '@angular/forms';
@@ -15,8 +15,7 @@ export class VideoReportRatingComponent {
 
     readonly dto = input.required<CriteriaEvaluationDTO>();
 
-    @Output()
-    changed = new EventEmitter<void>();
+    readonly changed = output<void>();
 
     rating() {
         const dto = this.dto();
