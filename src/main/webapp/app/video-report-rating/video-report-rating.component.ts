@@ -1,11 +1,13 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {CriteriaEvaluationDTO} from "../rest";
+import {MatSlider, MatSliderThumb} from '@angular/material/slider';
+import {FormsModule} from '@angular/forms';
 
 @Component({
     selector: 'app-video-report-rating',
     templateUrl: './video-report-rating.component.html',
     styleUrls: ['./video-report-rating.component.scss'],
-    standalone: false
+    imports: [MatSlider, MatSliderThumb, FormsModule]
 })
 export class VideoReportRatingComponent {
 

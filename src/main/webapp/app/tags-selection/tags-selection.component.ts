@@ -1,14 +1,19 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {TagDTO} from "../rest";
-import {FormControl} from "@angular/forms";
-import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
+import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger} from "@angular/material/autocomplete";
 import {Observable, of} from "rxjs";
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
+import {NgFor} from '@angular/common';
+import {MatIcon} from '@angular/material/icon';
+import {MatOption} from '@angular/material/select';
 
 @Component({
     selector: 'app-tags-selection',
     templateUrl: './tags-selection.component.html',
     styleUrls: ['./tags-selection.component.scss'],
-    standalone: false
+    imports: [MatFormField, MatLabel, MatChipGrid, NgFor, MatChipRow, MatChipRemove, MatIcon, FormsModule, MatAutocompleteTrigger, MatChipInput, ReactiveFormsModule, MatAutocomplete, MatOption]
 })
 export class TagsSelectionComponent implements OnInit {
 

@@ -5,8 +5,7 @@ import {UserDTO} from "../rest";
 @Component({
     selector: 'app-admin',
     templateUrl: './admin.component.html',
-    styleUrls: ['./admin.component.scss'],
-    standalone: false
+    styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit {
 

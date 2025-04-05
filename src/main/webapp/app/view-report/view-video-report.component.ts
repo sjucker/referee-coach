@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {VideoReportService} from "../service/video-report.service";
 import {YouTubePlayer} from "@angular/youtube-player";
 import {OfficiatingMode, Reportee, VideoCommentDTO, VideoReportDTO} from "../rest";
@@ -7,12 +7,19 @@ import {AuthenticationService} from "../service/authentication.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {DISCUSS_PATH} from "../app-routing.module";
+import {MatToolbar} from '@angular/material/toolbar';
+import {DatePipe, NgClass, NgFor, NgIf} from '@angular/common';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {MatButton, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 
 @Component({
     selector: 'app-view-video-report',
     templateUrl: './view-video-report.component.html',
     styleUrls: ['./view-video-report.component.scss'],
-    standalone: false
+    imports: [MatToolbar, NgIf, MatProgressSpinner, MatIconButton, MatTooltip, MatIcon, MatIconAnchor, RouterLink, MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgClass, YouTubePlayer, NgFor, MatCardActions, MatButton, DatePipe]
 })
 export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 

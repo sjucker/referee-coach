@@ -1,17 +1,38 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {VideoReportService} from "../service/video-report.service";
 import {TagDTO, VideoCommentDetailDTO} from "../rest";
-import {MatTableDataSource} from "@angular/material/table";
+import {
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatNoDataRow,
+    MatRow,
+    MatRowDef,
+    MatTable,
+    MatTableDataSource
+} from "@angular/material/table";
 import {YouTubePlayer} from "@angular/youtube-player";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Observable, of, share} from "rxjs";
+import {MatToolbar} from '@angular/material/toolbar';
+import {MatButton, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {RouterLink} from '@angular/router';
+import {MatIcon} from '@angular/material/icon';
+import {MatCard, MatCardActions, MatCardContent} from '@angular/material/card';
+import {TagsSelectionComponent} from '../tags-selection/tags-selection.component';
+import {DatePipe, NgIf} from '@angular/common';
+import {MatProgressBar} from '@angular/material/progress-bar';
 
 @Component({
     selector: 'app-report-search',
     templateUrl: './report-search.component.html',
     styleUrls: ['./report-search.component.scss'],
-    standalone: false
+    imports: [MatToolbar, MatIconAnchor, RouterLink, MatIcon, MatCard, MatCardContent, TagsSelectionComponent, YouTubePlayer, MatCardActions, MatButton, NgIf, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, DatePipe]
 })
 export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 

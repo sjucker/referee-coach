@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, V
 import {YouTubePlayer} from "@angular/youtube-player";
 import {VideoReportService} from "../service/video-report.service";
 import {OfficiatingMode, Reportee, TagDTO, VideoCommentDTO, VideoReportDTO} from "../rest";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {VideoReportFinishDialogComponent} from "../video-report-finish-dialog/video-report-finish-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -10,12 +10,27 @@ import {Observable, of, share} from "rxjs";
 import {VideoReportUnsavedChangesDialogComponent} from "../video-report-unsaved-changes-dialog/video-report-unsaved-changes-dialog.component";
 import {VIEW_PATH} from "../app-routing.module";
 import {VideoReportCopyDialogComponent, VideoReportCopyDialogData} from "../video-report-copy-dialog/video-report-copy-dialog.component";
+import {MatToolbar} from '@angular/material/toolbar';
+import {DatePipe, DecimalPipe, NgClass, NgFor, NgIf} from '@angular/common';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {MatButton, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {CdkTextareaAutosize} from '@angular/cdk/text-field';
+import {MatInput} from '@angular/material/input';
+import {FormsModule} from '@angular/forms';
+import {VideoReportRatingComponent} from '../video-report-rating/video-report-rating.component';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {TagsSelectionComponent} from '../tags-selection/tags-selection.component';
 
 @Component({
     selector: 'app-video-report',
     templateUrl: './video-report.component.html',
     styleUrls: ['./video-report.component.scss'],
-    standalone: false
+    imports: [MatToolbar, NgIf, MatProgressSpinner, MatIconButton, MatIcon, MatTooltip, MatIconAnchor, RouterLink, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgClass, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, VideoReportRatingComponent, YouTubePlayer, MatButton, NgFor, MatCheckbox, TagsSelectionComponent, MatCardActions, DecimalPipe, DatePipe]
 })
 export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 

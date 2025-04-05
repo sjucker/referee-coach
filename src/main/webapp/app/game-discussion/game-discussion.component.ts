@@ -3,7 +3,7 @@ import {HasUnsavedReplies} from "../has-unsaved-replies";
 import {Observable, of} from "rxjs";
 import {YouTubePlayer} from "@angular/youtube-player";
 import {CommentReplyDTO, GameDiscussionCommentDTO, GameDiscussionCommentReplyDTO, GameDiscussionDTO, OfficiatingMode} from "../rest";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {AuthenticationService} from "../service/authentication.service";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -11,12 +11,24 @@ import {GameDiscussionService} from "../service/game-discussion.service";
 import {UnsavedRepliesDialogComponent} from "../discuss-video-report-unsaved-replies-dialog/unsaved-replies-dialog.component";
 import {CommentReplyDialogComponent, CommentReplyDialogData} from "../comment-reply-dialog/comment-reply-dialog.component";
 import {GameDiscussionFinishCommentsDialogComponent} from "../game-discussion-finish-comments-dialog/game-discussion-finish-comments-dialog.component";
+import {MatToolbar} from '@angular/material/toolbar';
+import {DatePipe, NgClass, NgFor, NgIf} from '@angular/common';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {MatButton, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {CdkTextareaAutosize} from '@angular/cdk/text-field';
+import {MatInput} from '@angular/material/input';
+import {FormsModule} from '@angular/forms';
 
 @Component({
     selector: 'app-game-discussion',
     templateUrl: './game-discussion.component.html',
     styleUrls: ['./game-discussion.component.scss'],
-    standalone: false
+    imports: [MatToolbar, NgIf, MatProgressSpinner, MatIconButton, MatIcon, MatTooltip, MatIconAnchor, RouterLink, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, YouTubePlayer, MatButton, NgFor, NgClass, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, MatCardActions, DatePipe]
 })
 export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy, HasUnsavedReplies {
 
