@@ -37,3 +37,12 @@ config var (only needed for STAGING).
   * `mvn dependency:resolve-sources`
 * Build
     * `mvn clean verify`
+
+* Angular
+  * `ng update @angular/core@19 @angular/cli@19 --allow-dirty`
+  * `ng update @angular/material@19 --allow-dirty`
+  * `ncu`
+  * `ncu -u`
+  * `npm install`
+  * `npm run build`
+  * `npm run lint`
