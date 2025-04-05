@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {VideoReportService} from "../service/video-report.service";
 import {AuthenticationService} from "../service/authentication.service";
@@ -38,9 +38,9 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
     snackBar = inject(MatSnackBar);
 
 
-    @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
-    @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
-    @ViewChild('videoCommentsContainer') videoCommentsContainer?: ElementRef<HTMLDivElement>;
+    readonly youtube = viewChild<YouTubePlayer>('youtubePlayer');
+    readonly widthMeasurement = viewChild<ElementRef<HTMLDivElement>>('widthMeasurement');
+    readonly videoCommentsContainer = viewChild<ElementRef<HTMLDivElement>>('videoCommentsContainer');
 
     videoWidth?: number;
     videoHeight?: number;
@@ -76,7 +76,7 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
 
     onResize = (): void => {
         // minus padding (16px each side) and margin (10px each)
-        const contentWidth = this.widthMeasurement!.nativeElement.clientWidth - 52;
+        const contentWidth = this.widthMeasurement()!.nativeElement.clientWidth - 52;
 
         this.videoWidth = Math.min(contentWidth, 720);
         this.videoHeight = this.videoWidth * 0.6;
@@ -114,8 +114,8 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
     }
 
     play(time: number): void {
-        this.youtube!.seekTo(time, true);
-        this.youtube!.playVideo();
+        this.youtube()!.seekTo(time, true);
+        this.youtube()!.playVideo();
     }
 
     reply(comment: VideoCommentDTO): void {
@@ -187,7 +187,7 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
     }
 
     addVideoComment() {
-        const timestamp = Math.round(this.youtube!.getCurrentTime());
+        const timestamp = Math.round(this.youtube()!.getCurrentTime());
 
         // check if there is already a comment in the same timestamp range +/-3 seconds
         if (this.dto!.videoComments.some(comment => timestamp >= comment.timestamp - 3 && timestamp <= comment.timestamp + 3)) {
@@ -206,8 +206,9 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
             this.newComments.push(newComment);
 
             setTimeout(() => {
-                if (this.videoCommentsContainer) {
-                    this.videoCommentsContainer.nativeElement.scrollTop = this.videoCommentsContainer.nativeElement.scrollHeight;
+                const videoCommentsContainer = this.videoCommentsContainer();
+                if (videoCommentsContainer) {
+                    videoCommentsContainer.nativeElement.scrollTop = videoCommentsContainer.nativeElement.scrollHeight;
                 }
             }, 200);
         }

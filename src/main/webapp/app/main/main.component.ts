@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, OnInit, viewChild} from '@angular/core';
 import {BasketplanGameDTO, GameDiscussionDTO, OfficiatingMode, OverviewDTO, Reportee, ReportType, UserDTO} from "../rest";
 import {VideoReportService} from "../service/video-report.service";
 import {BasketplanService} from "../service/basketplan.service";
@@ -71,7 +71,7 @@ export class MainComponent implements OnInit {
     private dialog = inject(MatDialog);
 
     dtos: MatTableDataSource<OverviewDTO> = new MatTableDataSource<OverviewDTO>([]);
-    @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
+    readonly paginator = viewChild(MatPaginator);
     reportsLoaded = false;
 
     gameNumberInput: string = '';
@@ -135,8 +135,9 @@ export class MainComponent implements OnInit {
             next: value => {
                 this.reportsLoaded = true;
                 this.dtos = new MatTableDataSource<OverviewDTO>(value);
-                if (this.paginator) {
-                    this.dtos.paginator = this.paginator
+                const paginator = this.paginator();
+                if (paginator) {
+                    this.dtos.paginator = paginator
                 }
                 this.dtos.filterPredicate = (data, filter) => {
                     // default filter cannot handle nested objects, so handle each column specifically

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {VideoReportService} from "../service/video-report.service";
 import {YouTubePlayer} from "@angular/youtube-player";
@@ -30,8 +30,8 @@ export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestro
     snackBar = inject(MatSnackBar);
 
 
-    @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
-    @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
+    readonly youtube = viewChild<YouTubePlayer>('youtubePlayer');
+    readonly widthMeasurement = viewChild<ElementRef<HTMLDivElement>>('widthMeasurement');
 
     videoWidth?: number;
     videoHeight?: number;
@@ -63,7 +63,7 @@ export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestro
 
     onResize = (): void => {
         // minus padding (16px each side) and margin (10px each)
-        const contentWidth = this.widthMeasurement!.nativeElement.clientWidth - 52;
+        const contentWidth = this.widthMeasurement()!.nativeElement.clientWidth - 52;
 
         this.videoWidth = Math.min(contentWidth, 720);
         this.videoHeight = this.videoWidth * 0.6;
@@ -74,8 +74,8 @@ export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     play(time: number): void {
-        this.youtube!.seekTo(time, true);
-        this.youtube!.playVideo();
+        this.youtube()!.seekTo(time, true);
+        this.youtube()!.playVideo();
     }
 
     is2PO(): boolean {

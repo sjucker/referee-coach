@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
 import {HasUnsavedReplies} from "../has-unsaved-replies";
 import {Observable, of} from "rxjs";
 import {YouTubePlayer} from "@angular/youtube-player";
@@ -38,8 +38,8 @@ export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy
     snackBar = inject(MatSnackBar);
 
 
-    @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
-    @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
+    readonly youtube = viewChild<YouTubePlayer>('youtubePlayer');
+    readonly widthMeasurement = viewChild<ElementRef<HTMLDivElement>>('widthMeasurement');
 
     videoWidth?: number;
     videoHeight?: number;
@@ -75,7 +75,7 @@ export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy
 
     onResize = (): void => {
         // minus padding (16px each side) and margin (10px each)
-        const contentWidth = this.widthMeasurement!.nativeElement.clientWidth - 52;
+        const contentWidth = this.widthMeasurement()!.nativeElement.clientWidth - 52;
 
         this.videoWidth = Math.min(contentWidth, 720);
         this.videoHeight = this.videoWidth * 0.6;
@@ -142,8 +142,8 @@ export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     play(time: number) {
-        this.youtube!.seekTo(time, true);
-        this.youtube!.playVideo();
+        this.youtube()!.seekTo(time, true);
+        this.youtube()!.playVideo();
     }
 
     reply(comment: GameDiscussionCommentDTO) {
@@ -170,7 +170,7 @@ export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     addComment() {
-        const timestamp = Math.round(this.youtube!.getCurrentTime());
+        const timestamp = Math.round(this.youtube()!.getCurrentTime());
 
         // check if there is already a scene in the same timestamp range +/-3 seconds
         if (this.gameDiscussion!.comments.some(comment => timestamp >= comment.timestamp - 3 && timestamp <= comment.timestamp + 3)) {

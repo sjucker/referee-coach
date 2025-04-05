@@ -1,4 +1,4 @@
-import {Component, ElementRef, input, OnInit, output, ViewChild} from '@angular/core';
+import {Component, ElementRef, input, OnInit, output, viewChild} from '@angular/core';
 import {TagDTO} from "../rest";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger} from "@angular/material/autocomplete";
@@ -17,7 +17,7 @@ import {MatOption} from '@angular/material/select';
 })
 export class TagsSelectionComponent implements OnInit {
 
-    @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
+    readonly tagInput = viewChild<ElementRef<HTMLInputElement>>('tagInput');
 
     readonly availableTags = input.required<Observable<TagDTO[]>>();
     allTags: TagDTO[] = [];
@@ -61,6 +61,6 @@ export class TagsSelectionComponent implements OnInit {
         this.selectedTags.push($event.option.value);
         this.selected.emit($event.option.value);
         this.tagController.setValue(null);
-        this.tagInput!.nativeElement.value = '';
+        this.tagInput()!.nativeElement.value = '';
     }
 }

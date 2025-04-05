@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
 import {VideoReportService} from "../service/video-report.service";
 import {TagDTO, VideoCommentDetailDTO} from "../rest";
 import {
@@ -41,12 +41,12 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
     displayedColumns: string[] = ['date', 'gameNumber', 'competition', 'comment', 'tags', 'play'];
 
-    @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
-    @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
+    readonly youtube = viewChild<YouTubePlayer>('youtubePlayer');
+    readonly widthMeasurement = viewChild<ElementRef<HTMLDivElement>>('widthMeasurement');
 
     selectedTags: TagDTO[] = [];
     results: MatTableDataSource<VideoCommentDetailDTO> = new MatTableDataSource<VideoCommentDetailDTO>([]);
-    @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
+    readonly paginator = viewChild(MatPaginator);
 
     currentVideoId?: string;
     videoWidth?: number;
@@ -90,8 +90,9 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
         }).subscribe({
             next: response => {
                 this.results = new MatTableDataSource<VideoCommentDetailDTO>(response.results);
-                if (this.paginator) {
-                    this.results.paginator = this.paginator
+                const paginator = this.paginator();
+                if (paginator) {
+                    this.results.paginator = paginator
                 }
             },
             error: () => {
@@ -112,9 +113,10 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
         this.currentVideoId = element.youtubeId;
 
         const interval = setInterval(() => {
-            if (this.youtube!.getPlayerState() !== YT.PlayerState.UNSTARTED) {
-                this.youtube!.seekTo(element.timestamp, true);
-                this.youtube!.playVideo();
+            const youtube = this.youtube();
+            if (youtube!.getPlayerState() !== YT.PlayerState.UNSTARTED) {
+                youtube!.seekTo(element.timestamp, true);
+                youtube!.playVideo();
                 clearInterval(interval);
             }
         }, 500);
@@ -123,7 +125,7 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     onResize = (): void => {
         setTimeout(() => {
             // minus padding (16px each side) and margin (10px each)
-            const contentWidth = this.widthMeasurement!.nativeElement.clientWidth - 52;
+            const contentWidth = this.widthMeasurement()!.nativeElement.clientWidth - 52;
 
             this.videoWidth = Math.min(contentWidth, 720);
             this.videoHeight = this.videoWidth * 0.6;

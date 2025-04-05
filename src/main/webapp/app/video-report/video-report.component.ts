@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
 import {YouTubePlayer} from "@angular/youtube-player";
 import {VideoReportService} from "../service/video-report.service";
 import {OfficiatingMode, Reportee, TagDTO, VideoCommentDTO, VideoReportDTO} from "../rest";
@@ -40,9 +40,9 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
     snackBar = inject(MatSnackBar);
 
 
-    @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
-    @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
-    @ViewChild('videoCommentsContainer') videoCommentsContainer?: ElementRef<HTMLDivElement>;
+    readonly youtube = viewChild<YouTubePlayer>('youtubePlayer');
+    readonly widthMeasurement = viewChild<ElementRef<HTMLDivElement>>('widthMeasurement');
+    readonly videoCommentsContainer = viewChild<ElementRef<HTMLDivElement>>('videoCommentsContainer');
 
     videoWidth?: number;
     videoHeight?: number;
@@ -88,7 +88,7 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onResize = (): void => {
         // minus padding (16px each side) and margin (10px each)
-        const contentWidth = this.widthMeasurement!.nativeElement.clientWidth - 52;
+        const contentWidth = this.widthMeasurement()!.nativeElement.clientWidth - 52;
 
         this.videoWidth = Math.min(contentWidth, 720);
         this.videoHeight = this.videoWidth * 0.6;
@@ -106,8 +106,8 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     jumpTo(time: number): void {
-        this.youtube!.seekTo(time, true);
-        this.youtube!.playVideo();
+        this.youtube()!.seekTo(time, true);
+        this.youtube()!.playVideo();
     }
 
     save() {
@@ -196,14 +196,15 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
             id: undefined,
             comment: '',
             requiresReply: false,
-            timestamp: Math.round(this.youtube!.getCurrentTime()),
+            timestamp: Math.round(this.youtube()!.getCurrentTime()),
             replies: [],
             tags: []
         });
 
         setTimeout(() => {
-            if (this.videoCommentsContainer) {
-                this.videoCommentsContainer.nativeElement.scrollTop = this.videoCommentsContainer.nativeElement.scrollHeight;
+            const videoCommentsContainer = this.videoCommentsContainer();
+            if (videoCommentsContainer) {
+                videoCommentsContainer.nativeElement.scrollTop = videoCommentsContainer.nativeElement.scrollHeight;
             }
         }, 200);
     }
