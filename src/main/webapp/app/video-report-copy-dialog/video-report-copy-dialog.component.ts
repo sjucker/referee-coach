@@ -3,7 +3,7 @@ import {Reportee, UserDTO} from "../rest";
 import {MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption, MatSelect} from '@angular/material/select';
-import {NgFor} from '@angular/common';
+
 import {MatButton} from '@angular/material/button';
 
 interface ReporteeSelection {
@@ -24,7 +24,7 @@ export interface VideoReportCopyDialogData {
     selector: 'app-video-report-copy-dialog',
     templateUrl: './video-report-copy-dialog.component.html',
     styleUrls: ['./video-report-copy-dialog.component.scss'],
-    imports: [MatDialogTitle, MatDialogContent, MatFormField, MatLabel, MatSelect, NgFor, MatOption, MatDialogActions, MatButton, MatDialogClose]
+    imports: [MatDialogTitle, MatDialogContent, MatFormField, MatLabel, MatSelect, MatOption, MatDialogActions, MatButton, MatDialogClose]
 })
 export class VideoReportCopyDialogComponent implements OnInit {
 

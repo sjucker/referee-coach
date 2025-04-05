@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {AuthenticationService} from "../service/authentication.service";
 import {MatToolbar} from '@angular/material/toolbar';
-import {NgIf} from '@angular/common';
+
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
@@ -13,7 +13,7 @@ import {MatButton} from '@angular/material/button';
     selector: 'app-forgot-password',
     templateUrl: './forgot-password.component.html',
     styleUrls: ['./forgot-password.component.scss'],
-    imports: [MatToolbar, NgIf, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatFormField, MatLabel, MatInput, FormsModule, MatButton]
+    imports: [MatToolbar, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatFormField, MatLabel, MatInput, FormsModule, MatButton]
 })
 export class ForgotPasswordComponent {
     requesting = false;

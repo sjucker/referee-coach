@@ -1,275 +1,303 @@
 <div>
     <mat-toolbar color="primary">
-        <mat-progress-spinner mode="indeterminate" *ngIf="!notFound && !report" [diameter]="30" color="accent"></mat-progress-spinner>
-        <span *ngIf="report && !report.textOnly">Video Report</span>
-        <span *ngIf="report && report.textOnly">Report</span>
-        <button *ngIf="report" mat-icon-button (click)="save()" [disabled]="saving || !unsavedChanges">
-            <mat-icon matTooltip="saves the current state of the report">save</mat-icon>
-        </button>
-        <button *ngIf="report" mat-icon-button (click)="finish()" [disabled]="unsavedChanges">
-            <mat-icon matTooltip="finishes the report and sends an email to the referee">done</mat-icon>
-        </button>
-        <a *ngIf="report?.id" [href]="'/#/view/' + report?.id" mat-icon-button target="_blank">
-            <mat-icon matTooltip="opens a new window to see the report in read-only mode">open_in_new</mat-icon>
-        </a>
+        @if (!notFound && !report) {
+            <mat-progress-spinner mode="indeterminate" [diameter]="30" color="accent"></mat-progress-spinner>
+        }
+        @if (report && !report.textOnly) {
+            <span>Video Report</span>
+        }
+        @if (report && report.textOnly) {
+            <span>Report</span>
+        }
+        @if (report) {
+            <button mat-icon-button (click)="save()" [disabled]="saving || !unsavedChanges">
+                <mat-icon matTooltip="saves the current state of the report">save</mat-icon>
+            </button>
+        }
+        @if (report) {
+            <button mat-icon-button (click)="finish()" [disabled]="unsavedChanges">
+                <mat-icon matTooltip="finishes the report and sends an email to the referee">done</mat-icon>
+            </button>
+        }
+        @if (report?.id) {
+            <a [href]="'/#/view/' + report?.id" mat-icon-button target="_blank">
+                <mat-icon matTooltip="opens a new window to see the report in read-only mode">open_in_new</mat-icon>
+            </a>
+        }
         <span class="spacer"></span>
         <a routerLink="/" mat-icon-button>
             <mat-icon>home</mat-icon>
         </a>
     </mat-toolbar>
     <div class="loading-indicator">
-        <mat-progress-bar mode="indeterminate" color="accent" *ngIf="(!report && !notFound) || saving"></mat-progress-bar>
+        @if ((!report && !notFound) || saving) {
+            <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+        }
     </div>
 
-    <mat-card appearance="outlined" *ngIf="report">
-        <mat-card-header>
-            <mat-card-title>Game Info</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <div class="game-info-container">
-                <span>Game Number: {{ report.basketplanGame.gameNumber }}</span>
-                <span>Competition: {{ report.basketplanGame.competition }}</span>
-                <span>Date: {{ report.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
-                <span>Result: {{ report.basketplanGame.result }}</span>
-                <span>Team A: {{ report.basketplanGame.teamA }}</span>
-                <span>Team B: {{ report.basketplanGame.teamB }}</span>
-            </div>
-            <div class="game-info-container">
-                <span>Coach: {{ report.coach.name }}</span>
-            </div>
-            <div class="game-info-container" *ngIf="is3PO()">
-                <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Crew Chief: {{ report.basketplanGame.referee1!.name }}</span>
-                <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 1: {{ report.basketplanGame.referee2!.name }}</span>
-                <span [ngClass]="isThirdUmpire() ? 'reportee' : ''">Umpire 2: {{ report.basketplanGame.referee3!.name }}</span>
-            </div>
-            <div class="game-info-container" *ngIf="is2PO()">
-                <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Referee 1: {{ report.basketplanGame.referee1!.name }}</span>
-                <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Referee 2: {{ report.basketplanGame.referee2!.name }}</span>
-            </div>
-        </mat-card-content>
-    </mat-card>
-
-    <mat-card appearance="outlined" *ngIf="report">
-        <mat-card-header>
-            <mat-card-title>Comments</mat-card-title>
-        </mat-card-header>
-
-        <mat-card-content>
-            <div>
-                <mat-form-field appearance="fill" color="accent">
-                    <mat-label>General Comment</mat-label>
-                    <textarea [(ngModel)]="report.general.comment"
-                              (ngModelChange)="onChange()"
-                              maxlength="1024"
-                              cdkAutosizeMaxRows="5"
-                              cdkAutosizeMinRows="2"
-                              cdkTextareaAutosize
-                              matInput></textarea>
-                </mat-form-field>
-            </div>
-            <div class="criteria-container">
-                <mat-form-field appearance="fill" color="accent">
-                    <mat-label>Image, Approach</mat-label>
-                    <textarea [(ngModel)]="report.image.comment"
-                              (ngModelChange)="onChange()"
-                              maxlength="1024"
-                              cdkAutosizeMaxRows="5"
-                              cdkAutosizeMinRows="2"
-                              cdkTextareaAutosize
-                              matInput></textarea>
-                </mat-form-field>
-                <mat-form-field appearance="fill" color="accent">
-                    <mat-label> Fitness Condition</mat-label>
-                    <textarea [(ngModel)]="report.fitness.comment"
-                              (ngModelChange)="onChange()"
-                              maxlength="1024"
-                              cdkAutosizeMaxRows="5"
-                              cdkAutosizeMinRows="2"
-                              cdkTextareaAutosize
-                              matInput></textarea>
-                </mat-form-field>
-                <mat-form-field appearance="fill" color="accent">
-                    <mat-label *ngIf="is3PO()">3PO Mechanics & Individual Officiating Techniques</mat-label>
-                    <mat-label *ngIf="is2PO()">2PO Mechanics & Individual Officiating Techniques</mat-label>
-                    <textarea [(ngModel)]="report.mechanics.comment"
-                              (ngModelChange)="onChange()"
-                              maxlength="1024"
-                              cdkAutosizeMaxRows="5"
-                              cdkAutosizeMinRows="2"
-                              cdkTextareaAutosize
-                              matInput></textarea>
-                </mat-form-field>
-            </div>
-
-            <div class="criteria-container">
-                <mat-form-field appearance="fill" color="accent">
-                    <mat-label>Critera: Fouls</mat-label>
-                    <textarea [(ngModel)]="report.fouls.comment"
-                              (ngModelChange)="onChange()"
-                              maxlength="1024"
-                              cdkAutosizeMaxRows="5"
-                              cdkAutosizeMinRows="2"
-                              cdkTextareaAutosize
-                              matInput></textarea>
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" color="accent">
-                    <mat-label>Critera: Violations</mat-label>
-                    <textarea [(ngModel)]="report.violations.comment"
-                              (ngModelChange)="onChange()"
-                              maxlength="1024"
-                              cdkAutosizeMaxRows="5"
-                              cdkAutosizeMinRows="2"
-                              cdkTextareaAutosize
-                              matInput></textarea>
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" color="accent">
-                    <mat-label>Game Control and Management</mat-label>
-                    <textarea [(ngModel)]="report.gameManagement.comment"
-                              (ngModelChange)="onChange()"
-                              maxlength="1024"
-                              cdkAutosizeMaxRows="5"
-                              cdkAutosizeMinRows="2"
-                              cdkTextareaAutosize
-                              matInput></textarea>
-                </mat-form-field>
-            </div>
-
-            <div class="criteria-container">
-                <mat-form-field appearance="fill" color="accent">
-                    <mat-label>Points to Keep</mat-label>
-                    <textarea [(ngModel)]="report.pointsToKeepComment"
-                              (ngModelChange)="onChange()"
-                              maxlength="1024"
-                              cdkAutosizeMaxRows="5"
-                              cdkAutosizeMinRows="2"
-                              cdkTextareaAutosize
-                              matInput></textarea>
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" color="accent">
-                    <mat-label>Points to Improve</mat-label>
-                    <textarea [(ngModel)]="report.pointsToImproveComment"
-                              (ngModelChange)="onChange()"
-                              maxlength="1024"
-                              cdkAutosizeMaxRows="5"
-                              cdkAutosizeMinRows="2"
-                              cdkTextareaAutosize
-                              matInput></textarea>
-                </mat-form-field>
-            </div>
-        </mat-card-content>
-    </mat-card>
-
-    <mat-card appearance="outlined" *ngIf="report">
-        <mat-card-header>
-            <mat-card-title>Ratings</mat-card-title>
-        </mat-card-header>
-
-        <mat-card-content>
-            <app-video-report-rating
-                    [title]="'Image, Approach'"
-                    [dto]="report.image"
-                    (changed)="onChange()"></app-video-report-rating>
-            <br/>
-            <app-video-report-rating
-                    [title]="'Fitness Condition'"
-                    [dto]="report.fitness"></app-video-report-rating>
-            <br/>
-            <app-video-report-rating
-                    [title]="is3PO() ? '3PO Mechanics' : '2PO Mechanics'"
-                    [dto]="report.mechanics"
-                    (changed)="onChange()"></app-video-report-rating>
-            <br/>
-            <app-video-report-rating
-                    [title]="'Critera: Fouls'"
-                    [dto]="report.fouls"
-                    (changed)="onChange()"></app-video-report-rating>
-            <br/>
-            <app-video-report-rating
-                    [title]="'Critera: Violations'"
-                    [dto]="report.violations"
-                    (changed)="onChange()"></app-video-report-rating>
-            <br/>
-            <app-video-report-rating
-                    [title]="'Game Control and Management'"
-                    [dto]="report.gameManagement"
-                    (changed)="onChange()"></app-video-report-rating>
-            <br/>
-            <br/>
-            <app-video-report-rating
-                    [title]="'Overall'"
-                    [dto]="report.general"
-                    (changed)="onChange()"></app-video-report-rating>
-            | Average of all critera: {{ getAverage() | number: '1.1-1' }}
-        </mat-card-content>
-    </mat-card>
-
-    <mat-card appearance="outlined" *ngIf="report && report.basketplanGame.youtubeId">
-        <mat-card-header>
-            <mat-card-title>Video</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <div class="video-container">
-                <div class="youtube-container">
-                    <youtube-player #youtubePlayer
-                                    [videoId]="report.basketplanGame.youtubeId"
-                                    [width]="videoWidth"
-                                    [height]="videoHeight"></youtube-player>
-                    <button (click)="addVideoComment()" color="primary" mat-flat-button>
-                        Create comment for current timestamp
-                    </button>
+    @if (report) {
+        <mat-card appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>Game Info</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="game-info-container">
+                    <span>Game Number: {{ report.basketplanGame.gameNumber }}</span>
+                    <span>Competition: {{ report.basketplanGame.competition }}</span>
+                    <span>Date: {{ report.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
+                    <span>Result: {{ report.basketplanGame.result }}</span>
+                    <span>Team A: {{ report.basketplanGame.teamA }}</span>
+                    <span>Team B: {{ report.basketplanGame.teamB }}</span>
                 </div>
-
-                <div style="flex: 1" class="video-comments-container" #videoCommentsContainer>
-                    <mat-card appearance="outlined" *ngFor="let videoComment of report.videoComments; index as i;">
-                        <mat-card-content>
-                            <mat-checkbox [(ngModel)]="videoComment.requiresReply"
-                                          (ngModelChange)="onChange()"
-                                          matTooltip="If selected, this comment is highlighted and the referee must reply to it.">
-                                Require reply from referee
-                            </mat-checkbox>
-                            <mat-form-field appearance="fill" color="accent">
-                                <mat-label>Comment</mat-label>
-                                <textarea [(ngModel)]="videoComment.comment"
-                                          (ngModelChange)="onChange()"
-                                          maxlength="1024"
-                                          cdkAutosizeMaxRows="5"
-                                          cdkAutosizeMinRows="1"
-                                          cdkTextareaAutosize
-                                          matInput></textarea>
-                            </mat-form-field>
-                            <app-tags-selection [availableTags]="availableTags"
-                                                [initialSelectedTags]="videoComment.tags"
-                                                (removed)="removeTag(videoComment, $event)"
-                                                (selected)="selectTag(videoComment, $event)"></app-tags-selection>
-                        </mat-card-content>
-                        <mat-card-actions>
-                            <button (click)="jumpTo(videoComment.timestamp)" color="accent" mat-stroked-button>
-                                Jump to Scene
-                            </button>
-                            <button (click)="deleteComment(videoComment)" color="accent" mat-stroked-button>
-                                Delete Comment
-                            </button>
-                            <button (click)="copyComment(videoComment)" color="accent" mat-stroked-button *ngIf="isCopyCommentVisible(videoComment)">
-                                Copy Comment to other Report
-                            </button>
-                        </mat-card-actions>
-                    </mat-card>
+                <div class="game-info-container">
+                    <span>Coach: {{ report.coach.name }}</span>
                 </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
+                @if (is3PO()) {
+                    <div class="game-info-container">
+                        <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Crew Chief: {{ report.basketplanGame.referee1!.name }}</span>
+                        <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 1: {{ report.basketplanGame.referee2!.name }}</span>
+                        <span [ngClass]="isThirdUmpire() ? 'reportee' : ''">Umpire 2: {{ report.basketplanGame.referee3!.name }}</span>
+                    </div>
+                }
+                @if (is2PO()) {
+                    <div class="game-info-container">
+                        <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Referee 1: {{ report.basketplanGame.referee1!.name }}</span>
+                        <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Referee 2: {{ report.basketplanGame.referee2!.name }}</span>
+                    </div>
+                }
+            </mat-card-content>
+        </mat-card>
+    }
 
-    <mat-card appearance="outlined" *ngIf="notFound">
-        <mat-card-header>
-            <mat-card-title>Not found</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            Report was not found...
-        </mat-card-content>
-    </mat-card>
+    @if (report) {
+        <mat-card appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>Comments</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div>
+                    <mat-form-field appearance="fill" color="accent">
+                        <mat-label>General Comment</mat-label>
+                        <textarea [(ngModel)]="report.general.comment"
+                                  (ngModelChange)="onChange()"
+                                  maxlength="1024"
+                                  cdkAutosizeMaxRows="5"
+                                  cdkAutosizeMinRows="2"
+                                  cdkTextareaAutosize
+                                  matInput></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="criteria-container">
+                    <mat-form-field appearance="fill" color="accent">
+                        <mat-label>Image, Approach</mat-label>
+                        <textarea [(ngModel)]="report.image.comment"
+                                  (ngModelChange)="onChange()"
+                                  maxlength="1024"
+                                  cdkAutosizeMaxRows="5"
+                                  cdkAutosizeMinRows="2"
+                                  cdkTextareaAutosize
+                                  matInput></textarea>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" color="accent">
+                        <mat-label> Fitness Condition</mat-label>
+                        <textarea [(ngModel)]="report.fitness.comment"
+                                  (ngModelChange)="onChange()"
+                                  maxlength="1024"
+                                  cdkAutosizeMaxRows="5"
+                                  cdkAutosizeMinRows="2"
+                                  cdkTextareaAutosize
+                                  matInput></textarea>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" color="accent">
+                        @if (is3PO()) {
+                            <mat-label>3PO Mechanics & Individual Officiating Techniques</mat-label>
+                        }
+                        @if (is2PO()) {
+                            <mat-label>2PO Mechanics & Individual Officiating Techniques</mat-label>
+                        }
+                        <textarea [(ngModel)]="report.mechanics.comment"
+                                  (ngModelChange)="onChange()"
+                                  maxlength="1024"
+                                  cdkAutosizeMaxRows="5"
+                                  cdkAutosizeMinRows="2"
+                                  cdkTextareaAutosize
+                                  matInput></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="criteria-container">
+                    <mat-form-field appearance="fill" color="accent">
+                        <mat-label>Critera: Fouls</mat-label>
+                        <textarea [(ngModel)]="report.fouls.comment"
+                                  (ngModelChange)="onChange()"
+                                  maxlength="1024"
+                                  cdkAutosizeMaxRows="5"
+                                  cdkAutosizeMinRows="2"
+                                  cdkTextareaAutosize
+                                  matInput></textarea>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" color="accent">
+                        <mat-label>Critera: Violations</mat-label>
+                        <textarea [(ngModel)]="report.violations.comment"
+                                  (ngModelChange)="onChange()"
+                                  maxlength="1024"
+                                  cdkAutosizeMaxRows="5"
+                                  cdkAutosizeMinRows="2"
+                                  cdkTextareaAutosize
+                                  matInput></textarea>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" color="accent">
+                        <mat-label>Game Control and Management</mat-label>
+                        <textarea [(ngModel)]="report.gameManagement.comment"
+                                  (ngModelChange)="onChange()"
+                                  maxlength="1024"
+                                  cdkAutosizeMaxRows="5"
+                                  cdkAutosizeMinRows="2"
+                                  cdkTextareaAutosize
+                                  matInput></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="criteria-container">
+                    <mat-form-field appearance="fill" color="accent">
+                        <mat-label>Points to Keep</mat-label>
+                        <textarea [(ngModel)]="report.pointsToKeepComment"
+                                  (ngModelChange)="onChange()"
+                                  maxlength="1024"
+                                  cdkAutosizeMaxRows="5"
+                                  cdkAutosizeMinRows="2"
+                                  cdkTextareaAutosize
+                                  matInput></textarea>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" color="accent">
+                        <mat-label>Points to Improve</mat-label>
+                        <textarea [(ngModel)]="report.pointsToImproveComment"
+                                  (ngModelChange)="onChange()"
+                                  maxlength="1024"
+                                  cdkAutosizeMaxRows="5"
+                                  cdkAutosizeMinRows="2"
+                                  cdkTextareaAutosize
+                                  matInput></textarea>
+                    </mat-form-field>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    }
+
+    @if (report) {
+        <mat-card appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>Ratings</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <app-video-report-rating
+                        [title]="'Image, Approach'"
+                        [dto]="report.image"
+                        (changed)="onChange()"></app-video-report-rating>
+                <br/>
+                <app-video-report-rating
+                        [title]="'Fitness Condition'"
+                        [dto]="report.fitness"></app-video-report-rating>
+                <br/>
+                <app-video-report-rating
+                        [title]="is3PO() ? '3PO Mechanics' : '2PO Mechanics'"
+                        [dto]="report.mechanics"
+                        (changed)="onChange()"></app-video-report-rating>
+                <br/>
+                <app-video-report-rating
+                        [title]="'Critera: Fouls'"
+                        [dto]="report.fouls"
+                        (changed)="onChange()"></app-video-report-rating>
+                <br/>
+                <app-video-report-rating
+                        [title]="'Critera: Violations'"
+                        [dto]="report.violations"
+                        (changed)="onChange()"></app-video-report-rating>
+                <br/>
+                <app-video-report-rating
+                        [title]="'Game Control and Management'"
+                        [dto]="report.gameManagement"
+                        (changed)="onChange()"></app-video-report-rating>
+                <br/>
+                <br/>
+                <app-video-report-rating
+                        [title]="'Overall'"
+                        [dto]="report.general"
+                        (changed)="onChange()"></app-video-report-rating>
+                | Average of all critera: {{ getAverage() | number: '1.1-1' }}
+            </mat-card-content>
+        </mat-card>
+    }
+
+    @if (report && report.basketplanGame.youtubeId) {
+        <mat-card appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>Video</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="video-container">
+                    <div class="youtube-container">
+                        <youtube-player #youtubePlayer
+                                        [videoId]="report.basketplanGame.youtubeId"
+                                        [width]="videoWidth"
+                                        [height]="videoHeight"></youtube-player>
+                        <button (click)="addVideoComment()" color="primary" mat-flat-button>
+                            Create comment for current timestamp
+                        </button>
+                    </div>
+                    <div style="flex: 1" class="video-comments-container" #videoCommentsContainer>
+                        @for (videoComment of report.videoComments; track videoComment; let i = $index) {
+                            <mat-card appearance="outlined">
+                                <mat-card-content>
+                                    <mat-checkbox [(ngModel)]="videoComment.requiresReply"
+                                                  (ngModelChange)="onChange()"
+                                                  matTooltip="If selected, this comment is highlighted and the referee must reply to it.">
+                                        Require reply from referee
+                                    </mat-checkbox>
+                                    <mat-form-field appearance="fill" color="accent">
+                                        <mat-label>Comment</mat-label>
+                                        <textarea [(ngModel)]="videoComment.comment"
+                                                  (ngModelChange)="onChange()"
+                                                  maxlength="1024"
+                                                  cdkAutosizeMaxRows="5"
+                                                  cdkAutosizeMinRows="1"
+                                                  cdkTextareaAutosize
+                                                  matInput></textarea>
+                                    </mat-form-field>
+                                    <app-tags-selection [availableTags]="availableTags"
+                                                        [initialSelectedTags]="videoComment.tags"
+                                                        (removed)="removeTag(videoComment, $event)"
+                                                        (selected)="selectTag(videoComment, $event)"></app-tags-selection>
+                                </mat-card-content>
+                                <mat-card-actions>
+                                    <button (click)="jumpTo(videoComment.timestamp)" color="accent" mat-stroked-button>
+                                        Jump to Scene
+                                    </button>
+                                    <button (click)="deleteComment(videoComment)" color="accent" mat-stroked-button>
+                                        Delete Comment
+                                    </button>
+                                    @if (isCopyCommentVisible(videoComment)) {
+                                        <button (click)="copyComment(videoComment)" color="accent" mat-stroked-button>
+                                            Copy Comment to other Report
+                                        </button>
+                                    }
+                                </mat-card-actions>
+                            </mat-card>
+                        }
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    }
+
+    @if (notFound) {
+        <mat-card appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>Not found</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                Report was not found...
+            </mat-card-content>
+        </mat-card>
+    }
 
     <!-- here so we know the current width of the window and can resize the YouTube video accordingly -->
     <div #widthMeasurement></div>

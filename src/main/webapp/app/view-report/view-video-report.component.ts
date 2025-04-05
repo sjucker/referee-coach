@@ -8,7 +8,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {DISCUSS_PATH} from "../app-routing.module";
 import {MatToolbar} from '@angular/material/toolbar';
-import {DatePipe, NgClass, NgFor, NgIf} from '@angular/common';
+import {DatePipe, NgClass} from '@angular/common';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatButton, MatIconAnchor, MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -19,7 +19,7 @@ import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} fr
     selector: 'app-view-video-report',
     templateUrl: './view-video-report.component.html',
     styleUrls: ['./view-video-report.component.scss'],
-    imports: [MatToolbar, NgIf, MatProgressSpinner, MatIconButton, MatTooltip, MatIcon, MatIconAnchor, RouterLink, MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgClass, YouTubePlayer, NgFor, MatCardActions, MatButton, DatePipe]
+    imports: [MatToolbar, MatProgressSpinner, MatIconButton, MatTooltip, MatIcon, MatIconAnchor, RouterLink, MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgClass, YouTubePlayer, MatCardActions, MatButton, DatePipe]
 })
 export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 

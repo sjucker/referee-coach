@@ -1,131 +1,170 @@
 <div>
     <mat-toolbar color="primary">
-        <mat-progress-spinner mode="indeterminate" *ngIf="!notFound && !dto" [diameter]="30" color="accent"></mat-progress-spinner>
-        <h1 *ngIf="dto">Video Report Discussion</h1>
-        <button *ngIf="dto" mat-icon-button (click)="finishReply()" [disabled]="saving || !hasUnsavedReplies()">
-            <mat-icon>save</mat-icon>
-        </button>
-        <div *ngIf="hasUnsavedReplies()" class="unsaved-hint show-gt-sm">
-            You have unsaved replies, please save them before leaving this page
-        </div>
-        <mat-icon *ngIf="hasUnsavedReplies()"
-                  class="hide-gt-sm"
-                  matTooltip="You have unsaved replies, please save them before leaving this page">
-            info_outline
-        </mat-icon>
+        @if (!notFound && !dto) {
+            <mat-progress-spinner mode="indeterminate" [diameter]="30" color="accent"></mat-progress-spinner>
+        }
+        @if (dto) {
+            <h1>Video Report Discussion</h1>
+            <button mat-icon-button (click)="finishReply()" [disabled]="saving || !hasUnsavedReplies()">
+                <mat-icon>save</mat-icon>
+            </button>
+        }
+        @if (hasUnsavedReplies()) {
+            <div class="unsaved-hint show-gt-sm">
+                You have unsaved replies, please save them before leaving this page
+            </div>
+            <mat-icon
+                    class="hide-gt-sm"
+                    matTooltip="You have unsaved replies, please save them before leaving this page">
+                info_outline
+            </mat-icon>
+        }
         <span class="spacer"></span>
-        <a routerLink="/" mat-icon-button *ngIf="isLoggedIn()">
-            <mat-icon>home</mat-icon>
-        </a>
+        @if (isLoggedIn()) {
+            <a routerLink="/" mat-icon-button>
+                <mat-icon>home</mat-icon>
+            </a>
+        }
     </mat-toolbar>
     <div class="loading-indicator">
-        <mat-progress-bar mode="indeterminate" color="accent" *ngIf="(!dto && !notFound) || saving"></mat-progress-bar>
+        @if ((!dto && !notFound) || saving) {
+            <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+        }
     </div>
 
-    <div *ngIf="dto">
+    @if (dto) {
+        <div>
+            <mat-card appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title>Game Info</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <div class="game-info-container">
+                        <span>Game Number: {{ dto.basketplanGame.gameNumber }}</span>
+                        <span>Competition: {{ dto.basketplanGame.competition }}</span>
+                        <span>Date: {{ dto.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
+                        <span>Result: {{ dto.basketplanGame.result }}</span>
+                        <span>Team A: {{ dto.basketplanGame.teamA }}</span>
+                        <span>Team B: {{ dto.basketplanGame.teamB }}</span>
+                    </div>
+                    <div class="game-info-container">
+                        <span>Coach: {{ dto.coach.name }}</span>
+                    </div>
+                    @if (is3PO()) {
+                        <div class="game-info-container">
+                            <span>Crew Chief: {{ dto.basketplanGame.referee1!.name }}</span>
+                            <span>Umpire 1: {{ dto.basketplanGame.referee2!.name }}</span>
+                            <span>Umpire 2: {{ dto.basketplanGame.referee3!.name }}</span>
+                        </div>
+                    }
+                    @if (is2PO()) {
+                        <div class="game-info-container">
+                            <span>Umpire 1: {{ dto.basketplanGame.referee1!.name }}</span>
+                            <span>Umpire 2: {{ dto.basketplanGame.referee2!.name }}</span>
+                        </div>
+                    }
+                </mat-card-content>
+            </mat-card>
+            @if (dto.basketplanGame.youtubeId) {
+                <mat-card appearance="outlined">
+                    <mat-card-content>
+                        <div class="video-container">
+                            <div class="youtube-container">
+                                <youtube-player #youtubePlayer
+                                                [videoId]="dto.basketplanGame.youtubeId"
+                                                [width]="videoWidth"
+                                                [height]="videoHeight"></youtube-player>
+                                @if (!isLoggedIn() || isReferee()) {
+                                    <button (click)="addVideoComment()" color="primary" mat-flat-button>
+                                        Create additional comment for current timestamp
+                                    </button>
+                                }
+                            </div>
+                            <div class="video-comments-container" #videoCommentsContainer>
+                                @for (videoComment of dto.videoComments; track videoComment; let i = $index) {
+                                    <mat-card appearance="outlined"
+                                              [ngClass]="{'important': requiresReply(videoComment)}">
+                                        <mat-card-header>
+                                            <mat-card-title [ngClass]="{'new-comment': !videoComment.id}">
+                                                <div>Video Comment #{{ i + 1 }}</div>
+                                                @if (requiresReply(videoComment)) {
+                                                    <mat-icon
+                                                            class="important"
+                                                            matTooltip="This comment requires a reply from you.">priority_high
+                                                    </mat-icon>
+                                                }
+                                                @if (flaggedForReply(videoComment)) {
+                                                    <mat-icon
+                                                            matTooltip="This comment requires a reply from the referee.">priority_high
+                                                    </mat-icon>
+                                                }
+                                            </mat-card-title>
+                                        </mat-card-header>
+                                        @if (videoComment.id) {
+                                            <mat-card-content>
+                                                <p>{{ videoComment.comment }}</p>
+                                                @if (videoComment.replies.length > 0) {
+                                                    <hr>
+                                                }
+                                                @for (reply of videoComment.replies; track reply) {
+                                                    <div>
+                                                        <div [class]="reply.id === 0 ? 'new-reply' : ''">
+                                                            <span class="repliedBy">{{ reply.repliedBy }}</span>
+                                                            <span class="repliedAt">{{ reply.repliedAt | date:'dd.MM.yyyy' }}</span>
+                                                            @if (reply.id === 0) {
+                                                                <button mat-icon-button (click)="deleteReply(videoComment, reply)">
+                                                                    <mat-icon color="accent">delete</mat-icon>
+                                                                </button>
+                                                            }
+                                                        </div>
+                                                        <p class="reply">{{ reply.reply }}</p>
+                                                    </div>
+                                                }
+                                            </mat-card-content>
+                                        }
+                                        @if (!videoComment.id) {
+                                            <mat-card-content>
+                                                <mat-form-field appearance="fill" color="accent">
+                                                    <mat-label>Comment</mat-label>
+                                                    <textarea [(ngModel)]="videoComment.comment"
+                                                              maxlength="1024"
+                                                              cdkAutosizeMaxRows="5"
+                                                              cdkAutosizeMinRows="1"
+                                                              cdkTextareaAutosize
+                                                              matInput></textarea>
+                                                </mat-form-field>
+                                            </mat-card-content>
+                                        }
+                                        <mat-card-actions>
+                                            <button (click)="play(videoComment.timestamp)" color="primary" mat-stroked-button>
+                                                Jump to Scene
+                                            </button>
+                                            @if (videoComment.id) {
+                                                <button (click)="reply(videoComment)" color="accent" mat-stroked-button>
+                                                    Reply
+                                                </button>
+                                            }
+                                        </mat-card-actions>
+                                    </mat-card>
+                                }
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            }
+        </div>
+    }
+
+    @if (notFound) {
         <mat-card appearance="outlined">
             <mat-card-header>
-                <mat-card-title>Game Info</mat-card-title>
+                <mat-card-title>Not found</mat-card-title>
             </mat-card-header>
             <mat-card-content>
-                <div class="game-info-container">
-                    <span>Game Number: {{ dto.basketplanGame.gameNumber }}</span>
-                    <span>Competition: {{ dto.basketplanGame.competition }}</span>
-                    <span>Date: {{ dto.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
-                    <span>Result: {{ dto.basketplanGame.result }}</span>
-                    <span>Team A: {{ dto.basketplanGame.teamA }}</span>
-                    <span>Team B: {{ dto.basketplanGame.teamB }}</span>
-                </div>
-                <div class="game-info-container">
-                    <span>Coach: {{ dto.coach.name }}</span>
-                </div>
-                <div class="game-info-container" *ngIf="is3PO()">
-                    <span>Crew Chief: {{ dto.basketplanGame.referee1!.name }}</span>
-                    <span>Umpire 1: {{ dto.basketplanGame.referee2!.name }}</span>
-                    <span>Umpire 2: {{ dto.basketplanGame.referee3!.name }}</span>
-                </div>
-                <div class="game-info-container" *ngIf="is2PO()">
-                    <span>Umpire 1: {{ dto.basketplanGame.referee1!.name }}</span>
-                    <span>Umpire 2: {{ dto.basketplanGame.referee2!.name }}</span>
-                </div>
+                Video Report was not found...
             </mat-card-content>
         </mat-card>
-
-        <mat-card appearance="outlined" *ngIf="dto.basketplanGame.youtubeId">
-            <mat-card-content>
-                <div class="video-container">
-                    <div class="youtube-container">
-                        <youtube-player #youtubePlayer
-                                        [videoId]="dto.basketplanGame.youtubeId"
-                                        [width]="videoWidth"
-                                        [height]="videoHeight"></youtube-player>
-                        <button (click)="addVideoComment()" color="primary" mat-flat-button *ngIf="!isLoggedIn() || isReferee()">
-                            Create additional comment for current timestamp
-                        </button>
-                    </div>
-                    <div class="video-comments-container" #videoCommentsContainer>
-                        <mat-card appearance="outlined" *ngFor="let videoComment of dto.videoComments; index as i;"
-                                  [ngClass]="{'important': requiresReply(videoComment)}">
-                            <mat-card-header>
-                                <mat-card-title [ngClass]="{'new-comment': !videoComment.id}">
-                                    <div>Video Comment #{{ i + 1 }}</div>
-                                    <mat-icon *ngIf="requiresReply(videoComment)"
-                                              class="important"
-                                              matTooltip="This comment requires a reply from you.">priority_high
-                                    </mat-icon>
-                                    <mat-icon *ngIf="flaggedForReply(videoComment)"
-                                              matTooltip="This comment requires a reply from the referee.">priority_high
-                                    </mat-icon>
-                                </mat-card-title>
-                            </mat-card-header>
-                            <mat-card-content *ngIf="videoComment.id">
-                                <p>{{ videoComment.comment }}</p>
-                                <hr *ngIf="videoComment.replies.length > 0">
-                                <div *ngFor="let reply of videoComment.replies">
-                                    <div [class]="reply.id === 0 ? 'new-reply' : ''">
-                                        <span class="repliedBy">{{ reply.repliedBy }}</span>
-                                        <span class="repliedAt">{{ reply.repliedAt | date:'dd.MM.yyyy' }}</span>
-                                        <button mat-icon-button (click)="deleteReply(videoComment, reply)" *ngIf="reply.id === 0">
-                                            <mat-icon color="accent">delete</mat-icon>
-                                        </button>
-                                    </div>
-                                    <p class="reply">{{ reply.reply }}</p>
-                                </div>
-                            </mat-card-content>
-                            <mat-card-content *ngIf="!videoComment.id">
-                                <mat-form-field appearance="fill" color="accent">
-                                    <mat-label>Comment</mat-label>
-                                    <textarea [(ngModel)]="videoComment.comment"
-                                              maxlength="1024"
-                                              cdkAutosizeMaxRows="5"
-                                              cdkAutosizeMinRows="1"
-                                              cdkTextareaAutosize
-                                              matInput></textarea>
-                                </mat-form-field>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <button (click)="play(videoComment.timestamp)" color="primary" mat-stroked-button>
-                                    Jump to Scene
-                                </button>
-                                <button (click)="reply(videoComment)" color="accent" mat-stroked-button *ngIf="videoComment.id">
-                                    Reply
-                                </button>
-                            </mat-card-actions>
-                        </mat-card>
-                    </div>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </div>
-
-    <mat-card appearance="outlined" *ngIf="notFound">
-        <mat-card-header>
-            <mat-card-title>Not found</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            Video Report was not found...
-        </mat-card-content>
-    </mat-card>
+    }
 
     <!-- here so we know the current width of the window and can resize the YouTube video accordingly -->
     <div #widthMeasurement></div>

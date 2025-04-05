@@ -12,7 +12,7 @@ import {UnsavedRepliesDialogComponent} from "../discuss-video-report-unsaved-rep
 import {DiscussVideoReportFinishDialogComponent} from "../discuss-video-report-finish-dialog/discuss-video-report-finish-dialog.component";
 import {HasUnsavedReplies} from "../has-unsaved-replies";
 import {MatToolbar} from '@angular/material/toolbar';
-import {DatePipe, NgClass, NgFor, NgIf} from '@angular/common';
+import {DatePipe, NgClass} from '@angular/common';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatButton, MatIconAnchor, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -28,7 +28,7 @@ import {FormsModule} from '@angular/forms';
     selector: 'app-discuss-video-report',
     templateUrl: './discuss-video-report.component.html',
     styleUrls: ['./discuss-video-report.component.scss'],
-    imports: [MatToolbar, NgIf, MatProgressSpinner, MatIconButton, MatIcon, MatTooltip, MatIconAnchor, RouterLink, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, YouTubePlayer, MatButton, NgFor, NgClass, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, MatCardActions, DatePipe]
+    imports: [MatToolbar, MatProgressSpinner, MatIconButton, MatIcon, MatTooltip, MatIconAnchor, RouterLink, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, YouTubePlayer, MatButton, NgClass, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, MatCardActions, DatePipe]
 })
 export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDestroy, HasUnsavedReplies {
 

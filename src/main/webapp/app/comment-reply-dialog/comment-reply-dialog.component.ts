@@ -1,7 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
-import {AuthenticationService} from "../service/authentication.service";
-import {NgIf} from '@angular/common';
+import {AuthenticationService} from "../service/authentication.service"
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {MatInput} from '@angular/material/input';
@@ -17,7 +16,7 @@ export interface CommentReplyDialogData {
     selector: 'app-comment-reply-dialog',
     templateUrl: './comment-reply-dialog.component.html',
     styleUrls: ['./comment-reply-dialog.component.scss'],
-    imports: [MatDialogTitle, MatDialogContent, NgIf, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, MatIcon, MatDialogActions, MatButton, MatDialogClose]
+    imports: [MatDialogTitle, MatDialogContent, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, MatIcon, MatDialogActions, MatButton, MatDialogClose]
 })
 export class CommentReplyDialogComponent {
 

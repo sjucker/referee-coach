@@ -2,7 +2,9 @@
     <h1>Referee Coach - Login</h1>
 </mat-toolbar>
 <div class="loading-indicator">
-    <mat-progress-bar mode="indeterminate" color="accent" *ngIf="authenticating"></mat-progress-bar>
+    @if (authenticating) {
+        <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+    }
 </div>
 
 <mat-card>

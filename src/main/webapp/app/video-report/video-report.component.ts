@@ -11,7 +11,7 @@ import {VideoReportUnsavedChangesDialogComponent} from "../video-report-unsaved-
 import {VIEW_PATH} from "../app-routing.module";
 import {VideoReportCopyDialogComponent, VideoReportCopyDialogData} from "../video-report-copy-dialog/video-report-copy-dialog.component";
 import {MatToolbar} from '@angular/material/toolbar';
-import {DatePipe, DecimalPipe, NgClass, NgFor, NgIf} from '@angular/common';
+import {DatePipe, DecimalPipe, NgClass} from '@angular/common';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatButton, MatIconAnchor, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -30,7 +30,7 @@ import {TagsSelectionComponent} from '../tags-selection/tags-selection.component
     selector: 'app-video-report',
     templateUrl: './video-report.component.html',
     styleUrls: ['./video-report.component.scss'],
-    imports: [MatToolbar, NgIf, MatProgressSpinner, MatIconButton, MatIcon, MatTooltip, MatIconAnchor, RouterLink, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgClass, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, VideoReportRatingComponent, YouTubePlayer, MatButton, NgFor, MatCheckbox, TagsSelectionComponent, MatCardActions, DecimalPipe, DatePipe]
+    imports: [MatToolbar, MatProgressSpinner, MatIconButton, MatIcon, MatTooltip, MatIconAnchor, RouterLink, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgClass, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, VideoReportRatingComponent, YouTubePlayer, MatButton, MatCheckbox, TagsSelectionComponent, MatCardActions, DecimalPipe, DatePipe]
 })
 export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
 

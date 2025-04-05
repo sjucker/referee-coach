@@ -1,119 +1,149 @@
 <div>
     <mat-toolbar color="primary">
-        <mat-progress-spinner mode="indeterminate" *ngIf="!notFound && !gameDiscussion" [diameter]="30" color="accent"></mat-progress-spinner>
-        <h1 *ngIf="gameDiscussion">Game Discussion</h1>
-        <button *ngIf="gameDiscussion" mat-icon-button (click)="save()" [disabled]="saving || !hasUnsavedComments()">
-            <mat-icon>save</mat-icon>
-        </button>
-        <div *ngIf="hasUnsavedComments()" class="unsaved-hint show-gt-sm">
-            You have unsaved comments, please save them before leaving this page
-        </div>
-        <mat-icon *ngIf="hasUnsavedComments()"
-                  class="hide-gt-sm"
-                  matTooltip="You have unsaved comments, please save them before leaving this page">
-            info_outline
-        </mat-icon>
+        @if (!notFound && !gameDiscussion) {
+            <mat-progress-spinner mode="indeterminate" [diameter]="30" color="accent"></mat-progress-spinner>
+        }
+        @if (gameDiscussion) {
+            <h1>Game Discussion</h1>
+            <button mat-icon-button (click)="save()" [disabled]="saving || !hasUnsavedComments()">
+                <mat-icon>save</mat-icon>
+            </button>
+        }
+        @if (hasUnsavedComments()) {
+            <div class="unsaved-hint show-gt-sm">
+                You have unsaved comments, please save them before leaving this page
+            </div>
+            <mat-icon
+                    class="hide-gt-sm"
+                    matTooltip="You have unsaved comments, please save them before leaving this page">
+                info_outline
+            </mat-icon>
+        }
         <span class="spacer"></span>
-        <a routerLink="/" mat-icon-button *ngIf="isLoggedIn()">
-            <mat-icon>home</mat-icon>
-        </a>
+        @if (isLoggedIn()) {
+            <a routerLink="/" mat-icon-button>
+                <mat-icon>home</mat-icon>
+            </a>
+        }
     </mat-toolbar>
     <div class="loading-indicator">
-        <mat-progress-bar mode="indeterminate" color="accent" *ngIf="(!gameDiscussion && !notFound) || saving"></mat-progress-bar>
+        @if ((!gameDiscussion && !notFound) || saving) {
+            <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+        }
     </div>
 
-    <div *ngIf="gameDiscussion">
+    @if (gameDiscussion) {
+        <div>
+            <mat-card appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title>Game Info</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <div class="game-info-container">
+                        <span>Game Number: {{ gameDiscussion.basketplanGame.gameNumber }}</span>
+                        <span>Competition: {{ gameDiscussion.basketplanGame.competition }}</span>
+                        <span>Date: {{ gameDiscussion.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
+                        <span>Result: {{ gameDiscussion.basketplanGame.result }}</span>
+                        <span>Team A: {{ gameDiscussion.basketplanGame.teamA }}</span>
+                        <span>Team B: {{ gameDiscussion.basketplanGame.teamB }}</span>
+                    </div>
+                    @if (is3PO()) {
+                        <div class="game-info-container">
+                            <span>Crew Chief: {{ gameDiscussion.basketplanGame.referee1!.name }}</span>
+                            <span>Umpire 1: {{ gameDiscussion.basketplanGame.referee2!.name }}</span>
+                            <span>Umpire 2: {{ gameDiscussion.basketplanGame.referee3!.name }}</span>
+                        </div>
+                    }
+                    @if (is2PO()) {
+                        <div class="game-info-container">
+                            <span>Umpire 1: {{ gameDiscussion.basketplanGame.referee1!.name }}</span>
+                            <span>Umpire 2: {{ gameDiscussion.basketplanGame.referee2!.name }}</span>
+                        </div>
+                    }
+                </mat-card-content>
+            </mat-card>
+            <mat-card appearance="outlined">
+                <mat-card-content>
+                    <div class="video-container">
+                        <div class="youtube-container">
+                            <youtube-player #youtubePlayer
+                                            [videoId]="gameDiscussion.basketplanGame.youtubeId"
+                                            [width]="videoWidth"
+                                            [height]="videoHeight"></youtube-player>
+                            <button (click)="addComment()" color="primary" mat-flat-button>
+                                Create comment for current timestamp
+                            </button>
+                        </div>
+                        <div style="flex: 1" class="video-comments-container">
+                            @for (comment of gameDiscussion.comments; track comment; let i = $index) {
+                                <mat-card appearance="outlined">
+                                    <mat-card-header>
+                                        <mat-card-title [ngClass]="comment.id ? '' : 'new-comment'">Video Comment #{{ i + 1 }}</mat-card-title>
+                                    </mat-card-header>
+                                    @if (comment.id) {
+                                        <mat-card-content>
+                                            <p>{{ comment.comment }}</p>
+                                            @if (comment.replies.length > 0) {
+                                                <hr>
+                                            }
+                                            @for (reply of comment.replies; track reply) {
+                                                <div>
+                                                    <div [class]="reply.id === 0 ? 'new-reply' : ''">
+                                                        <span class="repliedBy">{{ reply.repliedBy }}</span>
+                                                        <span class="repliedAt">{{ reply.repliedAt | date:'dd.MM.yyyy' }}</span>
+                                                        @if (reply.id === 0) {
+                                                            <button mat-icon-button (click)="deleteReply(comment, reply)">
+                                                                <mat-icon color="accent">delete</mat-icon>
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <p class="reply">{{ reply.reply }}</p>
+                                                </div>
+                                            }
+                                        </mat-card-content>
+                                    }
+                                    @if (!comment.id) {
+                                        <mat-card-content>
+                                            <mat-form-field appearance="fill" color="accent">
+                                                <mat-label>Comment</mat-label>
+                                                <textarea [(ngModel)]="comment.comment"
+                                                          maxlength="1024"
+                                                          cdkAutosizeMaxRows="5"
+                                                          cdkAutosizeMinRows="1"
+                                                          cdkTextareaAutosize
+                                                          matInput></textarea>
+                                            </mat-form-field>
+                                        </mat-card-content>
+                                    }
+                                    <mat-card-actions>
+                                        <button (click)="play(comment.timestamp)" color="primary" mat-stroked-button>
+                                            Jump to Scene
+                                        </button>
+                                        @if (comment.id) {
+                                            <button (click)="reply(comment)" color="accent" mat-stroked-button>
+                                                Reply
+                                            </button>
+                                        }
+                                    </mat-card-actions>
+                                </mat-card>
+                            }
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    }
+
+    @if (notFound) {
         <mat-card appearance="outlined">
             <mat-card-header>
-                <mat-card-title>Game Info</mat-card-title>
+                <mat-card-title>Not found</mat-card-title>
             </mat-card-header>
             <mat-card-content>
-                <div class="game-info-container">
-                    <span>Game Number: {{ gameDiscussion.basketplanGame.gameNumber }}</span>
-                    <span>Competition: {{ gameDiscussion.basketplanGame.competition }}</span>
-                    <span>Date: {{ gameDiscussion.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
-                    <span>Result: {{ gameDiscussion.basketplanGame.result }}</span>
-                    <span>Team A: {{ gameDiscussion.basketplanGame.teamA }}</span>
-                    <span>Team B: {{ gameDiscussion.basketplanGame.teamB }}</span>
-                </div>
-
-                <div class="game-info-container" *ngIf="is3PO()">
-                    <span>Crew Chief: {{ gameDiscussion.basketplanGame.referee1!.name }}</span>
-                    <span>Umpire 1: {{ gameDiscussion.basketplanGame.referee2!.name }}</span>
-                    <span>Umpire 2: {{ gameDiscussion.basketplanGame.referee3!.name }}</span>
-                </div>
-                <div class="game-info-container" *ngIf="is2PO()">
-                    <span>Umpire 1: {{ gameDiscussion.basketplanGame.referee1!.name }}</span>
-                    <span>Umpire 2: {{ gameDiscussion.basketplanGame.referee2!.name }}</span>
-                </div>
+                Game Discussion was not found...
             </mat-card-content>
         </mat-card>
-
-        <mat-card appearance="outlined">
-            <mat-card-content>
-                <div class="video-container">
-                    <div class="youtube-container">
-                        <youtube-player #youtubePlayer
-                                        [videoId]="gameDiscussion.basketplanGame.youtubeId"
-                                        [width]="videoWidth"
-                                        [height]="videoHeight"></youtube-player>
-                        <button (click)="addComment()" color="primary" mat-flat-button>
-                            Create comment for current timestamp
-                        </button>
-                    </div>
-                    <div style="flex: 1" class="video-comments-container">
-                        <mat-card appearance="outlined" *ngFor="let comment of gameDiscussion.comments; index as i;">
-                            <mat-card-header>
-                                <mat-card-title [ngClass]="comment.id ? '' : 'new-comment'">Video Comment #{{ i + 1 }}</mat-card-title>
-                            </mat-card-header>
-                            <mat-card-content *ngIf="comment.id">
-                                <p>{{ comment.comment }}</p>
-                                <hr *ngIf="comment.replies.length > 0">
-                                <div *ngFor="let reply of comment.replies">
-                                    <div [class]="reply.id === 0 ? 'new-reply' : ''">
-                                        <span class="repliedBy">{{ reply.repliedBy }}</span>
-                                        <span class="repliedAt">{{ reply.repliedAt | date:'dd.MM.yyyy' }}</span>
-                                        <button mat-icon-button (click)="deleteReply(comment, reply)" *ngIf="reply.id === 0">
-                                            <mat-icon color="accent">delete</mat-icon>
-                                        </button>
-                                    </div>
-                                    <p class="reply">{{ reply.reply }}</p>
-                                </div>
-                            </mat-card-content>
-                            <mat-card-content *ngIf="!comment.id">
-                                <mat-form-field appearance="fill" color="accent">
-                                    <mat-label>Comment</mat-label>
-                                    <textarea [(ngModel)]="comment.comment"
-                                              maxlength="1024"
-                                              cdkAutosizeMaxRows="5"
-                                              cdkAutosizeMinRows="1"
-                                              cdkTextareaAutosize
-                                              matInput></textarea>
-                                </mat-form-field>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <button (click)="play(comment.timestamp)" color="primary" mat-stroked-button>
-                                    Jump to Scene
-                                </button>
-                                <button (click)="reply(comment)" color="accent" mat-stroked-button *ngIf="comment.id">
-                                    Reply
-                                </button>
-                            </mat-card-actions>
-                        </mat-card>
-                    </div>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </div>
-
-    <mat-card appearance="outlined" *ngIf="notFound">
-        <mat-card-header>
-            <mat-card-title>Not found</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            Game Discussion was not found...
-        </mat-card-content>
-    </mat-card>
+    }
 
     <!-- here so we know the current width of the window and can resize the YouTube video accordingly -->
     <div #widthMeasurement></div>

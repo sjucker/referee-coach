@@ -4,7 +4,7 @@ import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {LOGIN_PATH} from "../app-routing.module";
 import {MatToolbar} from '@angular/material/toolbar';
-import {NgIf} from '@angular/common';
+
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
@@ -16,7 +16,7 @@ import {MatButton} from '@angular/material/button';
     selector: 'app-reset-password',
     templateUrl: './reset-password.component.html',
     styleUrls: ['./reset-password.component.scss'],
-    imports: [MatToolbar, NgIf, MatProgressBar, MatCard, MatCardContent, MatFormField, MatLabel, MatInput, FormsModule, MatButton, RouterLink]
+    imports: [MatToolbar, MatProgressBar, MatCard, MatCardContent, MatFormField, MatLabel, MatInput, FormsModule, MatButton, RouterLink]
 })
 export class ResetPasswordComponent implements OnInit {
     loginUrl = '';

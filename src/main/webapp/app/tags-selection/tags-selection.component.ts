@@ -5,7 +5,7 @@ import {MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger} f
 import {Observable, of} from "rxjs";
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
-import {NgFor} from '@angular/common';
+
 import {MatIcon} from '@angular/material/icon';
 import {MatOption} from '@angular/material/select';
 
@@ -13,7 +13,7 @@ import {MatOption} from '@angular/material/select';
     selector: 'app-tags-selection',
     templateUrl: './tags-selection.component.html',
     styleUrls: ['./tags-selection.component.scss'],
-    imports: [MatFormField, MatLabel, MatChipGrid, NgFor, MatChipRow, MatChipRemove, MatIcon, FormsModule, MatAutocompleteTrigger, MatChipInput, ReactiveFormsModule, MatAutocomplete, MatOption]
+    imports: [MatFormField, MatLabel, MatChipGrid, MatChipRow, MatChipRemove, MatIcon, FormsModule, MatAutocompleteTrigger, MatChipInput, ReactiveFormsModule, MatAutocomplete, MatOption]
 })
 export class TagsSelectionComponent implements OnInit {
 

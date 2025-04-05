@@ -30,7 +30,7 @@ import {SearchService} from "../service/search.service";
 import {VideoReportCopyDialogComponent, VideoReportCopyDialogData} from "../video-report-copy-dialog/video-report-copy-dialog.component";
 import {VideoReportDeleteDialogComponent} from "../video-report-delete-dialog/video-report-delete-dialog.component";
 import {MatToolbar} from '@angular/material/toolbar';
-import {DatePipe, NgFor, NgIf} from '@angular/common';
+import {DatePipe} from '@angular/common';
 import {MatButton, MatIconAnchor, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -58,7 +58,7 @@ const dateFormat = 'yyyy-MM-dd';
     selector: 'app-main',
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.scss'],
-    imports: [MatToolbar, NgIf, MatIconAnchor, RouterLink, MatIcon, MatIconButton, MatTooltip, MatCard, MatCardContent, FormsModule, MatFormField, MatLabel, MatInput, MatButton, MatCheckbox, MatSelect, NgFor, MatOption, MatCardHeader, MatCardTitle, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, DatePipe]
+    imports: [MatToolbar, MatIconAnchor, RouterLink, MatIcon, MatIconButton, MatTooltip, MatCard, MatCardContent, FormsModule, MatFormField, MatLabel, MatInput, MatButton, MatCheckbox, MatSelect, MatOption, MatCardHeader, MatCardTitle, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, DatePipe]
 })
 export class MainComponent implements OnInit {
     dtos: MatTableDataSource<OverviewDTO> = new MatTableDataSource<OverviewDTO>([]);

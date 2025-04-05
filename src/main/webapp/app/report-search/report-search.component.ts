@@ -25,14 +25,14 @@ import {RouterLink} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 import {MatCard, MatCardActions, MatCardContent} from '@angular/material/card';
 import {TagsSelectionComponent} from '../tags-selection/tags-selection.component';
-import {DatePipe, NgIf} from '@angular/common';
+import {DatePipe} from '@angular/common';
 import {MatProgressBar} from '@angular/material/progress-bar';
 
 @Component({
     selector: 'app-report-search',
     templateUrl: './report-search.component.html',
     styleUrls: ['./report-search.component.scss'],
-    imports: [MatToolbar, MatIconAnchor, RouterLink, MatIcon, MatCard, MatCardContent, TagsSelectionComponent, YouTubePlayer, MatCardActions, MatButton, NgIf, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, DatePipe]
+    imports: [MatToolbar, MatIconAnchor, RouterLink, MatIcon, MatCard, MatCardContent, TagsSelectionComponent, YouTubePlayer, MatCardActions, MatButton, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, DatePipe]
 })
 export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 

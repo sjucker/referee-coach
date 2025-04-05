@@ -51,58 +51,62 @@
                            id="newPassword2"/>
                 </mat-form-field>
                 <button color="primary" mat-flat-button>Change Password</button>
-                <p *ngIf="error">{{ errorMessage }}</p>
-                <p *ngIf="success">Password changed successfully</p>
+                @if (error) {
+                    <p>{{ errorMessage }}</p>
+                }
+                @if (success) {
+                    <p>Password changed successfully</p>
+                }
             </form>
         </mat-card-content>
     </mat-card>
 
-    <mat-card appearance="outlined" *ngIf="isCoach()">
-        <mat-card-header>
-            <mat-card-title>Manual</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <h2>Start Video Report</h2>
-            <p>Copy the game number from Basketplan. If the game has the video-icon set, it will automatically be used, otherwise you will have to provide the
-                YouTube-URL yourself.</p>
-            <img src="/assets/manual1.png" alt="Copy game number from Basketplan"/>
-            <p>Paste the game number into the input-field and press "Search".</p>
-            <img src="/assets/manual2.png" alt="Search for the game"/>
-            <p>Select the referee you want to review and press "Start"</p>
-            <img src="/assets/manual3.png" alt="Start video report"/>
-            <p>If no YouTube-video was found in Basketplan, you will have to paste the URL into the field. Just copy the URL of the specific YouTube-video.</p>
-            <img src="/assets/manual11.png" alt="Copy YouTube URL"/><br/>
-            <img src="/assets/manual10.png" alt="Paste YouTube URL"/>
-            <h2>Creating the Report</h2>
-            <p>At any time you can save the current state of the report. If you return to the homepage, you can edit it
-                again by pressing the edit-icon.</p>
-            <img src="/assets/manual4.png" alt="Saving"/><br/>
-            <img src="/assets/manual5.png" alt="Edit started report"/>
-            <h2>Creating Video Comments</h2>
-            <p>The corresponding YouTube video is displayed. Start the video. Once you found the beginning of a scene
-                you want to comment on, pause the video and press the button "Create comment for current timestamp"). At
-                the right side you can now add the comment for this scene.</p>
-            <img src="/assets/manual7.png" alt="Video comment"/>
-
-            <h2>Finishing the Report</h2>
-            <p>Once you confirm to finish the report, the report will become read-only and the reviewed referee will
-                receive an email containing the link to this report (same as pressing on the icon next to the
-                finish-icon).</p>
-            <img src="/assets/manual6.png" alt="Finish report"/>
-
-            <h2>Copying a Report</h2>
-            <p>Often, you want to re-use the same scenes commented on in another video report about the same game (but
-                other referee). In this case, use the copy functionality: all video comments will be copied into the new
-                video report for the other referee. Then you only need to adjust the comments for the current referee,
-                but you do not need to search the same scenes in the video again.</p>
-            <img src="/assets/manual9.png" alt="Copy report"/>
-
-            <h2>Deleting a Report</h2>
-            <p>As a non-admin user, you are allowed to delete your own video reports, as long as it is not yet finished
-                (i.e., the email was not yet sent to the referee).</p>
-            <img src="/assets/manual8.png" alt="Delete report"/>
-        </mat-card-content>
-    </mat-card>
+    @if (isCoach()) {
+        <mat-card appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>Manual</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <h2>Start Video Report</h2>
+                <p>Copy the game number from Basketplan. If the game has the video-icon set, it will automatically be used, otherwise you will have to provide
+                    the YouTube-URL yourself.</p>
+                <img src="/assets/manual1.png" alt="Copy game number from Basketplan"/>
+                <p>Paste the game number into the input-field and press "Search".</p>
+                <img src="/assets/manual2.png" alt="Search for the game"/>
+                <p>Select the referee you want to review and press "Start"</p>
+                <img src="/assets/manual3.png" alt="Start video report"/>
+                <p>If no YouTube-video was found in Basketplan, you will have to paste the URL into the field. Just copy the URL of the specific
+                    YouTube-video.</p>
+                <img src="/assets/manual11.png" alt="Copy YouTube URL"/><br/>
+                <img src="/assets/manual10.png" alt="Paste YouTube URL"/>
+                <h2>Creating the Report</h2>
+                <p>At any time you can save the current state of the report. If you return to the homepage, you can edit it
+                    again by pressing the edit-icon.</p>
+                <img src="/assets/manual4.png" alt="Saving"/><br/>
+                <img src="/assets/manual5.png" alt="Edit started report"/>
+                <h2>Creating Video Comments</h2>
+                <p>The corresponding YouTube video is displayed. Start the video. Once you found the beginning of a scene
+                    you want to comment on, pause the video and press the button "Create comment for current timestamp"). At
+                    the right side you can now add the comment for this scene.</p>
+                <img src="/assets/manual7.png" alt="Video comment"/>
+                <h2>Finishing the Report</h2>
+                <p>Once you confirm to finish the report, the report will become read-only and the reviewed referee will
+                    receive an email containing the link to this report (same as pressing on the icon next to the
+                    finish-icon).</p>
+                <img src="/assets/manual6.png" alt="Finish report"/>
+                <h2>Copying a Report</h2>
+                <p>Often, you want to re-use the same scenes commented on in another video report about the same game (but
+                    other referee). In this case, use the copy functionality: all video comments will be copied into the new
+                    video report for the other referee. Then you only need to adjust the comments for the current referee,
+                    but you do not need to search the same scenes in the video again.</p>
+                <img src="/assets/manual9.png" alt="Copy report"/>
+                <h2>Deleting a Report</h2>
+                <p>As a non-admin user, you are allowed to delete your own video reports, as long as it is not yet finished
+                    (i.e., the email was not yet sent to the referee).</p>
+                <img src="/assets/manual8.png" alt="Delete report"/>
+            </mat-card-content>
+        </mat-card>
+    }
 
 
 </div>
