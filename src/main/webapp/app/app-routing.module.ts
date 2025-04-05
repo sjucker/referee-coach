@@ -1,20 +1,10 @@
 import {inject, NgModule} from '@angular/core';
 import {CanActivateFn, CanDeactivateFn, RouterModule, Routes} from '@angular/router';
-import {VideoReportComponent} from "./video-report/video-report.component";
-import {ViewVideoReportComponent} from "./view-report/view-video-report.component";
-import {MainComponent} from "./main/main.component";
-import {LoginComponent} from "./login/login.component";
 import {AuthenticationGuard} from "./service/authentication.guard";
-import {SettingsComponent} from "./settings/settings.component";
 import {UnsavedChangesGuard} from "./service/unsaved-changes.guard";
-import {DiscussVideoReportComponent} from "./discuss-report/discuss-video-report.component";
 import {UnsavedRepliesGuard} from "./service/unsaved-replies.guard";
-import {ReportSearchComponent} from "./report-search/report-search.component";
-import {AdminComponent} from "./admin/admin.component";
-import {GameDiscussionComponent} from "./game-discussion/game-discussion.component";
 import {HasUnsavedReplies} from "./has-unsaved-replies";
-import {ForgotPasswordComponent} from "./forgot-password/forgot-password.component";
-import {ResetPasswordComponent} from "./reset-password/reset-password.component";
+import {VideoReportComponent} from "./video-report/video-report.component";
 
 export const LOGIN_PATH = 'login'
 export const FORGOT_PASSWORD_PATH = 'forgot-password';
@@ -35,62 +25,62 @@ const unsavedChangesGuard: CanDeactivateFn<VideoReportComponent> = (component) =
 const routes: Routes = [
     {
         path: '',
-        component: MainComponent,
+        loadComponent: () => import('./main/main.component').then(m => m.MainComponent),
         canActivate: [authenticationGuard]
     },
     {
         path: VIEW_PATH + '/:id',
-        component: ViewVideoReportComponent
+        loadComponent: () => import('./view-report/view-video-report.component').then(m => m.ViewVideoReportComponent)
         // allowed without being logged in, anonymous user only needs to know the report's ID (which should be hard to guess)
     },
     {
         path: DISCUSS_PATH + '/:id',
-        component: DiscussVideoReportComponent,
+        loadComponent: () => import('./discuss-report/discuss-video-report.component').then(m => m.DiscussVideoReportComponent),
         // allowed without being logged in, anonymous user only needs to know the report's ID (which should be hard to guess)
         canDeactivate: [unsavedRepliesGuard]
     },
     {
         path: EDIT_PATH + '/:id',
-        component: VideoReportComponent,
+        loadComponent: () => import('./video-report/video-report.component').then(m => m.VideoReportComponent),
         canActivate: [authenticationGuard],
         canDeactivate: [unsavedChangesGuard]
     },
     {
         path: GAME_DISCUSSION_PATH + '/:id',
-        component: GameDiscussionComponent,
+        loadComponent: () => import('./game-discussion/game-discussion.component').then(m => m.GameDiscussionComponent),
         canActivate: [authenticationGuard],
         canDeactivate: [unsavedRepliesGuard]
     },
     {
         path: LOGIN_PATH,
-        component: LoginComponent
+        loadComponent: () => import('./login/login.component').then(m => m.LoginComponent)
     },
     {
         path: LOGIN_PATH + '/:email',
-        component: LoginComponent
+        loadComponent: () => import('./login/login.component').then(m => m.LoginComponent)
     },
     {
         path: SETTINGS_PATH,
-        component: SettingsComponent,
+        loadComponent: () => import('./settings/settings.component').then(m => m.SettingsComponent),
         canActivate: [authenticationGuard]
     },
     {
         path: SEARCH_PATH,
-        component: ReportSearchComponent,
+        loadComponent: () => import('./report-search/report-search.component').then(m => m.ReportSearchComponent),
         canActivate: [authenticationGuard]
     },
     {
         path: ADMIN_PATH,
-        component: AdminComponent,
+        loadComponent: () => import('./admin/admin.component').then(m => m.AdminComponent),
         canActivate: [hasAdminRightsGuard]
     },
     {
         path: FORGOT_PASSWORD_PATH,
-        component: ForgotPasswordComponent
+        loadComponent: () => import('./forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
     },
     {
         path: RESET_PASSWORD_PATH + '/:email/:token',
-        component: ResetPasswordComponent
+        loadComponent: () => import('./reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
     },
 ];
 
