@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import {MatButton} from '@angular/material/button';
 
@@ -9,8 +9,6 @@ import {MatButton} from '@angular/material/button';
     imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class VideoReportFinishDialogComponent {
-
-    constructor(public dialog: MatDialog) {
-    }
+    dialog = inject(MatDialog);
 
 }

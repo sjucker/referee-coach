@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {YouTubePlayer} from "@angular/youtube-player";
 import {VideoReportService} from "../service/video-report.service";
 import {OfficiatingMode, Reportee, TagDTO, VideoCommentDTO, VideoReportDTO} from "../rest";
@@ -33,6 +33,12 @@ import {TagsSelectionComponent} from '../tags-selection/tags-selection.component
     imports: [MatToolbar, MatProgressSpinner, MatIconButton, MatIcon, MatTooltip, MatIconAnchor, RouterLink, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgClass, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, VideoReportRatingComponent, YouTubePlayer, MatButton, MatCheckbox, TagsSelectionComponent, MatCardActions, DecimalPipe, DatePipe]
 })
 export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
+    private readonly videoReportService = inject(VideoReportService);
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
+    dialog = inject(MatDialog);
+    snackBar = inject(MatSnackBar);
+
 
     @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
     @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
@@ -47,13 +53,6 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
     saving = false;
 
     availableTags: Observable<TagDTO[]> = of([]);
-
-    constructor(private readonly videoReportService: VideoReportService,
-                private route: ActivatedRoute,
-                private router: Router,
-                public dialog: MatDialog,
-                public snackBar: MatSnackBar) {
-    }
 
     ngOnInit(): void {
         // This code loads the IFrame Player API code asynchronously, according to the instructions at

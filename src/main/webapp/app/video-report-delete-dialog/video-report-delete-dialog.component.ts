@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import {OverviewDTO} from "../rest";
 import {MatButton} from '@angular/material/button';
@@ -11,8 +11,6 @@ import {DatePipe} from '@angular/common';
     imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose, DatePipe]
 })
 export class VideoReportDeleteDialogComponent {
-
-    constructor(@Inject(MAT_DIALOG_DATA) public dto: OverviewDTO) {
-    }
+    dto = inject<OverviewDTO>(MAT_DIALOG_DATA);
 
 }

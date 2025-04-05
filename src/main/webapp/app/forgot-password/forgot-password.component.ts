@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {AuthenticationService} from "../service/authentication.service";
 import {MatToolbar} from '@angular/material/toolbar';
 
@@ -16,12 +16,11 @@ import {MatButton} from '@angular/material/button';
     imports: [MatToolbar, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatFormField, MatLabel, MatInput, FormsModule, MatButton]
 })
 export class ForgotPasswordComponent {
+    private authenticationService = inject(AuthenticationService);
+
     requesting = false;
     requested = false;
     email = '';
-
-    constructor(private authenticationService: AuthenticationService) {
-    }
 
     requestPasswordReset() {
         if (this.email) {

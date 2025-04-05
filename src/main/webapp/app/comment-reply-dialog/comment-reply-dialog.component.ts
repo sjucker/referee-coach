@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import {AuthenticationService} from "../service/authentication.service"
 import {MatFormField, MatLabel} from '@angular/material/form-field';
@@ -19,12 +19,11 @@ export interface CommentReplyDialogData {
     imports: [MatDialogTitle, MatDialogContent, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, MatIcon, MatDialogActions, MatButton, MatDialogClose]
 })
 export class CommentReplyDialogComponent {
+    data = inject<CommentReplyDialogData>(MAT_DIALOG_DATA);
+    private authenticationService = inject(AuthenticationService);
+
 
     reply: string = '';
-
-    constructor(@Inject(MAT_DIALOG_DATA) public data: CommentReplyDialogData,
-                private authenticationService: AuthenticationService) {
-    }
 
     isLoggedIn(): boolean {
         return this.authenticationService.isLoggedIn();

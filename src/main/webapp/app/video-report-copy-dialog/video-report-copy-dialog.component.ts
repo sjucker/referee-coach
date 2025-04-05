@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {Reportee, UserDTO} from "../rest";
 import {MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import {MatFormField, MatLabel} from '@angular/material/form-field';
@@ -27,15 +27,14 @@ export interface VideoReportCopyDialogData {
     imports: [MatDialogTitle, MatDialogContent, MatFormField, MatLabel, MatSelect, MatOption, MatDialogActions, MatButton, MatDialogClose]
 })
 export class VideoReportCopyDialogComponent implements OnInit {
+    data = inject<VideoReportCopyDialogData>(MAT_DIALOG_DATA);
+
 
     title = '';
     description = '';
 
     reportee?: Reportee
     reportees: ReporteeSelection[] = []
-
-    constructor(@Inject(MAT_DIALOG_DATA) public data: VideoReportCopyDialogData) {
-    }
 
     ngOnInit(): void {
         this.title = this.data.title;

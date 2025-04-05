@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {VideoReportService} from "../service/video-report.service";
 import {YouTubePlayer} from "@angular/youtube-player";
@@ -22,6 +22,13 @@ import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} fr
     imports: [MatToolbar, MatProgressSpinner, MatIconButton, MatTooltip, MatIcon, MatIconAnchor, RouterLink, MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgClass, YouTubePlayer, MatCardActions, MatButton, DatePipe]
 })
 export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
+    private videoReportService = inject(VideoReportService);
+    private authenticationService = inject(AuthenticationService);
+    dialog = inject(MatDialog);
+    snackBar = inject(MatSnackBar);
+
 
     @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
     @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
@@ -31,14 +38,6 @@ export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestro
 
     dto?: VideoReportDTO;
     notFound = false;
-
-    constructor(private route: ActivatedRoute,
-                private router: Router,
-                private videoReportService: VideoReportService,
-                private authenticationService: AuthenticationService,
-                public dialog: MatDialog,
-                public snackBar: MatSnackBar) {
-    }
 
     ngOnInit(): void {
         // This code loads the IFrame Player API code asynchronously, according to the instructions at

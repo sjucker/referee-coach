@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {VideoReportService} from "../service/video-report.service";
 import {TagDTO, VideoCommentDetailDTO} from "../rest";
 import {
@@ -35,6 +35,9 @@ import {MatProgressBar} from '@angular/material/progress-bar';
     imports: [MatToolbar, MatIconAnchor, RouterLink, MatIcon, MatCard, MatCardContent, TagsSelectionComponent, YouTubePlayer, MatCardActions, MatButton, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, DatePipe]
 })
 export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
+    private readonly videoReportService = inject(VideoReportService);
+    private snackBar = inject(MatSnackBar);
+
 
     displayedColumns: string[] = ['date', 'gameNumber', 'competition', 'comment', 'tags', 'play'];
 
@@ -52,10 +55,6 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     searching = false;
 
     availableTags: Observable<TagDTO[]> = of([]);
-
-    constructor(private readonly videoReportService: VideoReportService,
-                private snackBar: MatSnackBar) {
-    }
 
     ngOnInit(): void {
         // This code loads the IFrame Player API code asynchronously, according to the instructions at

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {AdminService} from "../service/admin.service";
 import {UserDTO} from "../rest";
 
@@ -8,11 +8,9 @@ import {UserDTO} from "../rest";
     styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit {
+    private adminService = inject(AdminService);
 
     referees: UserDTO[] = [];
-
-    constructor(private adminService: AdminService) {
-    }
 
     ngOnInit(): void {
         this.adminService.getAllReferees().subscribe(value => {

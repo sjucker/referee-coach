@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {BasketplanGameDTO, GameDiscussionDTO, OfficiatingMode, OverviewDTO, Reportee, ReportType, UserDTO} from "../rest";
 import {VideoReportService} from "../service/video-report.service";
 import {BasketplanService} from "../service/basketplan.service";
@@ -61,6 +61,15 @@ const dateFormat = 'yyyy-MM-dd';
     imports: [MatToolbar, MatIconAnchor, RouterLink, MatIcon, MatIconButton, MatTooltip, MatCard, MatCardContent, FormsModule, MatFormField, MatLabel, MatInput, MatButton, MatCheckbox, MatSelect, MatOption, MatCardHeader, MatCardTitle, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, DatePipe]
 })
 export class MainComponent implements OnInit {
+    private basketplanService = inject(BasketplanService);
+    private videoReportService = inject(VideoReportService);
+    private searchService = inject(SearchService);
+    private gameDiscussionService = inject(GameDiscussionService);
+    private authenticationService = inject(AuthenticationService);
+    private router = inject(Router);
+    private snackBar = inject(MatSnackBar);
+    private dialog = inject(MatDialog);
+
     dtos: MatTableDataSource<OverviewDTO> = new MatTableDataSource<OverviewDTO>([]);
     @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
     reportsLoaded = false;
@@ -84,16 +93,6 @@ export class MainComponent implements OnInit {
     searching = false;
     creating = false;
     exporting = false;
-
-    constructor(private basketplanService: BasketplanService,
-                private videoReportService: VideoReportService,
-                private searchService: SearchService,
-                private gameDiscussionService: GameDiscussionService,
-                private authenticationService: AuthenticationService,
-                private router: Router,
-                private snackBar: MatSnackBar,
-                private dialog: MatDialog) {
-    }
 
     private getFrom(): DateTime {
         const item = sessionStorage.getItem(keyFrom);

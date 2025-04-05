@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthenticationService} from "../service/authentication.service";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
@@ -19,6 +19,12 @@ import {MatButton} from '@angular/material/button';
     imports: [MatToolbar, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, RouterLink]
 })
 export class LoginComponent implements OnInit {
+    private formBuilder = inject(FormBuilder);
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
+    private authenticationService = inject(AuthenticationService);
+    private snackBar = inject(MatSnackBar);
+
 
     authenticating = false;
 
@@ -28,13 +34,6 @@ export class LoginComponent implements OnInit {
         email: ['', [Validators.required]],
         password: ['', [Validators.required]],
     });
-
-    constructor(private formBuilder: FormBuilder,
-                private router: Router,
-                private route: ActivatedRoute,
-                private authenticationService: AuthenticationService,
-                private snackBar: MatSnackBar) {
-    }
 
     ngOnInit(): void {
         const email = this.route.snapshot.paramMap.get('email');

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AuthenticationService} from "../service/authentication.service";
 import {MatToolbar} from '@angular/material/toolbar';
@@ -17,6 +17,9 @@ import {MatInput} from '@angular/material/input';
     imports: [MatToolbar, MatIconAnchor, RouterLink, MatIcon, MatCard, MatCardHeader, MatCardTitle, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton]
 })
 export class SettingsComponent {
+    private formBuilder = inject(FormBuilder);
+    private authenticationService = inject(AuthenticationService);
+
 
     error = false;
     errorMessage = '';
@@ -27,10 +30,6 @@ export class SettingsComponent {
         newPassword1: [null, [Validators.required]],
         newPassword2: [null, [Validators.required]],
     });
-
-    constructor(private formBuilder: FormBuilder,
-                private authenticationService: AuthenticationService) {
-    }
 
     changePassword() {
         if (this.changePasswordForm.valid) {

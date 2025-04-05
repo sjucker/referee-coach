@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {VideoReportService} from "../service/video-report.service";
 import {AuthenticationService} from "../service/authentication.service";
@@ -31,6 +31,12 @@ import {FormsModule} from '@angular/forms';
     imports: [MatToolbar, MatProgressSpinner, MatIconButton, MatIcon, MatTooltip, MatIconAnchor, RouterLink, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, YouTubePlayer, MatButton, NgClass, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, MatCardActions, DatePipe]
 })
 export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDestroy, HasUnsavedReplies {
+    private route = inject(ActivatedRoute);
+    private videoReportService = inject(VideoReportService);
+    private authenticationService = inject(AuthenticationService);
+    dialog = inject(MatDialog);
+    snackBar = inject(MatSnackBar);
+
 
     @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
     @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
@@ -45,13 +51,6 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
 
     replies: CommentReplyDTO[] = [];
     newComments: VideoCommentDTO[] = [];
-
-    constructor(private route: ActivatedRoute,
-                private videoReportService: VideoReportService,
-                private authenticationService: AuthenticationService,
-                public dialog: MatDialog,
-                public snackBar: MatSnackBar) {
-    }
 
     ngOnInit(): void {
         // This code loads the IFrame Player API code asynchronously, according to the instructions at

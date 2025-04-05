@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {AuthenticationService} from "../service/authentication.service";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -19,6 +19,11 @@ import {MatButton} from '@angular/material/button';
     imports: [MatToolbar, MatProgressBar, MatCard, MatCardContent, MatFormField, MatLabel, MatInput, FormsModule, MatButton, RouterLink]
 })
 export class ResetPasswordComponent implements OnInit {
+    private authenticationService = inject(AuthenticationService);
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
+    private snackBar = inject(MatSnackBar);
+
     loginUrl = '';
     email?: string | null;
     token?: string | null;
@@ -27,12 +32,6 @@ export class ResetPasswordComponent implements OnInit {
 
     processing = false;
     success = false;
-
-    constructor(private authenticationService: AuthenticationService,
-                private router: Router,
-                private route: ActivatedRoute,
-                private snackBar: MatSnackBar) {
-    }
 
     ngOnInit(): void {
         this.email = this.route.snapshot.paramMap.get('email');
