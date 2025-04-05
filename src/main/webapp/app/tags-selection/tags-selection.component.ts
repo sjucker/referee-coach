@@ -1,8 +1,8 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, input, OnInit, Output, ViewChild} from '@angular/core';
 import {TagDTO} from "../rest";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger} from "@angular/material/autocomplete";
-import {Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
 
@@ -19,12 +19,10 @@ export class TagsSelectionComponent implements OnInit {
 
     @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
-    @Input({required: true})
-    availableTags: Observable<TagDTO[]> = of([]);
+    readonly availableTags = input.required<Observable<TagDTO[]>>();
     allTags: TagDTO[] = [];
 
-    @Input()
-    initialSelectedTags: TagDTO[] = [];
+    readonly initialSelectedTags = input<TagDTO[]>([]);
 
     selectedTags: TagDTO[] = [];
 
@@ -41,11 +39,11 @@ export class TagsSelectionComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.availableTags.subscribe(value => {
+        this.availableTags().subscribe(value => {
             this.filteredTags = [...value];
             this.allTags = [...value];
         });
-        this.selectedTags = [...this.initialSelectedTags];
+        this.selectedTags = [...this.initialSelectedTags()];
 
         this.tagController.valueChanges.subscribe(value => {
             if (value && value.length > 0) {
