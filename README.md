@@ -26,7 +26,7 @@ config var (only needed for STAGING).
 ## Updates
 
 * Maven Wrapper
-    * `mvn wrapper:wrapper -Dmaven=3.9.9`
+    * `mvn wrapper:wrapper -Dmaven=3.9.11`
 * Update Maven Parent
     * `mvn -U versions:display-parent-updates`
     * `mvn -U versions:update-parent`
@@ -34,15 +34,16 @@ config var (only needed for STAGING).
     * `mvn -U versions:display-property-updates`
     * `mvn -U versions:update-properties`
 * Download Sources
-  * `mvn dependency:resolve-sources`
+    * `mvn dependency:resolve-sources`
 * Build
-    * `mvn clean verify`
+    * `mvn clean verify -DskipTests=true`
 
 * Angular
-  * `ng update @angular/core@19 @angular/cli@19 --allow-dirty`
-  * `ng update @angular/material@19 --allow-dirty`
-  * `ncu`
-  * `ncu -u`
-  * `npm install`
-  * `npm run build`
-  * `npm run lint`
+    * `ng update @angular/core@20 @angular/cli@20 --allow-dirty`
+    * `ng update @angular/material@20 --allow-dirty`
+    * `ncu`
+    * `ncu -u`, or
+    * `ncu -i` (for interactive update)
+    * `npm install`
+    * `npm run build`
+    * `npm run lint`
