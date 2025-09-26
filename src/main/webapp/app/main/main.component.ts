@@ -61,14 +61,14 @@ const dateFormat = 'yyyy-MM-dd';
     imports: [MatToolbar, MatIconAnchor, RouterLink, MatIcon, MatIconButton, MatTooltip, MatCard, MatCardContent, FormsModule, MatFormField, MatLabel, MatInput, MatButton, MatCheckbox, MatSelect, MatOption, MatCardHeader, MatCardTitle, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, DatePipe]
 })
 export class MainComponent implements OnInit {
-    private basketplanService = inject(BasketplanService);
-    private videoReportService = inject(VideoReportService);
-    private searchService = inject(SearchService);
-    private gameDiscussionService = inject(GameDiscussionService);
-    private authenticationService = inject(AuthenticationService);
-    private router = inject(Router);
-    private snackBar = inject(MatSnackBar);
-    private dialog = inject(MatDialog);
+    private readonly basketplanService = inject(BasketplanService);
+    private readonly videoReportService = inject(VideoReportService);
+    private readonly searchService = inject(SearchService);
+    private readonly gameDiscussionService = inject(GameDiscussionService);
+    private readonly authenticationService = inject(AuthenticationService);
+    private readonly router = inject(Router);
+    private readonly snackBar = inject(MatSnackBar);
+    private readonly dialog = inject(MatDialog);
 
     dtos: MatTableDataSource<OverviewDTO> = new MatTableDataSource<OverviewDTO>([]);
     readonly paginator = viewChild(MatPaginator);

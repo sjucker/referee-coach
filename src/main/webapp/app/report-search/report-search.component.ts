@@ -27,6 +27,7 @@ import {MatCard, MatCardActions, MatCardContent} from '@angular/material/card';
 import {TagsSelectionComponent} from '../tags-selection/tags-selection.component';
 import {DatePipe} from '@angular/common';
 import {MatProgressBar} from '@angular/material/progress-bar';
+import {AuthenticationService} from "../service/authentication.service";
 
 @Component({
     selector: 'app-report-search',
@@ -36,10 +37,12 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 })
 export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly videoReportService = inject(VideoReportService);
-    private snackBar = inject(MatSnackBar);
+    private readonly snackBar = inject(MatSnackBar);
+    private readonly authenticationService = inject(AuthenticationService);
 
-
-    displayedColumns: string[] = ['date', 'gameNumber', 'competition', 'comment', 'tags', 'play'];
+    displayedColumns: string[] = this.isCoach()
+        ? ['date', 'gameNumber', 'competition', 'comment', 'tags', 'play']
+        : ['date', 'gameNumber', 'competition', 'tags', 'play'];
 
     readonly youtube = viewChild<YouTubePlayer>('youtubePlayer');
     readonly widthMeasurement = viewChild<ElementRef<HTMLDivElement>>('widthMeasurement');
@@ -131,5 +134,9 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
             this.videoHeight = this.videoWidth * 0.6;
         });
     };
+
+    isCoach(): boolean {
+        return this.authenticationService.isCoach() || this.authenticationService.isRefereeCoach();
+    }
 
 }
