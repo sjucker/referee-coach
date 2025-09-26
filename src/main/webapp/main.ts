@@ -7,7 +7,6 @@ import {AuthenticationInterceptor} from './app/interceptors/authentication-inter
 import {MAT_DATE_FORMATS} from '@angular/material/core';
 import {bootstrapApplication, BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app/app-routing.module';
-import {provideAnimations} from '@angular/platform-browser/animations';
 import {YouTubePlayerModule} from '@angular/youtube-player';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -56,7 +55,6 @@ bootstrapApplication(AppComponent, {
                 },
             }
         },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideAnimations()
+        provideHttpClient(withInterceptorsFromDi())
     ]
 }).catch(err => console.error(err));
