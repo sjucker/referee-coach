@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
+import {version} from '../../../../package.json'
 
 @Component({
     selector: 'app-root',
@@ -8,4 +9,10 @@ import {RouterOutlet} from '@angular/router';
     imports: [RouterOutlet]
 })
 export class AppComponent {
+
+    version = ""
+
+    constructor() {
+        this.version = version
+    }
 }
