@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {VideoReportService} from "../service/video-report.service";
 import {YouTubePlayer} from "@angular/youtube-player";
 import {OfficiatingMode, Reportee, VideoCommentDTO, VideoReportDTO} from "../rest";
@@ -7,31 +7,37 @@ import {AuthenticationService} from "../service/authentication.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {DISCUSS_PATH} from "../app-routing.module";
+import {MatToolbar} from '@angular/material/toolbar';
+import {DatePipe, NgClass} from '@angular/common';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {MatButton, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 
 @Component({
     selector: 'app-view-video-report',
     templateUrl: './view-video-report.component.html',
     styleUrls: ['./view-video-report.component.scss'],
-    standalone: false
+    imports: [MatToolbar, MatProgressSpinner, MatIconButton, MatTooltip, MatIcon, MatIconAnchor, RouterLink, MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgClass, YouTubePlayer, MatCardActions, MatButton, DatePipe]
 })
 export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
+    private videoReportService = inject(VideoReportService);
+    private authenticationService = inject(AuthenticationService);
+    dialog = inject(MatDialog);
+    snackBar = inject(MatSnackBar);
 
-    @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
-    @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
+
+    readonly youtube = viewChild<YouTubePlayer>('youtubePlayer');
+    readonly widthMeasurement = viewChild<ElementRef<HTMLDivElement>>('widthMeasurement');
 
     videoWidth?: number;
     videoHeight?: number;
 
     dto?: VideoReportDTO;
     notFound = false;
-
-    constructor(private route: ActivatedRoute,
-                private router: Router,
-                private videoReportService: VideoReportService,
-                private authenticationService: AuthenticationService,
-                public dialog: MatDialog,
-                public snackBar: MatSnackBar) {
-    }
 
     ngOnInit(): void {
         // This code loads the IFrame Player API code asynchronously, according to the instructions at
@@ -57,7 +63,7 @@ export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestro
 
     onResize = (): void => {
         // minus padding (16px each side) and margin (10px each)
-        const contentWidth = this.widthMeasurement!.nativeElement.clientWidth - 52;
+        const contentWidth = this.widthMeasurement()!.nativeElement.clientWidth - 52;
 
         this.videoWidth = Math.min(contentWidth, 720);
         this.videoHeight = this.videoWidth * 0.6;
@@ -68,8 +74,8 @@ export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     play(time: number): void {
-        this.youtube!.seekTo(time, true);
-        this.youtube!.playVideo();
+        this.youtube()!.seekTo(time, true);
+        this.youtube()!.playVideo();
     }
 
     is2PO(): boolean {

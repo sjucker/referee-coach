@@ -1,9 +1,9 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
 import {HasUnsavedReplies} from "../has-unsaved-replies";
 import {Observable, of} from "rxjs";
 import {YouTubePlayer} from "@angular/youtube-player";
 import {CommentReplyDTO, GameDiscussionCommentDTO, GameDiscussionCommentReplyDTO, GameDiscussionDTO, OfficiatingMode} from "../rest";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {AuthenticationService} from "../service/authentication.service";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -11,17 +11,35 @@ import {GameDiscussionService} from "../service/game-discussion.service";
 import {UnsavedRepliesDialogComponent} from "../discuss-video-report-unsaved-replies-dialog/unsaved-replies-dialog.component";
 import {CommentReplyDialogComponent, CommentReplyDialogData} from "../comment-reply-dialog/comment-reply-dialog.component";
 import {GameDiscussionFinishCommentsDialogComponent} from "../game-discussion-finish-comments-dialog/game-discussion-finish-comments-dialog.component";
+import {MatToolbar} from '@angular/material/toolbar';
+import {DatePipe, NgClass} from '@angular/common';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {MatButton, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {CdkTextareaAutosize} from '@angular/cdk/text-field';
+import {MatInput} from '@angular/material/input';
+import {FormsModule} from '@angular/forms';
 
 @Component({
     selector: 'app-game-discussion',
     templateUrl: './game-discussion.component.html',
     styleUrls: ['./game-discussion.component.scss'],
-    standalone: false
+    imports: [MatToolbar, MatProgressSpinner, MatIconButton, MatIcon, MatTooltip, MatIconAnchor, RouterLink, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, YouTubePlayer, MatButton, NgClass, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, MatCardActions, DatePipe]
 })
 export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy, HasUnsavedReplies {
+    private route = inject(ActivatedRoute);
+    private gameDiscussionService = inject(GameDiscussionService);
+    private authenticationService = inject(AuthenticationService);
+    dialog = inject(MatDialog);
+    snackBar = inject(MatSnackBar);
 
-    @ViewChild('youtubePlayer') youtube?: YouTubePlayer;
-    @ViewChild('widthMeasurement') widthMeasurement?: ElementRef<HTMLDivElement>;
+
+    readonly youtube = viewChild<YouTubePlayer>('youtubePlayer');
+    readonly widthMeasurement = viewChild<ElementRef<HTMLDivElement>>('widthMeasurement');
 
     videoWidth?: number;
     videoHeight?: number;
@@ -32,13 +50,6 @@ export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy
 
     replies: CommentReplyDTO[] = [];
     newComments: GameDiscussionCommentDTO[] = [];
-
-    constructor(private route: ActivatedRoute,
-                private gameDiscussionService: GameDiscussionService,
-                private authenticationService: AuthenticationService,
-                public dialog: MatDialog,
-                public snackBar: MatSnackBar) {
-    }
 
     ngOnInit(): void {
         // This code loads the IFrame Player API code asynchronously, according to the instructions at
@@ -64,7 +75,7 @@ export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy
 
     onResize = (): void => {
         // minus padding (16px each side) and margin (10px each)
-        const contentWidth = this.widthMeasurement!.nativeElement.clientWidth - 52;
+        const contentWidth = this.widthMeasurement()!.nativeElement.clientWidth - 52;
 
         this.videoWidth = Math.min(contentWidth, 720);
         this.videoHeight = this.videoWidth * 0.6;
@@ -131,8 +142,8 @@ export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     play(time: number) {
-        this.youtube!.seekTo(time, true);
-        this.youtube!.playVideo();
+        this.youtube()!.seekTo(time, true);
+        this.youtube()!.playVideo();
     }
 
     reply(comment: GameDiscussionCommentDTO) {
@@ -159,7 +170,7 @@ export class GameDiscussionComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     addComment() {
-        const timestamp = Math.round(this.youtube!.getCurrentTime());
+        const timestamp = Math.round(this.youtube()!.getCurrentTime());
 
         // check if there is already a scene in the same timestamp range +/-3 seconds
         if (this.gameDiscussion!.comments.some(comment => timestamp >= comment.timestamp - 3 && timestamp <= comment.timestamp + 3)) {

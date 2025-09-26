@@ -1,38 +1,34 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, input, output} from '@angular/core';
 import {CriteriaEvaluationDTO} from "../rest";
+import {MatSlider, MatSliderThumb} from '@angular/material/slider';
+import {FormsModule} from '@angular/forms';
 
 @Component({
     selector: 'app-video-report-rating',
     templateUrl: './video-report-rating.component.html',
     styleUrls: ['./video-report-rating.component.scss'],
-    standalone: false
+    imports: [MatSlider, MatSliderThumb, FormsModule]
 })
 export class VideoReportRatingComponent {
 
-    @Input({required: true})
-    title = '';
+    readonly title = input.required<string>();
 
-    @Input({required: true})
-    dto: CriteriaEvaluationDTO = {
-        rating: undefined,
-        score: undefined,
-        comment: undefined
-    }
+    readonly dto = input.required<CriteriaEvaluationDTO>();
 
-    @Output()
-    changed = new EventEmitter<void>();
+    readonly changed = output<void>();
 
     rating() {
-        if (this.dto.score) {
-            if (this.dto.score >= 8.6) {
+        const dto = this.dto();
+        if (dto.score) {
+            if (dto.score >= 8.6) {
                 return "excellent";
-            } else if (this.dto.score >= 8.1) {
+            } else if (dto.score >= 8.1) {
                 return "very good";
-            } else if (this.dto.score >= 7.6) {
+            } else if (dto.score >= 7.6) {
                 return "good";
-            } else if (this.dto.score >= 7.1) {
+            } else if (dto.score >= 7.1) {
                 return "discreet";
-            } else if (this.dto.score >= 6.6) {
+            } else if (dto.score >= 6.6) {
                 return "sufficient";
             } else {
                 return "insufficient";

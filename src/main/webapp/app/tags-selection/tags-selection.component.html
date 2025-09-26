@@ -1,12 +1,14 @@
 <mat-form-field appearance="fill">
     <mat-label>Tags</mat-label>
     <mat-chip-grid #chipList aria-label="Tags">
-        <mat-chip-row *ngFor="let tag of selectedTags" (removed)="removeTag(tag)">
-            {{ tag.name }}
-            <button matChipRemove>
-                <mat-icon>cancel</mat-icon>
-            </button>
-        </mat-chip-row>
+        @for (tag of selectedTags; track tag) {
+            <mat-chip-row (removed)="removeTag(tag)">
+                {{ tag.name }}
+                <button matChipRemove>
+                    <mat-icon>cancel</mat-icon>
+                </button>
+            </mat-chip-row>
+        }
         <input placeholder="Add tag..."
                #tagInput
                [formControl]="tagController"
@@ -14,8 +16,10 @@
                [matChipInputFor]="chipList">
     </mat-chip-grid>
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectTag($event)">
-        <mat-option *ngFor="let tag of filteredTags" [value]="tag">
-            {{ tag.name }}
-        </mat-option>
+        @for (tag of filteredTags; track tag) {
+            <mat-option [value]="tag">
+                {{ tag.name }}
+            </mat-option>
+        }
     </mat-autocomplete>
 </mat-form-field>

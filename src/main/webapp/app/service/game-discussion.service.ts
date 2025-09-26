@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {CommentReplyDTO, CreateGameDiscussionCommentDTO, CreateGameDiscussionDTO, GameDiscussionCommentDTO, GameDiscussionDTO} from "../rest";
 import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
@@ -8,11 +8,10 @@ import {HttpClient} from "@angular/common/http";
     providedIn: 'root'
 })
 export class GameDiscussionService {
+    private readonly httpClient = inject(HttpClient);
+
 
     private baseUrl = environment.baseUrl;
-
-    constructor(private readonly httpClient: HttpClient) {
-    }
 
     createGameDiscussion(gameNumber: string, youtubeId: string): Observable<GameDiscussionDTO> {
         const request: CreateGameDiscussionDTO = {

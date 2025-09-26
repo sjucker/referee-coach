@@ -1,4 +1,4 @@
-@mixin responsive ($size) {
+@mixin responsive($size) {
   @if $size == 'xs' {
     @media screen and (max-width: 599.98px) {
       @content;

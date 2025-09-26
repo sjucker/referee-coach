@@ -1,0 +1,7 @@
+@use "../variables";
+
+.version-container {
+  font-size: var(--mat-sys-label-small-size);
+  padding: variables.$padding;
+  color: variables.$accent-color;
+}

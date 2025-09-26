@@ -48,7 +48,7 @@ class VideoReportServiceTest extends AbstractIntegrationTest {
             assertThat(simpleMailMessage.getText()).isEqualToIgnoringNewLines(
                     """
                             Hi Balletta Davide
-                                                                                                                  
+                            
                             This is a reminder that you have not yet replied to all important comments.
                             Please visit: https://app.referee-coach.ch/#/discuss/1
                             """);

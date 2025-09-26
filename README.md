@@ -9,6 +9,17 @@
 * For test:
   `docker compose -p referee-coach -f src/test/docker/mysql-test.yml up --build`
 
+## Releases
+
+* `npm run release`
+* Answer the prompts:
+    * next version: normally "patch"
+    * commit: yes
+    * tag: yes
+    * push: yes
+* To install release in production, merge the corresponding tag into main branch:
+    * `git merge <TAG>`, e.g. `git merge 1.2.10`
+
 ## Heroku
 
 ### Pipeline
@@ -26,7 +37,7 @@ config var (only needed for STAGING).
 ## Updates
 
 * Maven Wrapper
-    * `mvn wrapper:wrapper -Dmaven=3.9.9`
+    * `mvn wrapper:wrapper -Dmaven=3.9.11`
 * Update Maven Parent
     * `mvn -U versions:display-parent-updates`
     * `mvn -U versions:update-parent`
@@ -34,6 +45,16 @@ config var (only needed for STAGING).
     * `mvn -U versions:display-property-updates`
     * `mvn -U versions:update-properties`
 * Download Sources
-  * `mvn dependency:resolve-sources`
+    * `mvn dependency:resolve-sources`
 * Build
-    * `mvn clean verify`
+    * `mvn clean verify -DskipTests=true`
+
+* Angular
+    * `ng update @angular/core@20 @angular/cli@20 --allow-dirty`
+    * `ng update @angular/material@20 --allow-dirty`
+    * `ncu`
+    * `ncu -u`, or
+    * `ncu -i` (for interactive update)
+    * `npm install`
+    * `npm run build`
+    * `npm run lint`

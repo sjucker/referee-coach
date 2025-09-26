@@ -1,185 +1,223 @@
 <div>
     <mat-toolbar color="primary">
-        <mat-progress-spinner mode="indeterminate" *ngIf="!notFound && !dto" [diameter]="30" color="accent"></mat-progress-spinner>
-        <h1 *ngIf="dto && !dto.textOnly">Video Report</h1>
-        <h1 *ngIf="dto && dto.textOnly">Report</h1>
-        <button *ngIf="dto && !dto.textOnly && dto.finished" mat-icon-button (click)="navigateToDiscussion()" matTooltip="Switch to video comments discussion">
-            <mat-icon>message</mat-icon>
-        </button>
+        @if (!notFound && !dto) {
+            <mat-progress-spinner mode="indeterminate" [diameter]="30" color="accent"></mat-progress-spinner>
+        }
+        @if (dto && !dto.textOnly) {
+            <h1>Video Report</h1>
+        }
+        @if (dto && dto.textOnly) {
+            <h1>Report</h1>
+        }
+        @if (dto && !dto.textOnly && dto.finished) {
+            <button mat-icon-button (click)="navigateToDiscussion()" matTooltip="Switch to video comments discussion">
+                <mat-icon>message</mat-icon>
+            </button>
+        }
         <span class="spacer"></span>
-        <a routerLink="/" mat-icon-button *ngIf="isLoggedIn()">
-            <mat-icon>home</mat-icon>
-        </a>
+        @if (isLoggedIn()) {
+            <a routerLink="/" mat-icon-button>
+                <mat-icon>home</mat-icon>
+            </a>
+        }
     </mat-toolbar>
-    <div *ngIf="dto">
+    @if (dto) {
+        <div>
+            <mat-card appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title>Game Info</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <div class="game-info-container">
+                        <span>Game Number: {{ dto.basketplanGame.gameNumber }}</span>
+                        <span>Competition: {{ dto.basketplanGame.competition }}</span>
+                        <span>Date: {{ dto.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
+                        <span>Result: {{ dto.basketplanGame.result }}</span>
+                        <span>Team A: {{ dto.basketplanGame.teamA }}</span>
+                        <span>Team B: {{ dto.basketplanGame.teamB }}</span>
+                    </div>
+                    <div class="game-info-container">
+                        <span>Coach: {{ dto.coach.name }}</span>
+                    </div>
+                    @if (is3PO()) {
+                        <div class="game-info-container">
+                            <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Crew Chief: {{ dto.basketplanGame.referee1!.name }}</span>
+                            <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 1: {{ dto.basketplanGame.referee2!.name }}</span>
+                            <span [ngClass]="isThirdUmpire() ? 'reportee' : ''">Umpire 2: {{ dto.basketplanGame.referee3!.name }}</span>
+                        </div>
+                    }
+                    @if (is2PO()) {
+                        <div class="game-info-container">
+                            <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Umpire 1: {{ dto.basketplanGame.referee1!.name }}</span>
+                            <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 2: {{ dto.basketplanGame.referee2!.name }}</span>
+                        </div>
+                    }
+                    @if (dto.version > 1) {
+                        <div>
+                            <p>Overall Rating: {{ dto.general.rating }}</p>
+                        </div>
+                    }
+                </mat-card-content>
+            </mat-card>
+            @if (dto.version > 1) {
+                <mat-card appearance="outlined">
+                    <mat-card-header>
+                        <mat-card-title>General Comment</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p>{{ dto.general.comment }}</p>
+                    </mat-card-content>
+                </mat-card>
+            }
+            <div class="criteria-container">
+                <mat-card appearance="outlined" style="flex: 1">
+                    <mat-card-header>
+                        <mat-card-title>Image, Approach</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p>{{ dto.image.comment }}</p>
+                        @if (dto.version > 1) {
+                            <p>Rating: {{ dto.image.rating }}</p>
+                        }
+                    </mat-card-content>
+                </mat-card>
+                <mat-card appearance="outlined" style="flex: 1">
+                    <mat-card-header>
+                        <mat-card-title>Fitness Condition</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p>{{ dto.fitness.comment }}</p>
+                        @if (dto.version > 1) {
+                            <p>Rating: {{ dto.fitness.rating }}</p>
+                        }
+                    </mat-card-content>
+                </mat-card>
+                <mat-card appearance="outlined" style="flex: 1">
+                    <mat-card-header>
+                        @if (is2PO()) {
+                            <mat-card-title>2PO Mechanics & Individual Officiating Techniques</mat-card-title>
+                        }
+                        @if (is3PO()) {
+                            <mat-card-title>3PO Mechanics & Individual Officiating Techniques</mat-card-title>
+                        }
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p>{{ dto.mechanics.comment }}</p>
+                        @if (dto.version > 1) {
+                            <p>Rating: {{ dto.mechanics.rating }}</p>
+                        }
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="criteria-container">
+                <mat-card appearance="outlined" style="flex: 1">
+                    <mat-card-header>
+                        <mat-card-title>Critera: Fouls</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p>{{ dto.fouls.comment }}</p>
+                        @if (dto.version > 1) {
+                            <p>Rating: {{ dto.fouls.rating }}</p>
+                        }
+                    </mat-card-content>
+                </mat-card>
+                <mat-card appearance="outlined" style="flex: 1">
+                    <mat-card-header>
+                        <mat-card-title>Critera: Violations</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p>{{ dto.violations.comment }}</p>
+                        @if (dto.version > 1) {
+                            <p>Rating: {{ dto.violations.rating }}</p>
+                        }
+                    </mat-card-content>
+                </mat-card>
+                <mat-card appearance="outlined" style="flex: 1">
+                    <mat-card-header>
+                        <mat-card-title>Game Control and Management</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p>{{ dto.gameManagement.comment }}</p>
+                        @if (dto.version > 1) {
+                            <p>Rating: {{ dto.gameManagement.rating }}</p>
+                        }
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="criteria-container">
+                <mat-card appearance="outlined" style="flex: 1">
+                    <mat-card-header>
+                        <mat-card-title>Points to Keep</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content><p>{{ dto.pointsToKeepComment }}</p></mat-card-content>
+                </mat-card>
+                <mat-card appearance="outlined" style="flex: 1">
+                    <mat-card-header>
+                        <mat-card-title>Points to Improve</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content><p>{{ dto.pointsToImproveComment }}</p></mat-card-content>
+                </mat-card>
+            </div>
+            @if (!dto.textOnly) {
+                <mat-card appearance="outlined">
+                    <mat-card-content>
+                        <div class="video-container">
+                            <div>
+                                <youtube-player #youtubePlayer
+                                                [videoId]="dto.basketplanGame.youtubeId"
+                                                [width]="videoWidth"
+                                                [height]="videoHeight"></youtube-player>
+                            </div>
+                            <div class="video-comments-container">
+                                @for (videoComment of dto.videoComments; track videoComment; let i = $index) {
+                                    <mat-card appearance="outlined"
+                                              [ngClass]="{'important': requiresReply(videoComment)}">
+                                        <mat-card-header>
+                                            <mat-card-title>
+                                                <div>Video Comment #{{ i + 1 }}</div>
+                                                @if (requiresReply(videoComment)) {
+                                                    <mat-icon
+                                                            class="important"
+                                                            matTooltip="This comment requires a reply from you. Switch to the discussion-mode to do so.">
+                                                        priority_high
+                                                    </mat-icon>
+                                                }
+                                                @if (flaggedForReply(videoComment)) {
+                                                    <mat-icon
+                                                            matTooltip="This comment requires a reply from the referee. Switch to the discussion-mode to view it.">
+                                                        priority_high
+                                                    </mat-icon>
+                                                }
+                                            </mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content>
+                                            <p>{{ videoComment.comment }}</p>
+                                        </mat-card-content>
+                                        <mat-card-actions>
+                                            <button (click)="play(videoComment.timestamp)" color="accent" mat-stroked-button>
+                                                Jump to Scene
+                                            </button>
+                                        </mat-card-actions>
+                                    </mat-card>
+                                }
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            }
+        </div>
+    }
+
+    @if (notFound) {
         <mat-card appearance="outlined">
             <mat-card-header>
-                <mat-card-title>Game Info</mat-card-title>
+                <mat-card-title>Not found</mat-card-title>
             </mat-card-header>
             <mat-card-content>
-                <div class="game-info-container">
-                    <span>Game Number: {{ dto.basketplanGame.gameNumber }}</span>
-                    <span>Competition: {{ dto.basketplanGame.competition }}</span>
-                    <span>Date: {{ dto.basketplanGame.date | date:'dd.MM.yyyy' }}</span>
-                    <span>Result: {{ dto.basketplanGame.result }}</span>
-                    <span>Team A: {{ dto.basketplanGame.teamA }}</span>
-                    <span>Team B: {{ dto.basketplanGame.teamB }}</span>
-                </div>
-                <div class="game-info-container">
-                    <span>Coach: {{ dto.coach.name }}</span>
-                </div>
-                <div class="game-info-container" *ngIf="is3PO()">
-                    <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Crew Chief: {{ dto.basketplanGame.referee1!.name }}</span>
-                    <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 1: {{ dto.basketplanGame.referee2!.name }}</span>
-                    <span [ngClass]="isThirdUmpire() ? 'reportee' : ''">Umpire 2: {{ dto.basketplanGame.referee3!.name }}</span>
-                </div>
-                <div class="game-info-container" *ngIf="is2PO()">
-                    <span [ngClass]="isFirstUmpire() ? 'reportee' : ''">Umpire 1: {{ dto.basketplanGame.referee1!.name }}</span>
-                    <span [ngClass]="isSecondUmpire() ? 'reportee' : ''">Umpire 2: {{ dto.basketplanGame.referee2!.name }}</span>
-                </div>
-                <div *ngIf="dto.version > 1">
-                    <p>Overall Rating: {{ dto.general.rating }}</p>
-                </div>
+                Video Report was not found...
             </mat-card-content>
         </mat-card>
-
-        <mat-card appearance="outlined" *ngIf="dto.version > 1">
-            <mat-card-header>
-                <mat-card-title>General Comment</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <p>{{ dto.general.comment }}</p>
-            </mat-card-content>
-        </mat-card>
-
-        <div class="criteria-container">
-            <mat-card appearance="outlined" style="flex: 1">
-                <mat-card-header>
-                    <mat-card-title>Image, Approach</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>{{ dto.image.comment }}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{ dto.image.rating }}</p>
-                </mat-card-content>
-            </mat-card>
-
-            <mat-card appearance="outlined" style="flex: 1">
-                <mat-card-header>
-                    <mat-card-title>Fitness Condition</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>{{ dto.fitness.comment }}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{ dto.fitness.rating }}</p>
-                </mat-card-content>
-            </mat-card>
-
-            <mat-card appearance="outlined" style="flex: 1">
-                <mat-card-header>
-                    <mat-card-title *ngIf="is2PO()">2PO Mechanics & Individual Officiating Techniques</mat-card-title>
-                    <mat-card-title *ngIf="is3PO()">3PO Mechanics & Individual Officiating Techniques</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>{{ dto.mechanics.comment }}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{ dto.mechanics.rating }}</p>
-                </mat-card-content>
-            </mat-card>
-        </div>
-
-        <div class="criteria-container">
-
-            <mat-card appearance="outlined" style="flex: 1">
-                <mat-card-header>
-                    <mat-card-title>Critera: Fouls</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>{{ dto.fouls.comment }}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{ dto.fouls.rating }}</p>
-                </mat-card-content>
-            </mat-card>
-
-            <mat-card appearance="outlined" style="flex: 1">
-                <mat-card-header>
-                    <mat-card-title>Critera: Violations</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>{{ dto.violations.comment }}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{ dto.violations.rating }}</p>
-                </mat-card-content>
-            </mat-card>
-
-            <mat-card appearance="outlined" style="flex: 1">
-                <mat-card-header>
-                    <mat-card-title>Game Control and Management</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>{{ dto.gameManagement.comment }}</p>
-                    <p *ngIf="dto.version > 1">Rating: {{ dto.gameManagement.rating }}</p>
-                </mat-card-content>
-            </mat-card>
-        </div>
-
-        <div class="criteria-container">
-            <mat-card appearance="outlined" style="flex: 1">
-                <mat-card-header>
-                    <mat-card-title>Points to Keep</mat-card-title>
-                </mat-card-header>
-                <mat-card-content><p>{{ dto.pointsToKeepComment }}</p></mat-card-content>
-            </mat-card>
-            <mat-card appearance="outlined" style="flex: 1">
-                <mat-card-header>
-                    <mat-card-title>Points to Improve</mat-card-title>
-                </mat-card-header>
-                <mat-card-content><p>{{ dto.pointsToImproveComment }}</p></mat-card-content>
-            </mat-card>
-        </div>
-        <mat-card appearance="outlined" *ngIf="!dto.textOnly">
-            <mat-card-content>
-                <div class="video-container">
-                    <div>
-                        <youtube-player #youtubePlayer
-                                        [videoId]="dto.basketplanGame.youtubeId"
-                                        [width]="videoWidth"
-                                        [height]="videoHeight"></youtube-player>
-                    </div>
-                    <div class="video-comments-container">
-                        <mat-card appearance="outlined" *ngFor="let videoComment of dto.videoComments; index as i;"
-                                  [ngClass]="{'important': requiresReply(videoComment)}">
-                            <mat-card-header>
-                                <mat-card-title>
-                                    <div>Video Comment #{{ i + 1 }}</div>
-                                    <mat-icon *ngIf="requiresReply(videoComment)"
-                                              class="important"
-                                              matTooltip="This comment requires a reply from you. Switch to the discussion-mode to do so.">priority_high
-                                    </mat-icon>
-                                    <mat-icon *ngIf="flaggedForReply(videoComment)"
-                                              matTooltip="This comment requires a reply from the referee. Switch to the discussion-mode to view it.">
-                                        priority_high
-                                    </mat-icon>
-                                </mat-card-title>
-                            </mat-card-header>
-                            <mat-card-content>
-                                <p>{{ videoComment.comment }}</p>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <button (click)="play(videoComment.timestamp)" color="accent" mat-stroked-button>
-                                    Jump to Scene
-                                </button>
-                            </mat-card-actions>
-                        </mat-card>
-                    </div>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </div>
-
-    <mat-card appearance="outlined" *ngIf="notFound">
-        <mat-card-header>
-            <mat-card-title>Not found</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            Video Report was not found...
-        </mat-card-content>
-    </mat-card>
+    }
 
     <!-- here so we know the current width of the window and can resize the YouTube video accordingly -->
     <div #widthMeasurement></div>

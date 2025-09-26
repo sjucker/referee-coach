@@ -2,9 +2,11 @@
     <mat-toolbar color="primary">
         <h1>Referee Coach</h1>
         <span class="spacer"></span>
-        <a routerLink="/search" mat-icon-button *ngIf="isCoach() || isRefereeCoach()">
-            <mat-icon>search</mat-icon>
-        </a>
+        @if (isCoach() || isRefereeCoach()) {
+            <a routerLink="/search" mat-icon-button>
+                <mat-icon>search</mat-icon>
+            </a>
+        }
         <a routerLink="/settings" mat-icon-button>
             <mat-icon>settings</mat-icon>
         </a>
@@ -14,82 +16,102 @@
         </button>
     </mat-toolbar>
 
-    <mat-card appearance="outlined" *ngIf="isCoach() || isRefereeCoach()">
-        <mat-card-content>
-            <div class="search-container">
-                <form (ngSubmit)="searchGame()" role="form">
-                    <mat-form-field appearance="outline" color="accent">
-                        <mat-label>Game Number (e.g., 21-03520)</mat-label>
-                        <input [(ngModel)]="gameNumberInput" autocomplete="off" matInput name="gameNumber" type="text">
-                    </mat-form-field>
-                    <button color="primary" mat-flat-button type="submit" [disabled]="searching">Search</button>
-                </form>
-
-                <div *ngIf="game && youtubeIdInputNeeded">
-                    <mat-form-field appearance="outline" color="accent">
-                        <mat-label>YouTube URL</mat-label>
-                        <input [(ngModel)]="youtubeUrlInput" (ngModelChange)="parseYouTubeUrl()"
-                               [disabled]="textOnlyMode"
-                               autocomplete="off" matInput name="youtubeUrl" type="text">
-                    </mat-form-field>
-                    <mat-checkbox [(ngModel)]="textOnlyMode">No Video Comments</mat-checkbox>
-                </div>
-
-                <form (ngSubmit)="createVideoReport()" role="form" *ngIf="game">
-                    <mat-form-field appearance="fill">
-                        <mat-label>Select Referee</mat-label>
-                        <mat-select [(value)]="reportee">
-                            <mat-option *ngFor="let r of reportees" [value]="r.reportee">{{ r.name }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <button color="primary" mat-flat-button [disabled]="!reportee || (!youtubeId && !textOnlyMode) || creating">Start</button>
-                </form>
-                <div *ngIf="problemDescription">
-                    {{ problemDescription }}
-                </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
-
-    <mat-card *ngIf="isReferee()">
-        <mat-card-header>
-            <mat-card-title>Start Game Discussion</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <div class="search-container">
-                <form (ngSubmit)="searchGameForReferee()" role="form">
-                    <div class="referee-start-discussion">
+    @if (isCoach() || isRefereeCoach()) {
+        <mat-card appearance="outlined">
+            <mat-card-content>
+                <div class="search-container">
+                    <form (ngSubmit)="searchGame()" role="form">
                         <mat-form-field appearance="outline" color="accent">
                             <mat-label>Game Number (e.g., 21-03520)</mat-label>
                             <input [(ngModel)]="gameNumberInput" autocomplete="off" matInput name="gameNumber" type="text">
                         </mat-form-field>
-                    </div>
-                    <button color="primary" mat-flat-button type="submit" [disabled]="searching">Search</button>
-                </form>
-
-                <div *ngIf="game && youtubeIdInputNeeded">
-                    <mat-form-field appearance="outline" color="accent">
-                        <mat-label>YouTube URL</mat-label>
-                        <input [(ngModel)]="youtubeUrlInput" (ngModelChange)="parseYouTubeUrl()"
-                               autocomplete="off" matInput name="youtubeUrl" type="text">
-                    </mat-form-field>
-                    <div *ngIf="problemDescription">
-                        {{ problemDescription }}
-                    </div>
+                        <button color="primary" mat-flat-button type="submit" [disabled]="searching">Search</button>
+                    </form>
+                    @if (game && youtubeIdInputNeeded) {
+                        <div>
+                            <mat-form-field appearance="outline" color="accent">
+                                <mat-label>YouTube URL</mat-label>
+                                <input [(ngModel)]="youtubeUrlInput" (ngModelChange)="parseYouTubeUrl()"
+                                       [disabled]="textOnlyMode"
+                                       autocomplete="off" matInput name="youtubeUrl" type="text">
+                            </mat-form-field>
+                            <mat-checkbox [(ngModel)]="textOnlyMode">No Video Comments</mat-checkbox>
+                        </div>
+                    }
+                    @if (game) {
+                        <form (ngSubmit)="createVideoReport()" role="form">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Select Referee</mat-label>
+                                <mat-select [(value)]="reportee">
+                                    @for (r of reportees; track r) {
+                                        <mat-option [value]="r.reportee">{{ r.name }}</mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                            <button color="primary" mat-flat-button [disabled]="!reportee || (!youtubeId && !textOnlyMode) || creating">Start</button>
+                        </form>
+                    }
+                    @if (problemDescription) {
+                        <div>
+                            {{ problemDescription }}
+                        </div>
+                    }
                 </div>
+            </mat-card-content>
+        </mat-card>
+    }
 
-                <div *ngIf="game">
-                    <div class="referee-start-discussion">
-                        <div>{{ game.date | date: 'dd.MM.yyyy' }}, {{ game.competition }}: {{ game.teamA }} - {{ game.teamB }}</div>
-                        <div *ngIf="game.referee1">{{ game.referee1.name }}</div>
-                        <div *ngIf="game.referee2">{{ game.referee2.name }}</div>
-                        <div *ngIf="game.referee3">{{ game.referee3.name }}</div>
-                    </div>
-                    <button color="primary" mat-flat-button [disabled]="!youtubeId || creating" (click)="createGameDiscussion()">Start</button>
+    @if (isReferee()) {
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Start Game Discussion</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="search-container">
+                    <form (ngSubmit)="searchGameForReferee()" role="form">
+                        <div class="referee-start-discussion">
+                            <mat-form-field appearance="outline" color="accent">
+                                <mat-label>Game Number (e.g., 21-03520)</mat-label>
+                                <input [(ngModel)]="gameNumberInput" autocomplete="off" matInput name="gameNumber" type="text">
+                            </mat-form-field>
+                        </div>
+                        <button color="primary" mat-flat-button type="submit" [disabled]="searching">Search</button>
+                    </form>
+                    @if (game && youtubeIdInputNeeded) {
+                        <div>
+                            <mat-form-field appearance="outline" color="accent">
+                                <mat-label>YouTube URL</mat-label>
+                                <input [(ngModel)]="youtubeUrlInput" (ngModelChange)="parseYouTubeUrl()"
+                                       autocomplete="off" matInput name="youtubeUrl" type="text">
+                            </mat-form-field>
+                            @if (problemDescription) {
+                                <div>
+                                    {{ problemDescription }}
+                                </div>
+                            }
+                        </div>
+                    }
+                    @if (game) {
+                        <div>
+                            <div class="referee-start-discussion">
+                                <div>{{ game.date | date: 'dd.MM.yyyy' }}, {{ game.competition }}: {{ game.teamA }} - {{ game.teamB }}</div>
+                                @if (game.referee1) {
+                                    <div>{{ game.referee1.name }}</div>
+                                }
+                                @if (game.referee2) {
+                                    <div>{{ game.referee2.name }}</div>
+                                }
+                                @if (game.referee3) {
+                                    <div>{{ game.referee3.name }}</div>
+                                }
+                            </div>
+                            <button color="primary" mat-flat-button [disabled]="!youtubeId || creating" (click)="createGameDiscussion()">Start</button>
+                        </div>
+                    }
                 </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
+            </mat-card-content>
+        </mat-card>
+    }
 
     <mat-card appearance="outlined">
         <mat-card-content>
@@ -112,100 +134,116 @@
                     <mat-datepicker #pickerTo></mat-datepicker>
                 </mat-form-field>
 
-                <button mat-icon-button *ngIf="isCoach()" (click)="export()" matTooltip="Excel Download" style="flex: 1" [disabled]="exporting">
-                    <mat-icon>cloud_download</mat-icon>
-                </button>
+                @if (isCoach()) {
+                    <button mat-icon-button (click)="export()" matTooltip="Excel Download" style="flex: 1" [disabled]="exporting">
+                        <mat-icon>cloud_download</mat-icon>
+                    </button>
+                }
             </div>
 
-            <mat-progress-bar mode="indeterminate" *ngIf="!reportsLoaded"></mat-progress-bar>
+            @if (!reportsLoaded) {
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            }
 
-            <table mat-table [dataSource]="dtos" *ngIf="reportsLoaded">
-                <ng-container matColumnDef="finished" *ngIf="isCoach() || isRefereeCoach()">
-                    <th mat-header-cell *matHeaderCellDef class="show-gt-sm"></th>
-                    <td mat-cell *matCellDef="let element" class="show-gt-sm">
-                        <i *ngIf="element.finished" class="material-icons">check_circle_outline</i>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="date">
-                    <th mat-header-cell *matHeaderCellDef class="show-gt-sm">Date</th>
-                    <td mat-cell *matCellDef="let element" class="show-gt-sm">{{ element.date | date: 'dd.MM.yyyy' }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="gameNumber">
-                    <th mat-header-cell *matHeaderCellDef class="show-gt-sm">Game Number</th>
-                    <td mat-cell *matCellDef="let element" class="show-gt-sm">{{ element.gameNumber }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="competition">
-                    <th mat-header-cell *matHeaderCellDef class="show-gt-sm">Competition</th>
-                    <td mat-cell *matCellDef="let element" class="show-gt-sm">{{ element.competition }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="teams">
-                    <th mat-header-cell *matHeaderCellDef class="show-gt-xs">Teams</th>
-                    <td mat-cell *matCellDef="let element" class="show-gt-xs">
-                        {{ element.teamA }} - {{ element.teamB }}
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="coach">
-                    <th mat-header-cell *matHeaderCellDef>Coach</th>
-                    <td mat-cell *matCellDef="let element"
-                        [class]="{'current-user': isCurrentUser(element.coach)}">
-                        <span *ngIf="element.coach">{{ getCoach(element.coach) }}</span>
-                        <mat-icon *ngIf="!element.coach">forum</mat-icon>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="reportee" *ngIf="isCoach() || isRefereeCoach()">
-                    <th mat-header-cell *matHeaderCellDef>Referee</th>
-                    <td mat-cell *matCellDef="let element">{{ getReferee(element.relevantReferee) }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="edit" *ngIf="isCoach() || isRefereeCoach()">
-                    <th mat-header-cell *matHeaderCellDef>Edit</th>
-                    <td mat-cell *matCellDef="let element">
-                        <button mat-icon-button (click)="edit(element.id, element.type)" *ngIf="isEditable(element)">
-                            <mat-icon color="primary">edit</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="copy" *ngIf="isCoach() || isRefereeCoach()">
-                    <th mat-header-cell *matHeaderCellDef>Copy</th>
-                    <td mat-cell *matCellDef="let element">
-                        <button mat-icon-button (click)="copy(element)" *ngIf="isCoaching(element)">
-                            <mat-icon color="primary">content_copy</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="view">
-                    <th mat-header-cell *matHeaderCellDef>View</th>
-                    <td mat-cell *matCellDef="let element">
-                        <button mat-icon-button (click)="view(element)">
-                            <mat-icon color="primary">open_in_new</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="delete" *ngIf="isCoach() || isRefereeCoach()">
-                    <th mat-header-cell *matHeaderCellDef class="show-gt-xs">Delete</th>
-                    <td mat-cell *matCellDef="let element" class="show-gt-xs">
-                        <button mat-icon-button (click)="delete(element)" *ngIf="isDeletable(element)">
-                            <mat-icon color="primary">delete</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-                <tr class="mat-row" *matNoDataRow>
-                    <td class="mat-cell" [colSpan]="displayedColumns.length">No data</td>
-                </tr>
-            </table>
+            @if (reportsLoaded) {
+                <table mat-table [dataSource]="dtos">
+                    @if (isCoach() || isRefereeCoach()) {
+                        <ng-container matColumnDef="finished">
+                            <th mat-header-cell *matHeaderCellDef class="show-gt-sm"></th>
+                            <td mat-cell *matCellDef="let element" class="show-gt-sm">
+                                @if (element.finished) {
+                                    <i class="material-icons">check_circle_outline</i>
+                                }
+                            </td>
+                        </ng-container>
+                    }
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef class="show-gt-sm">Date</th>
+                        <td mat-cell *matCellDef="let element" class="show-gt-sm">{{ element.date | date: 'dd.MM.yyyy' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="gameNumber">
+                        <th mat-header-cell *matHeaderCellDef class="show-gt-sm">Game Number</th>
+                        <td mat-cell *matCellDef="let element" class="show-gt-sm">{{ element.gameNumber }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="competition">
+                        <th mat-header-cell *matHeaderCellDef class="show-gt-sm">Competition</th>
+                        <td mat-cell *matCellDef="let element" class="show-gt-sm">{{ element.competition }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="teams">
+                        <th mat-header-cell *matHeaderCellDef class="show-gt-xs">Teams</th>
+                        <td mat-cell *matCellDef="let element" class="show-gt-xs">
+                            {{ element.teamA }} - {{ element.teamB }}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="coach">
+                        <th mat-header-cell *matHeaderCellDef>Coach</th>
+                        <td mat-cell *matCellDef="let element"
+                            [class]="{'current-user': isCurrentUser(element.coach)}">
+                            @if (element.coach) {
+                                <span>{{ getCoach(element.coach) }}</span>
+                            }
+                            @if (!element.coach) {
+                                <mat-icon>forum</mat-icon>
+                            }
+                        </td>
+                    </ng-container>
+                    @if (isCoach() || isRefereeCoach()) {
+                        <ng-container matColumnDef="reportee">
+                            <th mat-header-cell *matHeaderCellDef>Referee</th>
+                            <td mat-cell *matCellDef="let element">{{ getReferee(element.relevantReferee) }}</td>
+                        </ng-container>
+                    }
+                    @if (isCoach() || isRefereeCoach()) {
+                        <ng-container matColumnDef="edit">
+                            <th mat-header-cell *matHeaderCellDef>Edit</th>
+                            <td mat-cell *matCellDef="let element">
+                                @if (isEditable(element)) {
+                                    <button mat-icon-button (click)="edit(element.id, element.type)">
+                                        <mat-icon color="primary">edit</mat-icon>
+                                    </button>
+                                }
+                            </td>
+                        </ng-container>
+                    }
+                    @if (isCoach() || isRefereeCoach()) {
+                        <ng-container matColumnDef="copy">
+                            <th mat-header-cell *matHeaderCellDef>Copy</th>
+                            <td mat-cell *matCellDef="let element">
+                                @if (isCoaching(element)) {
+                                    <button mat-icon-button (click)="copy(element)">
+                                        <mat-icon color="primary">content_copy</mat-icon>
+                                    </button>
+                                }
+                            </td>
+                        </ng-container>
+                    }
+                    <ng-container matColumnDef="view">
+                        <th mat-header-cell *matHeaderCellDef>View</th>
+                        <td mat-cell *matCellDef="let element">
+                            <button mat-icon-button (click)="view(element)">
+                                <mat-icon color="primary">open_in_new</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    @if (isCoach() || isRefereeCoach()) {
+                        <ng-container matColumnDef="delete">
+                            <th mat-header-cell *matHeaderCellDef class="show-gt-xs">Delete</th>
+                            <td mat-cell *matCellDef="let element" class="show-gt-xs">
+                                @if (isDeletable(element)) {
+                                    <button mat-icon-button (click)="delete(element)">
+                                        <mat-icon color="primary">delete</mat-icon>
+                                    </button>
+                                }
+                            </td>
+                        </ng-container>
+                    }
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" [colSpan]="displayedColumns.length">No data</td>
+                    </tr>
+                </table>
+            }
             <mat-paginator [pageSize]="10"
                            [pageSizeOptions]="[10, 20, 50]"
                            showFirstLastButtons>

@@ -1,9 +1,22 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, OnInit, viewChild} from '@angular/core';
 import {BasketplanGameDTO, GameDiscussionDTO, OfficiatingMode, OverviewDTO, Reportee, ReportType, UserDTO} from "../rest";
 import {VideoReportService} from "../service/video-report.service";
 import {BasketplanService} from "../service/basketplan.service";
-import {Router} from "@angular/router";
-import {MatTableDataSource} from "@angular/material/table";
+import {Router, RouterLink} from "@angular/router";
+import {
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatNoDataRow,
+    MatRow,
+    MatRowDef,
+    MatTable,
+    MatTableDataSource
+} from "@angular/material/table";
 import {AuthenticationService} from "../service/authentication.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatDialog} from "@angular/material/dialog";
@@ -16,6 +29,19 @@ import {GameDiscussionService} from "../service/game-discussion.service";
 import {SearchService} from "../service/search.service";
 import {VideoReportCopyDialogComponent, VideoReportCopyDialogData} from "../video-report-copy-dialog/video-report-copy-dialog.component";
 import {VideoReportDeleteDialogComponent} from "../video-report-delete-dialog/video-report-delete-dialog.component";
+import {MatToolbar} from '@angular/material/toolbar';
+import {DatePipe} from '@angular/common';
+import {MatButton, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
+import {FormsModule} from '@angular/forms';
+import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatOption, MatSelect} from '@angular/material/select';
+import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
+import {MatProgressBar} from '@angular/material/progress-bar';
 
 interface ReporteeSelection {
     reportee: Reportee,
@@ -32,11 +58,20 @@ const dateFormat = 'yyyy-MM-dd';
     selector: 'app-main',
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.scss'],
-    standalone: false
+    imports: [MatToolbar, MatIconAnchor, RouterLink, MatIcon, MatIconButton, MatTooltip, MatCard, MatCardContent, FormsModule, MatFormField, MatLabel, MatInput, MatButton, MatCheckbox, MatSelect, MatOption, MatCardHeader, MatCardTitle, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, DatePipe]
 })
 export class MainComponent implements OnInit {
+    private basketplanService = inject(BasketplanService);
+    private videoReportService = inject(VideoReportService);
+    private searchService = inject(SearchService);
+    private gameDiscussionService = inject(GameDiscussionService);
+    private authenticationService = inject(AuthenticationService);
+    private router = inject(Router);
+    private snackBar = inject(MatSnackBar);
+    private dialog = inject(MatDialog);
+
     dtos: MatTableDataSource<OverviewDTO> = new MatTableDataSource<OverviewDTO>([]);
-    @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
+    readonly paginator = viewChild(MatPaginator);
     reportsLoaded = false;
 
     gameNumberInput: string = '';
@@ -58,16 +93,6 @@ export class MainComponent implements OnInit {
     searching = false;
     creating = false;
     exporting = false;
-
-    constructor(private basketplanService: BasketplanService,
-                private videoReportService: VideoReportService,
-                private searchService: SearchService,
-                private gameDiscussionService: GameDiscussionService,
-                private authenticationService: AuthenticationService,
-                private router: Router,
-                private snackBar: MatSnackBar,
-                private dialog: MatDialog) {
-    }
 
     private getFrom(): DateTime {
         const item = sessionStorage.getItem(keyFrom);
@@ -110,8 +135,9 @@ export class MainComponent implements OnInit {
             next: value => {
                 this.reportsLoaded = true;
                 this.dtos = new MatTableDataSource<OverviewDTO>(value);
-                if (this.paginator) {
-                    this.dtos.paginator = this.paginator
+                const paginator = this.paginator();
+                if (paginator) {
+                    this.dtos.paginator = paginator
                 }
                 this.dtos.filterPredicate = (data, filter) => {
                     // default filter cannot handle nested objects, so handle each column specifically

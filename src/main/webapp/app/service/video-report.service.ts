@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {
@@ -21,11 +21,10 @@ import {environment} from "../../environments/environment";
     providedIn: 'root'
 })
 export class VideoReportService {
+    private readonly httpClient = inject(HttpClient);
+
 
     private baseUrl = environment.baseUrl;
-
-    constructor(private readonly httpClient: HttpClient) {
-    }
 
     getVideoReport(id: string): Observable<VideoReportDTO> {
         return this.httpClient.get<VideoReportDTO>(`${this.baseUrl}/video-report/${id}`);

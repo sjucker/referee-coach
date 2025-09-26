@@ -1,33 +1,34 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, input, OnInit, output, viewChild} from '@angular/core';
 import {TagDTO} from "../rest";
-import {FormControl} from "@angular/forms";
-import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
-import {Observable, of} from "rxjs";
+import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger} from "@angular/material/autocomplete";
+import {Observable} from "rxjs";
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
+
+import {MatIcon} from '@angular/material/icon';
+import {MatOption} from '@angular/material/select';
 
 @Component({
     selector: 'app-tags-selection',
     templateUrl: './tags-selection.component.html',
     styleUrls: ['./tags-selection.component.scss'],
-    standalone: false
+    imports: [MatFormField, MatLabel, MatChipGrid, MatChipRow, MatChipRemove, MatIcon, FormsModule, MatAutocompleteTrigger, MatChipInput, ReactiveFormsModule, MatAutocomplete, MatOption]
 })
 export class TagsSelectionComponent implements OnInit {
 
-    @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
+    readonly tagInput = viewChild<ElementRef<HTMLInputElement>>('tagInput');
 
-    @Input({required: true})
-    availableTags: Observable<TagDTO[]> = of([]);
+    readonly availableTags = input.required<Observable<TagDTO[]>>();
     allTags: TagDTO[] = [];
 
-    @Input()
-    initialSelectedTags: TagDTO[] = [];
+    readonly initialSelectedTags = input<TagDTO[]>([]);
 
     selectedTags: TagDTO[] = [];
 
-    @Output()
-    selected = new EventEmitter<TagDTO>();
+    readonly selected = output<TagDTO>();
 
-    @Output()
-    removed = new EventEmitter<TagDTO>();
+    readonly removed = output<TagDTO>();
 
     filteredTags: TagDTO[] = [];
     tagController = new FormControl('');
@@ -36,11 +37,11 @@ export class TagsSelectionComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.availableTags.subscribe(value => {
+        this.availableTags().subscribe(value => {
             this.filteredTags = [...value];
             this.allTags = [...value];
         });
-        this.selectedTags = [...this.initialSelectedTags];
+        this.selectedTags = [...this.initialSelectedTags()];
 
         this.tagController.valueChanges.subscribe(value => {
             if (value && value.length > 0) {
@@ -60,6 +61,6 @@ export class TagsSelectionComponent implements OnInit {
         this.selectedTags.push($event.option.value);
         this.selected.emit($event.option.value);
         this.tagController.setValue(null);
-        this.tagInput!.nativeElement.value = '';
+        this.tagInput()!.nativeElement.value = '';
     }
 }

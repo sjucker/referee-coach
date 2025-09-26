@@ -3,7 +3,9 @@
     <mat-form-field appearance="fill">
         <mat-label>Select Referee</mat-label>
         <mat-select [(value)]="reportee">
-            <mat-option *ngFor="let r of reportees" [value]="r.reportee">{{ r.name }}</mat-option>
+            @for (r of reportees; track r) {
+                <mat-option [value]="r.reportee">{{ r.name }}</mat-option>
+            }
         </mat-select>
     </mat-form-field>
     <p>{{ description }}</p>
