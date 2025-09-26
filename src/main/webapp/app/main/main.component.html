@@ -2,11 +2,9 @@
     <mat-toolbar color="primary">
         <h1>Referee Coach</h1>
         <span class="spacer"></span>
-        @if (isCoach() || isRefereeCoach()) {
-            <a routerLink="/search" mat-icon-button>
-                <mat-icon>search</mat-icon>
-            </a>
-        }
+        <a routerLink="/search" mat-icon-button>
+            <mat-icon>search</mat-icon>
+        </a>
         <a routerLink="/settings" mat-icon-button>
             <mat-icon>settings</mat-icon>
         </a>
