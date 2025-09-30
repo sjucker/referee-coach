@@ -25,7 +25,7 @@ import java.util.Set;
 @Table(name = "video_report")
 @Getter
 @Setter
-@ToString
+@ToString(of = {"id", "coach", "reportee", "basketplanGame", "finished"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class VideoReport {
