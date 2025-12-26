@@ -9,7 +9,7 @@ import ch.stefanjucker.refereecoach.dto.LoginRequestDTO;
 import ch.stefanjucker.refereecoach.dto.LoginResponseDTO;
 import ch.stefanjucker.refereecoach.security.JwtService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -103,7 +103,7 @@ public class LoginService {
         var foundUser = userService.find(email);
         if (foundUser.isPresent()) {
             var user = foundUser.get();
-            if (StringUtils.equals(user.getPasswordResetToken(), token)) {
+            if (Strings.CS.equals(user.getPasswordResetToken(), token)) {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 user.setPasswordResetToken(null);
                 userService.save(user);
