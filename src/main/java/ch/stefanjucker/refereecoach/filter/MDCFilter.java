@@ -16,8 +16,8 @@ public class MDCFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        SecurityUtil.getUsername().ifPresent(username -> MDC.put("userId", username));
         try {
+            MDC.put("userId", SecurityUtil.getUsername().orElse("anonymous"));
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
             MDC.clear();
