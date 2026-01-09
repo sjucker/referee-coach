@@ -483,6 +483,10 @@ export class MainComponent implements OnInit {
         return this.authenticationService.isReferee();
     }
 
+    isAdmin(): boolean {
+        return this.authenticationService.isAdmin();
+    }
+
     get displayedColumns(): string[] {
         if (this.isCoach() || this.isRefereeCoach()) {
             return ['finished', 'date', 'gameNumber', 'competition', 'teams', 'coach', 'reportee', 'edit', 'view', 'copy', 'delete'];

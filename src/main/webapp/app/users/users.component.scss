@@ -1,0 +1,14 @@
+@use '../../variables';
+@use '../../responsive';
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+table {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}

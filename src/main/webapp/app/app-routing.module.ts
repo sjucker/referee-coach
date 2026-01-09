@@ -14,7 +14,7 @@ export const VIEW_PATH = 'view'
 export const DISCUSS_PATH = 'discuss'
 export const SETTINGS_PATH = 'settings'
 export const SEARCH_PATH = 'search'
-export const ADMIN_PATH = 'admin'
+export const USERS_PATH = 'users'
 export const GAME_DISCUSSION_PATH = 'game-discussion'
 
 const authenticationGuard: CanActivateFn = () => inject(AuthenticationGuard).isLoggedIn();
@@ -70,8 +70,8 @@ const routes: Routes = [
         canActivate: [authenticationGuard]
     },
     {
-        path: ADMIN_PATH,
-        loadComponent: () => import('./admin/admin.component').then(m => m.AdminComponent),
+        path: USERS_PATH,
+        loadComponent: () => import('./users/users.component').then(m => m.UsersComponent),
         canActivate: [hasAdminRightsGuard]
     },
     {

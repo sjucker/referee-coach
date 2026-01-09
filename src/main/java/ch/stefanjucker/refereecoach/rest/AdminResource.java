@@ -38,4 +38,16 @@ public class AdminResource {
         return ResponseEntity.ok(adminService.getAllReferees());
     }
 
+    @GetMapping(value = "/user", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<UserDTO>> getUsers(@AuthenticationPrincipal UserDetails principal) {
+        log.info("GET /api/admin/user");
+
+        if (!adminService.isAdmin(principal.getUsername())) {
+            log.error("user {} tried to access admin-endpoint without having admin rights", principal.getUsername());
+            return ResponseEntity.status(FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok(adminService.getAllUsers());
+    }
+
 }

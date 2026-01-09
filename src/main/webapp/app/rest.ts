@@ -140,7 +140,9 @@ export interface TagDTO {
 export interface UserDTO {
     id: number;
     name: string;
+    email: string;
     role: UserRole;
+    admin: boolean;
 }
 
 export interface VideoCommentDTO {

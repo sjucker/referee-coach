@@ -5,6 +5,11 @@
         <a routerLink="/search" mat-icon-button>
             <mat-icon>search</mat-icon>
         </a>
+        @if (isAdmin()) {
+            <a routerLink="/users" mat-icon-button>
+                <mat-icon>group</mat-icon>
+            </a>
+        }
         <a routerLink="/settings" mat-icon-button>
             <mat-icon>settings</mat-icon>
         </a>

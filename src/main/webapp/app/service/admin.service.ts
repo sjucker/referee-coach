@@ -10,11 +10,10 @@ import {environment} from "../../environments/environment";
 export class AdminService {
     private readonly httpClient = inject(HttpClient);
 
-
     private baseUrl = environment.baseUrl;
 
-    getAllReferees(): Observable<UserDTO[]> {
-        return this.httpClient.get<UserDTO[]>(`${this.baseUrl}/admin/referee`);
+    getAllUsers(): Observable<UserDTO[]> {
+        return this.httpClient.get<UserDTO[]>(`${this.baseUrl}/admin/user`);
     }
 
 }

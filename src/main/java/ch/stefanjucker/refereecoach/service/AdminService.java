@@ -33,4 +33,10 @@ public class AdminService {
                              .map(DTO_MAPPER::toDTO)
                              .toList();
     }
+
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                             .map(DTO_MAPPER::toDTO)
+                             .toList();
+    }
 }
