@@ -145,6 +145,13 @@ export interface TagDTO {
     name: string;
 }
 
+export interface UpdateUserDTO {
+    name: string;
+    email: string;
+    role: UserRole;
+    admin: boolean;
+}
+
 export interface UserDTO {
     id: number;
     name: string;

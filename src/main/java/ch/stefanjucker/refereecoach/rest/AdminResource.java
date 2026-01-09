@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import ch.stefanjucker.refereecoach.dto.CreateUserDTO;
+import ch.stefanjucker.refereecoach.dto.UpdateUserDTO;
 import ch.stefanjucker.refereecoach.dto.UserDTO;
 import ch.stefanjucker.refereecoach.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -59,17 +62,26 @@ public class AdminResource {
 
     @PostMapping(value = "/user", consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
-    public ResponseEntity<Void> createUser(@AuthenticationPrincipal UserDetails principal, @RequestBody @Valid CreateUserDTO dto) {
+    public void createUser(@AuthenticationPrincipal UserDetails principal, @RequestBody @Valid CreateUserDTO dto) {
         log.info("POST /api/admin/user {}", dto.email());
 
         if (!adminService.isAdmin(principal.getUsername())) {
             log.error("user {} tried to access admin-endpoint without having admin rights", principal.getUsername());
             throw new ResponseStatusException(FORBIDDEN);
         }
-
         adminService.createUser(dto);
+    }
 
-        return ResponseEntity.ok().build();
+    @PutMapping(value = "/user/{id}", consumes = APPLICATION_JSON_VALUE)
+    public void updateUser(@AuthenticationPrincipal UserDetails principal,
+                           @PathVariable Long id, @RequestBody @Valid UpdateUserDTO dto) {
+        log.info("PUT /api/admin/user/{} {}", id, dto);
+
+        if (!adminService.isAdmin(principal.getUsername())) {
+            log.error("user {} tried to access admin-endpoint without having admin rights", principal.getUsername());
+            throw new ResponseStatusException(FORBIDDEN);
+        }
+        adminService.updateUser(id, dto);
     }
 
 }

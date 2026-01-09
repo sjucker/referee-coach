@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Create New User</h2>
+<h2 mat-dialog-title>{{ edit ? 'Edit User' : 'Create New User' }}</h2>
 <mat-dialog-content>
     <form [formGroup]="form">
         <mat-form-field>
@@ -9,10 +9,12 @@
             <mat-label>Email</mat-label>
             <input matInput formControlName="email">
         </mat-form-field>
-        <mat-form-field>
-            <mat-label>Password</mat-label>
-            <input matInput formControlName="password" type="password">
-        </mat-form-field>
+        @if (!edit) {
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput formControlName="password" type="password">
+            </mat-form-field>
+        }
         <mat-form-field>
             <mat-label>Role</mat-label>
             <mat-select formControlName="role">
