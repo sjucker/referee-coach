@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   referee-coach-db-tests:
-    image: mysql:8.0.31
+    image: mysql:8.0.40
     environment:
       MYSQL_ROOT_PASSWORD: referee-coach
       MYSQL_USER: referee-coach
