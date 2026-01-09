@@ -247,29 +247,35 @@ public class VideoReportService {
         }
     }
 
-    public VideoReportDiscussionDTO getVideoReportDiscussion(String videoReportId) {
-        var videoReport = videoReportRepository.findById(videoReportId).orElseThrow();
+    public Optional<VideoReportDiscussionDTO> getVideoReportDiscussion(String videoReportId) {
+        return videoReportRepository
+                .findById(videoReportId)
+                .map(videoReport -> {
+                    // all comment timestamps that require a reply from the referee this report belongs to
+                    Set<Integer> requiresReply = videoCommentRepository.findByVideoReportId(videoReportId).stream()
+                                                                       .filter(VideoComment::isRequiresReply)
+                                                                       .map(VideoComment::getTimestamp)
+                                                                       .collect(toSet());
 
-        // all comment timestamps that require a reply from the referee this report belongs to
-        Set<Integer> requiresReply = videoCommentRepository.findByVideoReportId(videoReportId).stream()
-                                                           .filter(VideoComment::isRequiresReply)
-                                                           .map(VideoComment::getTimestamp)
-                                                           .collect(toSet());
+                    List<VideoCommentDTO> videoCommentDTOs = new ArrayList<>();
+                    for (var videoComment : videoCommentRepository.findVideoCommentsByGameNumberAndCoach(videoReport.getBasketplanGame().getGameNumber(),
+                                                                                                         videoReport.getCoach().getId())) {
+                        var replies = videoCommentReplyRepository.findByVideoCommentIdOrderByRepliedAt(videoComment.getId());
+                        videoCommentDTOs.add(DTO_MAPPER.toDTO(videoComment, DTO_MAPPER.toDTO(replies), requiresReply.contains(videoComment.getTimestamp())));
+                    }
 
-        List<VideoCommentDTO> videoCommentDTOs = new ArrayList<>();
-        for (var videoComment : videoCommentRepository.findVideoCommentsByGameNumberAndCoach(videoReport.getBasketplanGame().getGameNumber(),
-                                                                                             videoReport.getCoach().getId())) {
-            var replies = videoCommentReplyRepository.findByVideoCommentIdOrderByRepliedAt(videoComment.getId());
-            videoCommentDTOs.add(DTO_MAPPER.toDTO(videoComment, DTO_MAPPER.toDTO(replies), requiresReply.contains(videoComment.getTimestamp())));
-        }
-
-        return new VideoReportDiscussionDTO(videoReport.getId(),
-                                            DTO_MAPPER.toDTO(videoReport.getBasketplanGame()),
-                                            DTO_MAPPER.toDTO(videoReport.getCoach()),
-                                            videoReport.relevantReferee().getName(),
-                                            videoCommentDTOs.stream()
-                                                            .sorted(comparing(VideoCommentDTO::timestamp))
-                                                            .toList());
+                    return new VideoReportDiscussionDTO(videoReport.getId(),
+                                                        DTO_MAPPER.toDTO(videoReport.getBasketplanGame()),
+                                                        DTO_MAPPER.toDTO(videoReport.getCoach()),
+                                                        videoReport.relevantReferee().getName(),
+                                                        videoCommentDTOs.stream()
+                                                                        .sorted(comparing(VideoCommentDTO::timestamp))
+                                                                        .toList());
+                })
+                .or(() -> {
+                    log.error("video report {} not found", videoReportId);
+                    return Optional.empty();
+                });
     }
 
     private boolean isUnfinishedReportOwnedByUser(VideoReport videoReport, User coach) {
@@ -355,7 +361,8 @@ public class VideoReportService {
         for (var videoReportId : videoReportRepository.findReportIdsWithRequiredReplies(now().minusDays(2))) {
             var videoReport = videoReportRepository.findById(videoReportId).orElseThrow();
             var referee = videoReport.relevantReferee();
-            var videoReportDiscussion = getVideoReportDiscussion(videoReportId);
+            var videoReportDiscussion = getVideoReportDiscussion(videoReportId)
+                    .orElseThrow(() -> new IllegalStateException("Video report discussion not found for report ID: " + videoReportId));
             // check if there is a comment that requires a reply for which the relevant referee has not yet replied
             if (videoReportDiscussion.videoComments().stream()
                                      .filter(VideoCommentDTO::requiresReply)
