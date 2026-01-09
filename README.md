@@ -1,5 +1,8 @@
 # Referee Coach
 
+[![Java CI with Maven](https://github.com/sjucker/referee-coach/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/sjucker/referee-coach/actions/workflows/maven.yml)
+[![CI / CD for Angular](https://github.com/sjucker/referee-coach/actions/workflows/angular.yml/badge.svg?branch=main)](https://github.com/sjucker/referee-coach/actions/workflows/angular.yml)
+
 ## Development
 
 ### Commands
