@@ -132,7 +132,7 @@ public class VideoReportResource {
     public ResponseEntity<VideoReportDiscussionDTO> getDiscussion(@PathVariable String id) {
         log.info("GET /video-report/{}/discussion", id);
 
-        return ResponseEntity.ok(videoReportService.getVideoReportDiscussion(id));
+        return ResponseEntity.of(videoReportService.getVideoReportDiscussion(id));
     }
 
     @PostMapping(path = "/{id}/discussion")
