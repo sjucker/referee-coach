@@ -2,15 +2,15 @@
     <mat-toolbar color="primary">
         <h1>Referee Coach</h1>
         <span class="spacer"></span>
-        <a routerLink="/search" mat-icon-button>
+        <a routerLink="/search" mat-icon-button matTooltip="Search Clips">
             <mat-icon>search</mat-icon>
         </a>
         @if (isAdmin()) {
-            <a routerLink="/users" mat-icon-button>
+            <a routerLink="/users" mat-icon-button matTooltip="User Management">
                 <mat-icon>group</mat-icon>
             </a>
         }
-        <a routerLink="/settings" mat-icon-button>
+        <a routerLink="/settings" mat-icon-button matTooltip="Settings">
             <mat-icon>settings</mat-icon>
         </a>
         <button mat-icon-button (click)="logout()"

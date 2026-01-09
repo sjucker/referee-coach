@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Create New User</h2>
+<mat-dialog-content>
+    <form [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" type="password">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Role</mat-label>
+            <mat-select formControlName="role">
+                @for (role of userRoles; track role) {
+                    <mat-option [value]="role">
+                        {{ role }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        <mat-checkbox formControlName="admin">Admin</mat-checkbox>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-flat-button (click)="close()">Cancel</button>
+    <button color="primary" mat-flat-button [disabled]="form.invalid" (click)="save()">Save</button>
+</mat-dialog-actions>

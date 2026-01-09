@@ -49,6 +49,14 @@ export interface CreateRepliesDTO {
     newComments: VideoCommentDTO[];
 }
 
+export interface CreateUserDTO {
+    name: string;
+    email: string;
+    role: UserRole;
+    admin: boolean;
+    password: string;
+}
+
 export interface CreateVideoReportDTO {
     gameNumber: string;
     youtubeId?: string;

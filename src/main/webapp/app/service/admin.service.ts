@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {UserDTO} from "../rest";
+import {CreateUserDTO, UserDTO} from "../rest";
 import {environment} from "../../environments/environment";
 
 @Injectable({
@@ -14,6 +14,10 @@ export class AdminService {
 
     getAllUsers(): Observable<UserDTO[]> {
         return this.httpClient.get<UserDTO[]>(`${this.baseUrl}/admin/user`);
+    }
+
+    createUser(dto: CreateUserDTO): Observable<void> {
+        return this.httpClient.post<void>(`${this.baseUrl}/admin/user`, dto);
     }
 
 }
