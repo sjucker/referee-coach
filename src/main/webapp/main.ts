@@ -1,4 +1,4 @@
-import {enableProdMode, importProvidersFrom} from '@angular/core';
+import {enableProdMode, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
 
 
 import {environment} from './environments/environment';
@@ -40,6 +40,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
     providers: [
+        provideZoneChangeDetection(),
         importProvidersFrom(BrowserModule, AppRoutingModule, YouTubePlayerModule, MatButtonModule, MatFormFieldModule, MatToolbarModule, MatInputModule, MatCardModule, FormsModule, MatGridListModule, MatIconModule, MatRadioModule, MatTableModule, MatSelectModule, MatSnackBarModule, ReactiveFormsModule, MatSidenavModule, MatDialogModule, MatProgressSpinnerModule, MatPaginatorModule, MatProgressBarModule, MatTooltipModule, MatSliderModule, MatDatepickerModule, MatLuxonDateModule, MatCheckboxModule, MatChipsModule, MatAutocompleteModule),
         {provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true},
         {

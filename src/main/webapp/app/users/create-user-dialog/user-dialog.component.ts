@@ -7,14 +7,13 @@ import {MatButtonModule} from "@angular/material/button";
 import {UserDTO, UserRole} from "../../rest";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import {CommonModule} from "@angular/common";
+
 
 @Component({
     selector: 'app-user-dialog',
     templateUrl: './user-dialog.component.html',
     standalone: true,
     imports: [
-        CommonModule,
         MatDialogTitle,
         MatDialogContent,
         MatFormFieldModule,

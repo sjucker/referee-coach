@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, inject, OnInit, ViewChild} from '@angular/core';
 import {AdminService} from "../service/admin.service";
 import {CreateUserDTO, UpdateUserDTO, UserDTO} from "../rest";
-import {CommonModule} from "@angular/common";
+
 import {MatTableDataSource, MatTableModule} from "@angular/material/table";
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
@@ -22,7 +22,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     templateUrl: './users.component.html',
     styleUrls: ['./users.component.scss'],
     standalone: true,
-    imports: [CommonModule, MatTableModule, MatToolbarModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterLink, MatPaginatorModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatCardModule]
+    imports: [MatTableModule, MatToolbarModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterLink, MatPaginatorModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatCardModule]
 })
 export class UsersComponent implements OnInit, AfterViewInit {
 
