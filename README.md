@@ -55,9 +55,9 @@ config var (only needed for STAGING).
 * Angular
     * `ng update @angular/core@21 @angular/cli@21 --allow-dirty`
     * `ng update @angular/material@21 --allow-dirty`
-        * `ncu`
-        * `ncu -u`, or
-        * `ncu -i` (for interactive update)
-        * `npm install`
-        * `npm run build`
-        * `npm run lint`
+    * `ncu`
+    * `ncu -u`, or
+    * `ncu -i` (for interactive update)
+    * `npm install`
+    * `npm run build`
+    * `npm run lint`
