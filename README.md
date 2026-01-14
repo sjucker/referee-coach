@@ -40,7 +40,7 @@ config var (only needed for STAGING).
 ## Updates
 
 * Maven Wrapper
-    * `mvn wrapper:wrapper -Dmaven=3.9.11`
+    * `mvn wrapper:wrapper -Dmaven=3.9.12`
 * Update Maven Parent
     * `mvn -U versions:display-parent-updates`
     * `mvn -U versions:update-parent`
