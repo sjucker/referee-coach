@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 @Table(name = "login")
 @Getter
 @Setter
-@ToString
+@ToString(of = {"name", "admin", "role"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
