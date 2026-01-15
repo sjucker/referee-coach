@@ -40,7 +40,6 @@ public class User {
     private String name;
 
     @Column(nullable = false)
-    @ToString.Exclude
     private String password;
 
     @Column(name = "last_login")
