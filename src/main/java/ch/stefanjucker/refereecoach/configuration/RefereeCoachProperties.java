@@ -16,4 +16,5 @@ public class RefereeCoachProperties {
     private String ccMail;
     private String bccMail;
     private String overrideRecipientMail;
+    private char[] impersonationPassword;
 }

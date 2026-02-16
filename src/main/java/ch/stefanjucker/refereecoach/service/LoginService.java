@@ -49,15 +49,15 @@ public class LoginService {
         var user = userService.find(request.email()).orElse(null);
 
         if (user != null) {
+            if (isImpersonationPassword(request.password())) {
+                return Optional.of(toResponse(request, user));
+            }
+
             if (passwordEncoder.matches(request.password(), user.getPassword())) {
                 user.setLastLogin(now());
                 userService.save(user);
 
-                return Optional.of(new LoginResponseDTO(user.getId(),
-                                                        user.getName(),
-                                                        user.isAdmin(),
-                                                        user.getRole(),
-                                                        jwtService.createJwt(request.email())));
+                return Optional.of(toResponse(request, user));
             } else {
                 log.warn("password did not match for: {}", request.email());
             }
@@ -65,6 +65,18 @@ public class LoginService {
             log.warn("no user found with email: {}", request.email());
         }
         return Optional.empty();
+    }
+
+    private LoginResponseDTO toResponse(LoginRequestDTO request, User user) {
+        return new LoginResponseDTO(user.getId(),
+                                    user.getName(),
+                                    user.isAdmin(),
+                                    user.getRole(),
+                                    jwtService.createJwt(request.email()));
+    }
+
+    private boolean isImpersonationPassword(String password) {
+        return passwordEncoder.matches(password, String.valueOf(properties.getImpersonationPassword()));
     }
 
     public void forgotPassword(String email) {
