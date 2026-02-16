@@ -97,6 +97,13 @@ export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDes
         return this.authenticationService.isLoggedIn();
     }
 
+    isReportee(): boolean {
+        if (this.dto) {
+            return this.dto.coach.id !== this.authenticationService.getUserId()
+        }
+        return false;
+    }
+
     isReferee(): boolean {
         return this.authenticationService.isReferee();
     }

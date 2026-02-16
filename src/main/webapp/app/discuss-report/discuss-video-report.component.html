@@ -74,7 +74,7 @@
                                                 [videoId]="dto.basketplanGame.youtubeId"
                                                 [width]="videoWidth"
                                                 [height]="videoHeight"></youtube-player>
-                                @if (!isLoggedIn() || isReferee()) {
+                                @if (!isLoggedIn() || isReportee()) {
                                     <button (click)="addVideoComment()" color="primary" mat-flat-button>
                                         Create additional comment for current timestamp
                                     </button>
