@@ -2,7 +2,7 @@ import {enableProdMode, importProvidersFrom, provideZoneChangeDetection} from '@
 
 
 import {environment} from './environments/environment';
-import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {AuthenticationInterceptor} from './app/interceptors/authentication-interceptor.service';
 import {MAT_DATE_FORMATS} from '@angular/material/core';
 import {bootstrapApplication, BrowserModule} from '@angular/platform-browser';
@@ -56,6 +56,6 @@ bootstrapApplication(AppComponent, {
                 },
             }
         },
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withXhr(), withInterceptorsFromDi())
     ]
 }).catch(err => console.error(err));

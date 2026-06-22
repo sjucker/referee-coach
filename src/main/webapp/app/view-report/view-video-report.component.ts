@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {VideoReportService} from "../service/video-report.service";
 import {YouTubePlayer} from "@angular/youtube-player";
@@ -19,6 +19,7 @@ import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} fr
     selector: 'app-view-video-report',
     templateUrl: './view-video-report.component.html',
     styleUrls: ['./view-video-report.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatToolbar, MatProgressSpinner, MatIconButton, MatTooltip, MatIcon, MatIconAnchor, RouterLink, MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgClass, YouTubePlayer, MatCardActions, MatButton, DatePipe]
 })
 export class ViewVideoReportComponent implements OnInit, AfterViewInit, OnDestroy {

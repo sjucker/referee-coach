@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
 import {VideoReportService} from "../service/video-report.service";
 import {TagDTO, VideoCommentDetailDTO} from "../rest";
 import {
@@ -33,6 +33,7 @@ import {AuthenticationService} from "../service/authentication.service";
     selector: 'app-report-search',
     templateUrl: './report-search.component.html',
     styleUrls: ['./report-search.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatToolbar, MatIconAnchor, RouterLink, MatIcon, MatCard, MatCardContent, TagsSelectionComponent, YouTubePlayer, MatCardActions, MatButton, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, DatePipe]
 })
 export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -117,7 +118,8 @@ export class ReportSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const interval = setInterval(() => {
             const youtube = this.youtube();
-            if (youtube!.getPlayerState() !== YT.PlayerState.UNSTARTED) {
+            // -1: YT.PlayerState.UNSTARTED
+            if (youtube!.getPlayerState() !== -1) {
                 youtube!.seekTo(element.timestamp, true);
                 youtube!.playVideo();
                 clearInterval(interval);

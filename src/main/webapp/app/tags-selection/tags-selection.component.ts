@@ -1,4 +1,4 @@
-import {Component, ElementRef, input, OnInit, output, viewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, input, OnInit, output, viewChild} from '@angular/core';
 import {TagDTO} from "../rest";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger} from "@angular/material/autocomplete";
@@ -13,6 +13,7 @@ import {MatOption} from '@angular/material/select';
     selector: 'app-tags-selection',
     templateUrl: './tags-selection.component.html',
     styleUrls: ['./tags-selection.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatFormField, MatLabel, MatChipGrid, MatChipRow, MatChipRemove, MatIcon, FormsModule, MatAutocompleteTrigger, MatChipInput, ReactiveFormsModule, MatAutocomplete, MatOption]
 })
 export class TagsSelectionComponent implements OnInit {

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 import {MatIcon} from '@angular/material/icon';
 import {MatButton} from '@angular/material/button';
@@ -7,6 +7,7 @@ import {MatButton} from '@angular/material/button';
     selector: 'app-unsaved-replies-dialog',
     templateUrl: './unsaved-replies-dialog.component.html',
     styleUrls: ['./unsaved-replies-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatDialogTitle, MatDialogContent, MatIcon, MatDialogActions, MatButton, MatDialogClose]
 })
 export class UnsavedRepliesDialogComponent {

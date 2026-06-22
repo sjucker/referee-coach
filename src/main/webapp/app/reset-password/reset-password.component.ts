@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnInit} from '@angular/core';
 import {AuthenticationService} from "../service/authentication.service";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -16,6 +16,7 @@ import {MatButton} from '@angular/material/button';
     selector: 'app-reset-password',
     templateUrl: './reset-password.component.html',
     styleUrls: ['./reset-password.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatToolbar, MatProgressBar, MatCard, MatCardContent, MatFormField, MatLabel, MatInput, FormsModule, MatButton, RouterLink]
 })
 export class ResetPasswordComponent implements OnInit {

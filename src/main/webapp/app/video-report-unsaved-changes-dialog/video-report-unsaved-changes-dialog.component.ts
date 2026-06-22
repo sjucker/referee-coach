@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 import {MatButton} from '@angular/material/button';
 
@@ -6,6 +6,7 @@ import {MatButton} from '@angular/material/button';
     selector: 'app-video-report-unsaved-changes-dialog',
     templateUrl: './video-report-unsaved-changes-dialog.component.html',
     styleUrls: ['./video-report-unsaved-changes-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class VideoReportUnsavedChangesDialogComponent {

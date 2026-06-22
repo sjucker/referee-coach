@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {VideoReportService} from "../service/video-report.service";
 import {AuthenticationService} from "../service/authentication.service";
@@ -28,6 +28,7 @@ import {FormsModule} from '@angular/forms';
     selector: 'app-discuss-video-report',
     templateUrl: './discuss-video-report.component.html',
     styleUrls: ['./discuss-video-report.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatToolbar, MatProgressSpinner, MatIconButton, MatIcon, MatTooltip, MatIconAnchor, RouterLink, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, YouTubePlayer, MatButton, NgClass, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, MatCardActions, DatePipe]
 })
 export class DiscussVideoReportComponent implements OnInit, AfterViewInit, OnDestroy, HasUnsavedReplies {

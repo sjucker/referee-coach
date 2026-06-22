@@ -1,4 +1,4 @@
-import {Component, input, output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, output} from '@angular/core';
 import {CriteriaEvaluationDTO} from "../rest";
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {FormsModule} from '@angular/forms';
@@ -7,6 +7,7 @@ import {FormsModule} from '@angular/forms';
     selector: 'app-video-report-rating',
     templateUrl: './video-report-rating.component.html',
     styleUrls: ['./video-report-rating.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatSlider, MatSliderThumb, FormsModule]
 })
 export class VideoReportRatingComponent {

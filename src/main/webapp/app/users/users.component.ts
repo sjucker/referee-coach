@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, inject, OnInit, ViewChild} from '@angular/core';
 import {AdminService} from "../service/admin.service";
 import {CreateUserDTO, UpdateUserDTO, UserDTO} from "../rest";
 
@@ -22,6 +22,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     templateUrl: './users.component.html',
     styleUrls: ['./users.component.scss'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatTableModule, MatToolbarModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterLink, MatPaginatorModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatCardModule]
 })
 export class UsersComponent implements OnInit, AfterViewInit {

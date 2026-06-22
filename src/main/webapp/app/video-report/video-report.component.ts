@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
 import {YouTubePlayer} from "@angular/youtube-player";
 import {VideoReportService} from "../service/video-report.service";
 import {OfficiatingMode, Reportee, TagDTO, VideoCommentDTO, VideoReportDTO} from "../rest";
@@ -30,6 +30,7 @@ import {TagsSelectionComponent} from '../tags-selection/tags-selection.component
     selector: 'app-video-report',
     templateUrl: './video-report.component.html',
     styleUrls: ['./video-report.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatToolbar, MatProgressSpinner, MatIconButton, MatIcon, MatTooltip, MatIconAnchor, RouterLink, MatProgressBar, MatCard, MatCardHeader, MatCardTitle, MatCardContent, NgClass, MatFormField, MatLabel, CdkTextareaAutosize, MatInput, FormsModule, VideoReportRatingComponent, YouTubePlayer, MatButton, MatCheckbox, TagsSelectionComponent, MatCardActions, DecimalPipe, DatePipe]
 })
 export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {

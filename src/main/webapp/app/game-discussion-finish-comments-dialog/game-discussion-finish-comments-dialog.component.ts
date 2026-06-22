@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 import {MatButton} from '@angular/material/button';
 
@@ -6,6 +6,7 @@ import {MatButton} from '@angular/material/button';
     selector: 'app-game-discussion-finish-comments-dialog',
     templateUrl: './game-discussion-finish-comments-dialog.component.html',
     styleUrls: ['./game-discussion-finish-comments-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class GameDiscussionFinishCommentsDialogComponent {
