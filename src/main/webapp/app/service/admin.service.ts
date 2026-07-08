@@ -17,11 +17,11 @@ export class AdminService {
     }
 
     createUser(dto: CreateUserDTO): Observable<void> {
-        return this.httpClient.post<void>(`${this.baseUrl}/admin/user`, dto);
+        return this.httpClient.post<void>(`${this.baseUrl}/admin/user`, {...dto, admin: !!dto.admin});
     }
 
     updateUser(id: number, dto: UpdateUserDTO): Observable<void> {
-        return this.httpClient.put<void>(`${this.baseUrl}/admin/user/${id}`, dto);
+        return this.httpClient.put<void>(`${this.baseUrl}/admin/user/${id}`, {...dto, admin: !!dto.admin});
     }
 
 }
