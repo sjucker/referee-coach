@@ -77,6 +77,11 @@ export class UsersComponent implements OnInit, AfterViewInit {
                     this.adminService.updateUser(user.id, result as UpdateUserDTO).subscribe({
                         next: () => {
                             this.loadUsers();
+                            this.snackBar.open("User updated.", undefined, {
+                                duration: 3000,
+                                horizontalPosition: "center",
+                                verticalPosition: "top",
+                            })
                         },
                         error: () => {
                             this.snackBar.open("Could not update user...", undefined, {
@@ -87,9 +92,14 @@ export class UsersComponent implements OnInit, AfterViewInit {
                         }
                     });
                 } else {
-                    this.adminService.createUser(result as CreateUserDTO).subscribe({
+                    const createUserDTO = result as CreateUserDTO;
+                    this.adminService.createUser(createUserDTO).subscribe({
                         next: () => {
                             this.loadUsers();
+                            this.snackBar.open(`User created. Password: ${createUserDTO.password}`, "OK", {
+                                horizontalPosition: "center",
+                                verticalPosition: "top",
+                            })
                         },
                         error: () => {
                             this.snackBar.open("Could not create user...", undefined, {
