@@ -357,8 +357,8 @@ public class VideoReportService {
 
     @Transactional
     public void sendReminderEmails() {
-        // referee has 48 hours to reply to required comments
-        for (var videoReportId : videoReportRepository.findReportIdsWithRequiredReplies(now().minusDays(2))) {
+        // referee has 72 hours to reply to required comments
+        for (var videoReportId : videoReportRepository.findReportIdsWithRequiredReplies(now().minusDays(3))) {
             var videoReport = videoReportRepository.findById(videoReportId).orElseThrow();
             var referee = videoReport.relevantReferee();
             var videoReportDiscussion = getVideoReportDiscussion(videoReportId)
