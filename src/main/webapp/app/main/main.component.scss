@@ -21,6 +21,12 @@
   color: variables.$primary-color;
 }
 
+.coach-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .referee-start-discussion {
   min-height: 90px;
 }

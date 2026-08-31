@@ -116,6 +116,18 @@ class VideoReportServiceTest extends AbstractIntegrationTest {
         assertThat(videoReportRepository.findAll()).hasSize(2);
     }
 
+    @Test
+    void coachPartOfCrew() {
+        // given a report of a coach that is not part of the referee crew
+        videoReportRepository.save(videoReport("1", coach1, referee1, referee2, referee3, FIRST_REFEREE));
+        // and a report of a referee-coach that is the second referee of that same game
+        videoReportRepository.save(videoReport("2", refereeCoach1, referee1, refereeCoach1, referee3, FIRST_REFEREE));
+
+        // then
+        assertThat(videoReportService.find("1")).hasValueSatisfying(dto -> assertThat(dto.isCoachPartOfCrew()).isFalse());
+        assertThat(videoReportService.find("2")).hasValueSatisfying(dto -> assertThat(dto.isCoachPartOfCrew()).isTrue());
+    }
+
     private static Reportee reporteeOf(BasketplanGameDTO game, Long refereeId) {
         if (game.referee1() != null && game.referee1().id().equals(refereeId)) {
             return FIRST_REFEREE;

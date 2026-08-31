@@ -26,4 +26,12 @@ public record VideoReportDTO(@NotNull String id,
     public boolean isTextOnly() {
         return StringUtils.isBlank(basketplanGame().youtubeId());
     }
+
+    /**
+     * Whether the coach was part of the referee crew of this game, i.e. a referee-coach reporting on a colleague of
+     * their own crew.
+     */
+    public boolean isCoachPartOfCrew() {
+        return basketplanGame().containsReferee(coach().id());
+    }
 }

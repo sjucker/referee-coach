@@ -182,12 +182,17 @@
                         <th mat-header-cell *matHeaderCellDef>Coach</th>
                         <td mat-cell *matCellDef="let element"
                             [class]="{'current-user': isCurrentUser(element.coach)}">
-                            @if (element.coach) {
-                                <span>{{ getCoach(element.coach) }}</span>
-                            }
-                            @if (!element.coach) {
-                                <mat-icon>forum</mat-icon>
-                            }
+                            <div class="coach-container">
+                                @if (element.coach) {
+                                    <span>{{ getCoach(element.coach) }}</span>
+                                }
+                                @if (!element.coach) {
+                                    <mat-icon>forum</mat-icon>
+                                }
+                                @if (element.coachPartOfCrew) {
+                                    <mat-icon matTooltip="This coach was part of the referee crew of this game.">groups</mat-icon>
+                                }
+                            </div>
                         </td>
                     </ng-container>
                     @if (isCoach() || isRefereeCoach()) {

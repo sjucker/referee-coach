@@ -124,6 +124,7 @@ export interface OverviewDTO {
     finished: boolean;
     visibleForReferee: boolean;
     coachId?: number;
+    coachPartOfCrew: boolean;
 }
 
 export interface ResetPasswordRequestDTO {
@@ -205,6 +206,7 @@ export interface VideoReportDTO {
     finished: boolean;
     version: number;
     textOnly: boolean;
+    coachPartOfCrew: boolean;
 }
 
 export interface VideoReportDiscussionDTO {

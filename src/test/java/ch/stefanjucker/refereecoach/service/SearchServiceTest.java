@@ -4,6 +4,7 @@ import static ch.stefanjucker.refereecoach.Fixtures.gameDiscussion;
 import static ch.stefanjucker.refereecoach.Fixtures.videoReport;
 import static ch.stefanjucker.refereecoach.dto.Reportee.FIRST_REFEREE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import ch.stefanjucker.refereecoach.AbstractIntegrationTest;
 import ch.stefanjucker.refereecoach.domain.User;
@@ -69,6 +70,22 @@ class SearchServiceTest extends AbstractIntegrationTest {
         var result = searchService.findAll(LocalDate.of(2023, 9, 22), LocalDate.of(2023, 9, 30), referee5.getEmail());
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void findAll_CoachPartOfCrew() {
+        var date = LocalDate.of(2023, 9, 22);
+        // a report of a coach that is not part of the referee crew
+        videoReportRepository.save(videoReport("1", "", date, coach1, referee1, referee2, referee3, FIRST_REFEREE));
+        // a report of a referee-coach that is the second referee of that same crew
+        videoReportRepository.save(videoReport("2", "", date, refereeCoach1, referee1, refereeCoach1, referee3, FIRST_REFEREE));
+        // a game discussion, which never has a coach
+        saveGameDiscussion("3", date);
+
+        var result = searchService.findAll(date, LocalDate.of(2023, 9, 30), coach1.getEmail());
+
+        assertThat(result).extracting(OverviewDTO::id, OverviewDTO::isCoachPartOfCrew)
+                          .containsExactlyInAnyOrder(tuple("1", false), tuple("2", true), tuple("3", false));
     }
 
     private void saveVideoReport(String id, LocalDate date) {
