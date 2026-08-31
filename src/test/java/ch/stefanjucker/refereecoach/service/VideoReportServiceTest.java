@@ -38,7 +38,7 @@ class VideoReportServiceTest extends AbstractIntegrationTest {
         // given
         var videoReport = videoReport("1", coach1, referee1, referee2, referee3, SECOND_REFEREE);
         videoReport.setFinished(true);
-        videoReport.setFinishedAt(LocalDateTime.now().minusDays(2).minusHours(1));
+        videoReport.setFinishedAt(LocalDateTime.now().minusDays(3).minusHours(1));
         videoReport.setReminderSent(false);
         videoReportRepository.save(videoReport);
         videoCommentRepository.save(videoComment("1", true));
