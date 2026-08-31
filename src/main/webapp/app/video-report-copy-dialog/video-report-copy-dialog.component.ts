@@ -5,6 +5,7 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption, MatSelect} from '@angular/material/select';
 
 import {MatButton} from '@angular/material/button';
+import {AuthenticationService} from "../service/authentication.service";
 
 interface ReporteeSelection {
     reportee: Reportee,
@@ -29,6 +30,7 @@ export interface VideoReportCopyDialogData {
 })
 export class VideoReportCopyDialogComponent implements OnInit {
     data = inject<VideoReportCopyDialogData>(MAT_DIALOG_DATA);
+    private readonly authenticationService = inject(AuthenticationService);
 
 
     title = '';
@@ -41,7 +43,7 @@ export class VideoReportCopyDialogComponent implements OnInit {
         this.title = this.data.title;
         this.description = this.data.description;
 
-        if (this.data.reportee !== Reportee.FIRST_REFEREE && this.data.referee1) {
+        if (this.data.reportee !== Reportee.FIRST_REFEREE && this.data.referee1 && !this.isCurrentUser(this.data.referee1)) {
             this.reportees = [...this.reportees, {
                 reportee: Reportee.FIRST_REFEREE,
                 name: this.data.referee1.name
@@ -49,7 +51,7 @@ export class VideoReportCopyDialogComponent implements OnInit {
             this.reportee = Reportee.FIRST_REFEREE;
         }
 
-        if (this.data.reportee !== Reportee.SECOND_REFEREE && this.data.referee2) {
+        if (this.data.reportee !== Reportee.SECOND_REFEREE && this.data.referee2 && !this.isCurrentUser(this.data.referee2)) {
             this.reportees = [...this.reportees, {
                 reportee: Reportee.SECOND_REFEREE,
                 name: this.data.referee2.name
@@ -59,7 +61,7 @@ export class VideoReportCopyDialogComponent implements OnInit {
             }
         }
 
-        if (this.data.reportee !== Reportee.THIRD_REFEREE && this.data.referee3) {
+        if (this.data.reportee !== Reportee.THIRD_REFEREE && this.data.referee3 && !this.isCurrentUser(this.data.referee3)) {
             this.reportees = [...this.reportees, {
                 reportee: Reportee.THIRD_REFEREE,
                 name: this.data.referee3.name
@@ -68,6 +70,11 @@ export class VideoReportCopyDialogComponent implements OnInit {
                 this.reportee = Reportee.THIRD_REFEREE;
             }
         }
+    }
+
+    // a coach must never report on themselves, which can happen for a referee-coach being part of the crew
+    private isCurrentUser(referee: UserDTO): boolean {
+        return referee.id === this.authenticationService.getUserId();
     }
 
 }

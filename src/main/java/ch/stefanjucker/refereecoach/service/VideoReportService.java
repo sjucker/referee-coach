@@ -20,6 +20,7 @@ import ch.stefanjucker.refereecoach.domain.repository.VideoReportRepository;
 import ch.stefanjucker.refereecoach.dto.CreateRepliesDTO;
 import ch.stefanjucker.refereecoach.dto.Reportee;
 import ch.stefanjucker.refereecoach.dto.TagDTO;
+import ch.stefanjucker.refereecoach.dto.UserRole;
 import ch.stefanjucker.refereecoach.dto.VideoCommentDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDTO;
 import ch.stefanjucker.refereecoach.dto.VideoReportDiscussionDTO;
@@ -91,8 +92,22 @@ public class VideoReportService {
         videoReport.setCoach(user);
         videoReport.setFinished(false);
         videoReport.setVersion(CURRENT_VERSION);
+        assertNotSelfReport(videoReport);
 
         return DTO_MAPPER.toDTO(videoReportRepository.save(videoReport), List.of(), getOtherReportees(videoReport));
+    }
+
+    /**
+     * A coach must not report on themselves, which can happen for a {@link UserRole#REFEREE_COACH} that is part of the
+     * referee crew of the game being coached.
+     */
+    private void assertNotSelfReport(VideoReport videoReport) {
+        var referee = videoReport.relevantReferee();
+        var coach = videoReport.getCoach();
+        if (referee != null && Objects.equals(referee.getId(), coach.getId())) {
+            log.error("user {} tried to create a report about themselves ({})", coach, videoReport.getReportee());
+            throw new IllegalStateException("user %s is not allowed to create a report about themselves!".formatted(coach));
+        }
     }
 
     private List<Reportee> getOtherReportees(VideoReport videoReport) {
@@ -112,6 +127,7 @@ public class VideoReportService {
         copy.setCoach(coach);
         copy.setReportee(reportee);
         copy.setFinished(false);
+        assertNotSelfReport(copy);
         var newVideoReport = videoReportRepository.save(copy);
 
         var newComments = videoCommentRepository.saveAll(videoCommentRepository.findByVideoReportId(sourceId).stream()

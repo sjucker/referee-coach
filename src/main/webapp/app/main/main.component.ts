@@ -45,7 +45,8 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 
 interface ReporteeSelection {
     reportee: Reportee,
-    name: string
+    name: string,
+    refereeId: number
 }
 
 const keyFrom = 'referee.coach.from';
@@ -184,16 +185,21 @@ export class MainComponent implements OnInit {
 
                         this.reportee = undefined;
                         this.reportees = [
-                            {reportee: Reportee.FIRST_REFEREE, name: dto.referee1.name},
-                            {reportee: Reportee.SECOND_REFEREE, name: dto.referee2.name}
+                            {reportee: Reportee.FIRST_REFEREE, name: dto.referee1.name, refereeId: dto.referee1.id},
+                            {reportee: Reportee.SECOND_REFEREE, name: dto.referee2.name, refereeId: dto.referee2.id}
                         ];
 
                         if (dto.officiatingMode === OfficiatingMode.OFFICIATING_3PO && dto.referee3) {
                             this.reportees = [...this.reportees, {
                                 reportee: Reportee.THIRD_REFEREE,
-                                name: dto.referee3.name
+                                name: dto.referee3.name,
+                                refereeId: dto.referee3.id
                             }];
                         }
+
+                        // a coach must never report on themselves, which can happen for a referee-coach being part of the crew
+                        this.reportees = this.reportees.filter(r => r.refereeId !== this.authenticationService.getUserId());
+
                         this.youtubeIdInputNeeded = !this.youtubeId;
                     } else {
                         this.problemDescription = 'At least one referee not available in database';
