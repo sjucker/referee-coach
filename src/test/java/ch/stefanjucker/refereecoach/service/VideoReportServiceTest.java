@@ -10,6 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_CONTENT;
 
 import ch.stefanjucker.refereecoach.AbstractIntegrationTest;
 import ch.stefanjucker.refereecoach.dto.BasketplanGameDTO;
@@ -19,6 +23,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -126,6 +131,77 @@ class VideoReportServiceTest extends AbstractIntegrationTest {
         // then
         assertThat(videoReportService.find("1")).hasValueSatisfying(dto -> assertThat(dto.isCoachPartOfCrew()).isFalse());
         assertThat(videoReportService.find("2")).hasValueSatisfying(dto -> assertThat(dto.isCoachPartOfCrew()).isTrue());
+    }
+
+    @Test
+    void copyVideoComment() {
+        // given two unfinished reports of the same coach for the same game
+        videoReportRepository.save(videoReport("1", coach1, referee1, referee2, referee3, FIRST_REFEREE));
+        videoReportRepository.save(videoReport("2", coach1, referee1, referee2, referee3, SECOND_REFEREE));
+        var source = videoCommentRepository.save(videoComment("1", true));
+
+        // when
+        videoReportService.copyVideoComment(source.getId(), SECOND_REFEREE, coach1);
+
+        // then
+        assertThat(videoCommentRepository.findByVideoReportId("2")).singleElement().satisfies(copy -> {
+            assertThat(copy.getId()).isNotEqualTo(source.getId());
+            assertThat(copy.getComment()).isEqualTo(source.getComment());
+            assertThat(copy.getTimestamp()).isEqualTo(source.getTimestamp());
+            assertThat(copy.isRequiresReply()).isTrue();
+        });
+
+        // copying the same comment again is rejected
+        assertThatThrownBy(() -> videoReportService.copyVideoComment(source.getId(), SECOND_REFEREE, coach1))
+                .isInstanceOfSatisfying(ResponseStatusException.class, e -> assertThat(e.getStatusCode()).isEqualTo(CONFLICT));
+        assertThat(videoCommentRepository.findByVideoReportId("2")).hasSize(1);
+    }
+
+    @Test
+    void copyVideoCommentRejectsFinishedReport() {
+        // given
+        videoReportRepository.save(videoReport("1", coach1, referee1, referee2, referee3, FIRST_REFEREE));
+        var finished = videoReport("2", coach1, referee1, referee2, referee3, SECOND_REFEREE);
+        finished.setFinished(true);
+        videoReportRepository.save(finished);
+
+        // finished reports are not offered as copy target
+        assertThat(videoReportService.find("1")).hasValueSatisfying(dto -> assertThat(dto.otherReportees()).isEmpty());
+
+        var source = videoCommentRepository.save(videoComment("1", false));
+
+        // when / then
+        assertThatThrownBy(() -> videoReportService.copyVideoComment(source.getId(), SECOND_REFEREE, coach1))
+                .isInstanceOfSatisfying(ResponseStatusException.class, e -> assertThat(e.getStatusCode()).isEqualTo(NOT_FOUND));
+        assertThat(videoCommentRepository.findByVideoReportId("2")).isEmpty();
+    }
+
+    @Test
+    void copyVideoCommentRejectsAmbiguousTarget() {
+        // given two unfinished reports for the second referee
+        videoReportRepository.save(videoReport("1", coach1, referee1, referee2, referee3, FIRST_REFEREE));
+        videoReportRepository.save(videoReport("2", coach1, referee1, referee2, referee3, SECOND_REFEREE));
+        videoReportRepository.save(videoReport("3", coach1, referee1, referee2, referee3, SECOND_REFEREE));
+        var source = videoCommentRepository.save(videoComment("1", false));
+
+        // when / then
+        assertThatThrownBy(() -> videoReportService.copyVideoComment(source.getId(), SECOND_REFEREE, coach1))
+                .isInstanceOfSatisfying(ResponseStatusException.class, e -> assertThat(e.getStatusCode()).isEqualTo(UNPROCESSABLE_CONTENT));
+        assertThat(videoCommentRepository.findByVideoReportId("2")).isEmpty();
+        assertThat(videoCommentRepository.findByVideoReportId("3")).isEmpty();
+    }
+
+    @Test
+    void copyVideoCommentRejectsForeignComment() {
+        // given a comment in a report of another coach
+        videoReportRepository.save(videoReport("1", coach2, referee1, referee2, referee3, FIRST_REFEREE));
+        videoReportRepository.save(videoReport("2", coach1, referee1, referee2, referee3, SECOND_REFEREE));
+        var source = videoCommentRepository.save(videoComment("1", false));
+
+        // when / then
+        assertThatThrownBy(() -> videoReportService.copyVideoComment(source.getId(), SECOND_REFEREE, coach1))
+                .isInstanceOfSatisfying(ResponseStatusException.class, e -> assertThat(e.getStatusCode()).isEqualTo(FORBIDDEN));
+        assertThat(videoCommentRepository.findByVideoReportId("2")).isEmpty();
     }
 
     private static Reportee reporteeOf(BasketplanGameDTO game, Long refereeId) {

@@ -7,6 +7,10 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_CONTENT;
 
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
 import ch.stefanjucker.refereecoach.domain.User;
@@ -33,6 +37,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
@@ -114,8 +119,10 @@ public class VideoReportService {
         return videoReportRepository.findByBasketplanGameGameNumberAndCoachId(videoReport.getBasketplanGame().getGameNumber(),
                                                                               videoReport.getCoach().getId())
                                     .stream()
+                                    .filter(other -> !other.isFinished()) // only unfinished reports can receive copied comments
                                     .map(VideoReport::getReportee)
                                     .filter(reportee -> reportee != videoReport.getReportee())
+                                    .distinct()
                                     .toList();
     }
 
@@ -141,18 +148,40 @@ public class VideoReportService {
         return DTO_MAPPER.toDTO(newVideoReport, newComments, getOtherReportees(newVideoReport));
     }
 
+    @Transactional
     public void copyVideoComment(Long sourceId, Reportee reportee, User coach) {
-        // TODO check that comment does not yet exists in other report
-        var source = videoCommentRepository.getReferenceById(sourceId);
-        var gameNumber = videoReportRepository.getReferenceById(source.getVideoReportId()).getBasketplanGame().getGameNumber();
+        var source = videoCommentRepository.findById(sourceId)
+                                           .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "video-comment not found: " + sourceId));
+        var sourceReport = videoReportRepository.findById(source.getVideoReportId()).orElseThrow();
+        if (!Objects.equals(sourceReport.getCoach().getId(), coach.getId())) {
+            log.error("user {} tried to copy video-comment {} of video-report {} that does not belong to them", coach, source, sourceReport);
+            throw new ResponseStatusException(FORBIDDEN, "user is not allowed to copy this video-comment!");
+        }
 
-        var videoReport = videoReportRepository.findByBasketplanGameGameNumberAndCoachId(gameNumber, coach.getId()).stream()
-                                               .filter(s -> s.getReportee() == reportee)
-                                               .findFirst()
-                                               .orElseThrow();
+        var targets = videoReportRepository.findByBasketplanGameGameNumberAndCoachId(sourceReport.getBasketplanGame().getGameNumber(), coach.getId())
+                                           .stream()
+                                           .filter(videoReport -> videoReport.getReportee() == reportee)
+                                           .filter(videoReport -> !videoReport.isFinished())
+                                           .filter(videoReport -> !videoReport.getId().equals(sourceReport.getId()))
+                                           .toList();
+        if (targets.isEmpty()) {
+            throw new ResponseStatusException(NOT_FOUND, "no unfinished video-report found for %s".formatted(reportee));
+        }
+        if (targets.size() > 1) {
+            throw new ResponseStatusException(UNPROCESSABLE_CONTENT, "multiple unfinished video-reports found for %s".formatted(reportee));
+        }
+        var target = targets.getFirst();
+        assertNotSelfReport(target);
+
+        var alreadyCopied = videoCommentRepository.findByVideoReportId(target.getId()).stream()
+                                                  .anyMatch(existing -> Objects.equals(existing.getTimestamp(), source.getTimestamp())
+                                                          && Objects.equals(existing.getComment(), source.getComment()));
+        if (alreadyCopied) {
+            throw new ResponseStatusException(CONFLICT, "video-comment %s already exists in video-report %s".formatted(sourceId, target.getId()));
+        }
 
         var copy = DTO_MAPPER.copy(source);
-        copy.setVideoReportId(videoReport.getId());
+        copy.setVideoReportId(target.getId());
         videoCommentRepository.save(copy);
     }
 
