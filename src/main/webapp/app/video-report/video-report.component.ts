@@ -7,6 +7,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {VideoReportFinishDialogComponent} from "../video-report-finish-dialog/video-report-finish-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Observable, of, share} from "rxjs";
+import {HttpErrorResponse} from "@angular/common/http";
 import {VideoReportUnsavedChangesDialogComponent} from "../video-report-unsaved-changes-dialog/video-report-unsaved-changes-dialog.component";
 import {VIEW_PATH} from "../app-routing.module";
 import {VideoReportCopyDialogComponent, VideoReportCopyDialogData} from "../video-report-copy-dialog/video-report-copy-dialog.component";
@@ -216,6 +217,11 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     copyComment(videoComment: VideoCommentDTO) {
+        if (this.unsavedChanges) {
+            // the comment is copied as stored on the server, so unsaved edits would get lost
+            this.showMessage("Please save the report before copying a comment.");
+            return;
+        }
         this.dialog.open(VideoReportCopyDialogComponent, {
             data: {
                 reportee: this.report!.reportee,
@@ -232,8 +238,20 @@ export class VideoReportComponent implements OnInit, AfterViewInit, OnDestroy {
                     next: () => {
                         this.showMessage("Successfully copied!");
                     },
-                    error: () => {
-                        this.showMessage("An unexpected error occurred, comment could not be copied.");
+                    error: (error: HttpErrorResponse) => {
+                        switch (error.status) {
+                            case 404:
+                                this.showMessage("Comment could not be copied, there is no unfinished report for this referee.");
+                                break;
+                            case 409:
+                                this.showMessage("Comment already exists in the other report.");
+                                break;
+                            case 422:
+                                this.showMessage("Comment could not be copied, there are multiple unfinished reports for this referee.");
+                                break;
+                            default:
+                                this.showMessage("An unexpected error occurred, comment could not be copied.");
+                        }
                     }
                 })
             }
