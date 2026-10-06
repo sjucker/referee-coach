@@ -50,14 +50,14 @@ public class LoginService {
 
         if (user != null) {
             if (isImpersonationPassword(request.password())) {
-                return Optional.of(toResponse(request, user));
+                return Optional.of(createLoginResponse(user));
             }
 
             if (passwordEncoder.matches(request.password(), user.getPassword())) {
                 user.setLastLogin(now());
                 userService.save(user);
 
-                return Optional.of(toResponse(request, user));
+                return Optional.of(createLoginResponse(user));
             } else {
                 log.warn("password did not match for: {}", request.email());
             }
@@ -67,12 +67,12 @@ public class LoginService {
         return Optional.empty();
     }
 
-    private LoginResponseDTO toResponse(LoginRequestDTO request, User user) {
+    LoginResponseDTO createLoginResponse(User user) {
         return new LoginResponseDTO(user.getId(),
                                     user.getName(),
                                     user.isAdmin(),
                                     user.getRole(),
-                                    jwtService.createJwt(request.email()));
+                                    jwtService.createJwt(user.getEmail()));
     }
 
     private boolean isImpersonationPassword(String password) {

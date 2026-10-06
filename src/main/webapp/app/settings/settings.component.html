@@ -61,6 +61,60 @@
         </mat-card-content>
     </mat-card>
 
+    @if (passkeySupported) {
+        <mat-card appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>Passkeys</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p>With a passkey you can log in using your fingerprint, face or device PIN instead of your password.</p>
+                @for (passkey of passkeys; track passkey.id) {
+                    <div class="passkey">
+                        @if (editingPasskeyId === passkey.id) {
+                            <mat-form-field appearance="outline" color="accent" subscriptSizing="dynamic">
+                                <mat-label>Name</mat-label>
+                                <input matInput
+                                       name="editingPasskeyName"
+                                       [(ngModel)]="editingPasskeyName"
+                                       (keydown.enter)="rename(passkey)"
+                                       (keydown.escape)="cancelRename()"/>
+                            </mat-form-field>
+                            <button mat-icon-button title="Save" (click)="rename(passkey)">
+                                <mat-icon>check</mat-icon>
+                            </button>
+                            <button mat-icon-button title="Cancel" (click)="cancelRename()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        } @else {
+                            <div class="passkey-info">
+                                <strong>{{ passkey.name }}</strong>
+                                <span>Created {{ passkey.createdAt | date: 'dd.MM.yyyy' }}@if (passkey.lastUsedAt) {, last used {{ passkey.lastUsedAt | date: 'dd.MM.yyyy HH:mm' }}}</span>
+                            </div>
+                            <button mat-icon-button title="Rename" (click)="startRename(passkey)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button title="Delete" (click)="deletePasskey(passkey)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        }
+                    </div>
+                } @empty {
+                    <p>You have not added a passkey yet.</p>
+                }
+                <form role="form" (ngSubmit)="addPasskey()">
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-label>Name (optional, e.g. "iPhone")</mat-label>
+                        <input matInput
+                               name="newPasskeyName"
+                               [(ngModel)]="newPasskeyName"
+                               [ngModelOptions]="{standalone: true}"/>
+                    </mat-form-field>
+                    <button color="primary" mat-flat-button [disabled]="registeringPasskey">Add Passkey</button>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    }
+
     @if (isCoach()) {
         <mat-card appearance="outlined">
             <mat-card-header>

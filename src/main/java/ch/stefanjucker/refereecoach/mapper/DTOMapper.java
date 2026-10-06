@@ -68,6 +68,7 @@ public interface DTOMapper {
     @Mapping(target = "lastLogin", ignore = true)
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "admin", ignore = true)
+    @Mapping(target = "userHandle", ignore = true)
     User fromDTO(UserDTO dto);
 
     TagDTO toDTO(Tags tags);

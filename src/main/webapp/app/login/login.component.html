@@ -16,7 +16,7 @@
             <mat-form-field appearance="outline" color="accent">
                 <mat-label>Email</mat-label>
                 <input type="text"
-                       autocomplete="off"
+                       autocomplete="username webauthn"
                        matInput
                        name="email"
                        id="email"
@@ -32,6 +32,12 @@
                        id="password"/>
             </mat-form-field>
             <button color="primary" mat-flat-button [disabled]="authenticating">Login</button>
+            @if (passkeySupported) {
+                <button type="button" mat-stroked-button [disabled]="authenticating" (click)="loginWithPasskey()">
+                    <mat-icon>key</mat-icon>
+                    Sign in with passkey
+                </button>
+            }
             <p><a [routerLink]="forgotPasswordUrl">Forgot your password?</a></p>
         </form>
     </mat-card-content>

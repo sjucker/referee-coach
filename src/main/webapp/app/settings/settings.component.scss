@@ -9,3 +9,16 @@ img {
 h2 {
   margin-top: 2.5em;
 }
+
+.passkey {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.passkey-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}

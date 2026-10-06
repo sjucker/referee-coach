@@ -60,6 +60,8 @@ public class SecurityConfiguration {
                        registry.requestMatchers(POST, "/api/authenticate").permitAll();
                        registry.requestMatchers(POST, "/api/authenticate/forgot-password").permitAll();
                        registry.requestMatchers(POST, "/api/authenticate/reset-password").permitAll();
+                       registry.requestMatchers(POST, "/api/passkey/login/start").permitAll();
+                       registry.requestMatchers(POST, "/api/passkey/login/finish").permitAll();
                        // read-only report also available to anonymous users (i.e., the referees)
                        registry.requestMatchers(GET, "/api/video-report/*").permitAll();
                        registry.requestMatchers("/api/video-report/*/discussion").permitAll();

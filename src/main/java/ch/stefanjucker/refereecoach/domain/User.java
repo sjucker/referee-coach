@@ -55,6 +55,12 @@ public class User {
     @Enumerated(STRING)
     private UserRole role;
 
+    /**
+     * WebAuthn user handle, generated when the first passkey is registered.
+     */
+    @Column(name = "user_handle")
+    private byte[] userHandle;
+
     public boolean isCoach() {
         return role == COACH;
     }
