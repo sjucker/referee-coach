@@ -24,15 +24,15 @@ public final class Fixtures {
     }
 
     public static User coach(String email) {
-        return new User(null, email, email, "", null, null, false, COACH);
+        return new User(null, email, email, "", null, null, false, COACH, null);
     }
 
     public static User referee(String name) {
-        return new User(null, name, name, "", null, null, false, REFEREE);
+        return new User(null, name, name, "", null, null, false, REFEREE, null);
     }
 
     public static User refereeCoach(String name) {
-        return new User(null, name, name, "", null, null, false, REFEREE_COACH);
+        return new User(null, name, name, "", null, null, false, REFEREE_COACH, null);
     }
 
     public static VideoReport videoReport(String id, User coach, User referee1, User referee2, User referee3, Reportee reportee) {

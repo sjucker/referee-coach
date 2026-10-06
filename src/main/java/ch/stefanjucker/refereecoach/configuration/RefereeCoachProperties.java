@@ -5,6 +5,9 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Configuration
@@ -17,4 +20,8 @@ public class RefereeCoachProperties {
     private String bccMail;
     private String overrideRecipientMail;
     private char[] impersonationPassword;
+    /**
+     * Additional origins (besides the one of {@link #baseUrl}) from which passkeys may be used, e.g. the herokuapp.com hostname.
+     */
+    private List<String> passkeyExtraOrigins = new ArrayList<>();
 }

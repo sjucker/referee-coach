@@ -122,9 +122,36 @@ export interface OverviewDTO {
     referee3?: UserDTO;
     relevantRefereeIds: number[];
     finished: boolean;
-    visibleForReferee: boolean;
-    coachId?: number;
     coachPartOfCrew: boolean;
+    coachId?: number;
+    visibleForReferee: boolean;
+}
+
+export interface PasskeyDTO {
+    id: number;
+    name: string;
+    createdAt: Date;
+    lastUsedAt?: Date;
+}
+
+export interface PasskeyLoginRequestDTO {
+    ceremonyId: string;
+    credentialJson: string;
+}
+
+export interface PasskeyOptionsDTO {
+    ceremonyId: string;
+    optionsJson: string;
+}
+
+export interface PasskeyRegistrationRequestDTO {
+    ceremonyId: string;
+    credentialJson: string;
+    name?: string;
+}
+
+export interface RenamePasskeyRequestDTO {
+    name: string;
 }
 
 export interface ResetPasswordRequestDTO {
@@ -205,8 +232,8 @@ export interface VideoReportDTO {
     otherReportees: Reportee[];
     finished: boolean;
     version: number;
-    textOnly: boolean;
     coachPartOfCrew: boolean;
+    textOnly: boolean;
 }
 
 export interface VideoReportDiscussionDTO {
