@@ -146,6 +146,16 @@ export interface TagDTO {
     name: string;
 }
 
+export interface TagNameDTO {
+    name: string;
+}
+
+export interface TagUsageDTO {
+    id: number;
+    name: string;
+    usageCount: number;
+}
+
 export interface UpdateUserDTO {
     name: string;
     email: string;
