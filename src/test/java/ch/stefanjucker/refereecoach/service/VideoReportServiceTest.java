@@ -12,8 +12,12 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 import ch.stefanjucker.refereecoach.AbstractIntegrationTest;
+import ch.stefanjucker.refereecoach.domain.repository.TagsRepository;
 import ch.stefanjucker.refereecoach.dto.BasketplanGameDTO;
 import ch.stefanjucker.refereecoach.dto.Reportee;
+import ch.stefanjucker.refereecoach.dto.TagDTO;
+import ch.stefanjucker.refereecoach.dto.VideoCommentDTO;
+import ch.stefanjucker.refereecoach.dto.VideoReportDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 class VideoReportServiceTest extends AbstractIntegrationTest {
 
@@ -32,6 +38,8 @@ class VideoReportServiceTest extends AbstractIntegrationTest {
     private JavaMailSender javaMailSender;
     @Autowired
     private BasketplanService basketplanService;
+    @Autowired
+    private TagsRepository tagsRepository;
 
     @Test
     void sendReminderEmails() {
@@ -114,6 +122,28 @@ class VideoReportServiceTest extends AbstractIntegrationTest {
         // copying to one of the other referees of the same game is still allowed
         assertThat(videoReportService.copy("1", THIRD_REFEREE, refereeCoach1)).isNotNull();
         assertThat(videoReportRepository.findAll()).hasSize(2);
+    }
+
+    @Test
+    void updateDoesNotOverwriteTagNames() {
+        // given a report and a client that still holds an outdated name of a tag
+        var game = basketplanService.findGameByNumber("22-00249").orElseThrow();
+        var dto = videoReportService.create(game.gameNumber(), game.youtubeId(), FIRST_REFEREE, coach1);
+        var tag = tagsRepository.findAll().getFirst();
+        var staleComment = new VideoCommentDTO(null, 42, "comment", false, List.of(), Set.of(new TagDTO(tag.getId(), "STALE NAME")));
+
+        // when
+        var updated = videoReportService.update(dto.id(), withComments(dto, List.of(staleComment)), coach1);
+
+        // then the tag is linked, but its name is untouched
+        assertThat(updated.videoComments().getFirst().tags()).containsExactly(new TagDTO(tag.getId(), tag.getName()));
+        assertThat(tagsRepository.findById(tag.getId())).hasValueSatisfying(t -> assertThat(t.getName()).isEqualTo(tag.getName()));
+    }
+
+    private static VideoReportDTO withComments(VideoReportDTO dto, List<VideoCommentDTO> videoComments) {
+        return new VideoReportDTO(dto.id(), dto.basketplanGame(), dto.coach(), dto.reportee(), dto.general(), dto.image(), dto.fitness(),
+                                  dto.mechanics(), dto.fouls(), dto.violations(), dto.gameManagement(), dto.pointsToKeepComment(),
+                                  dto.pointsToImproveComment(), videoComments, dto.otherReportees(), dto.finished(), dto.version());
     }
 
     @Test

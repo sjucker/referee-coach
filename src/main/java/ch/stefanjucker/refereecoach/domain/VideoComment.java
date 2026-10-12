@@ -1,6 +1,5 @@
 package ch.stefanjucker.refereecoach.domain;
 
-import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import lombok.AllArgsConstructor;
@@ -49,7 +48,7 @@ public class VideoComment {
     // since v3
     private boolean requiresReply;
 
-    @ManyToMany(cascade = MERGE)
+    @ManyToMany
     @JoinTable(
             name = "video_report_comment_tags",
             joinColumns = {@JoinColumn(name = "video_report_comment_id")},

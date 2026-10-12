@@ -15,6 +15,7 @@ import ch.stefanjucker.refereecoach.dto.UserDTO;
 import ch.stefanjucker.refereecoach.mapper.DTOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -101,7 +102,7 @@ public class AdminService {
 
         Tags tag = new Tags();
         tag.setName(name);
-        tag = tagsRepository.save(tag);
+        tag = saveTag(tag);
         return new TagUsageDTO(tag.getId(), tag.getName(), 0);
     }
 
@@ -117,7 +118,16 @@ public class AdminService {
                       });
 
         tag.setName(name);
-        tagsRepository.save(tag);
+        saveTag(tag);
+    }
+
+    private Tags saveTag(Tags tag) {
+        try {
+            // flush so a concurrent duplicate hits the unique constraint here and not at commit
+            return tagsRepository.saveAndFlush(tag);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(CONFLICT, "tag already exists: " + tag.getName());
+        }
     }
 
     @Transactional

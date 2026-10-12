@@ -7,12 +7,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import ch.stefanjucker.refereecoach.AbstractIntegrationTest;
+import ch.stefanjucker.refereecoach.domain.Tags;
 import ch.stefanjucker.refereecoach.domain.repository.TagsRepository;
 import ch.stefanjucker.refereecoach.dto.TagNameDTO;
 import ch.stefanjucker.refereecoach.dto.TagUsageDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ class AdminServiceTest extends AbstractIntegrationTest {
         assertThat(created.usageCount()).as("usage count of new tag").isZero();
         assertThat(adminService.getAllTags()).as("all tags").extracting(TagUsageDTO::name).contains("TEST - NEW TAG");
 
+        assertThat(tagsRepository.findAll()).as("cached tags before rename").extracting("name").contains("TEST - NEW TAG");
         adminService.renameTag(created.id(), new TagNameDTO("  TEST - RENAMED  "));
         assertThat(tagsRepository.findById(created.id())).as("renamed tag").get()
                                                          .extracting("name").isEqualTo("TEST - RENAMED");
@@ -55,6 +58,17 @@ class AdminServiceTest extends AbstractIntegrationTest {
         assertThatThrownBy(() -> adminService.createTag(new TagNameDTO("test - duplicate")))
                 .as("duplicate tag")
                 .isInstanceOf(ResponseStatusException.class);
+    }
+
+    @Test
+    void duplicateTagNameIsRejectedByDatabase() {
+        createTag("TEST - UNIQUE");
+        var duplicate = new Tags();
+        duplicate.setName("test - unique");
+
+        assertThatThrownBy(() -> tagsRepository.saveAndFlush(duplicate))
+                .as("duplicate tag bypassing the service check")
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
