@@ -39,12 +39,6 @@ public class AdminService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean isAdmin(String username) {
-        return userRepository.findByEmail(username)
-                             .map(User::isAdmin)
-                             .orElse(false);
-    }
-
     public List<UserDTO> getAllReferees() {
         return userRepository.findAll().stream()
                              .filter(User::isReferee)
