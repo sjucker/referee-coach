@@ -1,0 +1,25 @@
+@use '../../variables';
+@use '../../responsive';
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+table {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.actions {
+  text-align: right;
+  white-space: nowrap;
+}

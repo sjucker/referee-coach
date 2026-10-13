@@ -3,17 +3,24 @@ package ch.stefanjucker.refereecoach.service;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+import ch.stefanjucker.refereecoach.domain.Tags;
 import ch.stefanjucker.refereecoach.domain.User;
+import ch.stefanjucker.refereecoach.domain.repository.TagsRepository;
 import ch.stefanjucker.refereecoach.domain.repository.UserRepository;
 import ch.stefanjucker.refereecoach.dto.CreateUserDTO;
+import ch.stefanjucker.refereecoach.dto.TagNameDTO;
+import ch.stefanjucker.refereecoach.dto.TagUsageDTO;
 import ch.stefanjucker.refereecoach.dto.UpdateUserDTO;
 import ch.stefanjucker.refereecoach.dto.UserDTO;
 import ch.stefanjucker.refereecoach.mapper.DTOMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 
 @Slf4j
@@ -23,17 +30,13 @@ public class AdminService {
     private static final DTOMapper DTO_MAPPER = DTOMapper.INSTANCE;
 
     private final UserRepository userRepository;
+    private final TagsRepository tagsRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AdminService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AdminService(UserRepository userRepository, TagsRepository tagsRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.tagsRepository = tagsRepository;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    public boolean isAdmin(String username) {
-        return userRepository.findByEmail(username)
-                             .map(User::isAdmin)
-                             .orElse(false);
     }
 
     public List<UserDTO> getAllReferees() {
@@ -75,5 +78,60 @@ public class AdminService {
         user.setRole(dto.role());
         user.setAdmin(dto.admin());
         userRepository.save(user);
+    }
+
+    public List<TagUsageDTO> getAllTags() {
+        return tagsRepository.findAllWithUsageCount().stream()
+                             .map(tag -> new TagUsageDTO(tag.getId(), tag.getName(), tag.getUsageCount()))
+                             .toList();
+    }
+
+    @Transactional
+    @CacheEvict(value = "tags", allEntries = true)
+    public TagUsageDTO createTag(TagNameDTO dto) {
+        String name = dto.name().trim();
+        if (tagsRepository.findByNameIgnoreCase(name).isPresent()) {
+            throw new ResponseStatusException(CONFLICT, "tag already exists: " + name);
+        }
+
+        Tags tag = new Tags();
+        tag.setName(name);
+        tag = saveTag(tag);
+        return new TagUsageDTO(tag.getId(), tag.getName(), 0);
+    }
+
+    @Transactional
+    @CacheEvict(value = "tags", allEntries = true)
+    public void renameTag(Long id, TagNameDTO dto) {
+        Tags tag = tagsRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "tag not found: " + id));
+        String name = dto.name().trim();
+        tagsRepository.findByNameIgnoreCase(name)
+                      .filter(other -> !other.getId().equals(id))
+                      .ifPresent(other -> {
+                          throw new ResponseStatusException(CONFLICT, "tag already exists: " + name);
+                      });
+
+        tag.setName(name);
+        saveTag(tag);
+    }
+
+    private Tags saveTag(Tags tag) {
+        try {
+            // flush so a concurrent duplicate hits the unique constraint here and not at commit
+            return tagsRepository.saveAndFlush(tag);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(CONFLICT, "tag already exists: " + tag.getName());
+        }
+    }
+
+    @Transactional
+    @CacheEvict(value = "tags", allEntries = true)
+    public void deleteTag(Long id) {
+        Tags tag = tagsRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "tag not found: " + id));
+        if (tagsRepository.countUsages(id) > 0) {
+            throw new ResponseStatusException(CONFLICT, "tag is still in use: " + tag.getName());
+        }
+
+        tagsRepository.delete(tag);
     }
 }

@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>{{ edit ? 'Rename Tag' : 'Create New Tag' }}</h2>
+<mat-dialog-content>
+    <form [formGroup]="form" (ngSubmit)="save()">
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" cdkFocusInitial autocomplete="off">
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-flat-button (click)="close()">Cancel</button>
+    <button color="primary" mat-flat-button [disabled]="form.invalid" (click)="save()">Save</button>
+</mat-dialog-actions>

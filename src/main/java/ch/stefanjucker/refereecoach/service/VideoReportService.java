@@ -187,7 +187,10 @@ public class VideoReportService {
 
         List<VideoCommentDTO> comments = new ArrayList<>();
         for (var videoCommentDTO : dto.videoComments()) {
-            var videoComment = videoCommentRepository.save(DTO_MAPPER.fromDTO(videoCommentDTO, dto.id()));
+            var videoComment = DTO_MAPPER.fromDTO(videoCommentDTO, dto.id());
+            // resolve tags from the DB so stale names sent by the client are never written back
+            videoComment.setTags(new HashSet<>(tagsRepository.findAllById(videoCommentDTO.tags().stream().map(TagDTO::id).toList())));
+            videoComment = videoCommentRepository.save(videoComment);
             comments.add(DTO_MAPPER.toDTO(videoComment));
             existingVideoCommentIds.remove(videoComment.getId());
         }

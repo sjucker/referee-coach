@@ -15,6 +15,7 @@ export const DISCUSS_PATH = 'discuss'
 export const SETTINGS_PATH = 'settings'
 export const SEARCH_PATH = 'search'
 export const USERS_PATH = 'users'
+export const TAGS_PATH = 'tags'
 export const GAME_DISCUSSION_PATH = 'game-discussion'
 
 const authenticationGuard: CanActivateFn = () => inject(AuthenticationGuard).isLoggedIn();
@@ -72,6 +73,11 @@ const routes: Routes = [
     {
         path: USERS_PATH,
         loadComponent: () => import('./users/users.component').then(m => m.UsersComponent),
+        canActivate: [hasAdminRightsGuard]
+    },
+    {
+        path: TAGS_PATH,
+        loadComponent: () => import('./tags/tags.component').then(m => m.TagsComponent),
         canActivate: [hasAdminRightsGuard]
     },
     {
