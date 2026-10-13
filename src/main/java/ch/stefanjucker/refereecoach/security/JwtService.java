@@ -1,6 +1,7 @@
 package ch.stefanjucker.refereecoach.security;
 
 import static io.jsonwebtoken.Jwts.SIG.HS256;
+import static java.lang.Byte.SIZE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
@@ -23,8 +24,12 @@ public class JwtService {
     private final SecretKey secretKey;
 
     public JwtService(RefereeCoachProperties properties) {
+        var secret = properties.getJwtSecret().getBytes(UTF_8);
+        if (secret.length * SIZE < SIGNATURE_ALGORITHM.getKeyBitLength()) {
+            throw new IllegalStateException("JWT secret must be at least %d bytes long".formatted(SIGNATURE_ALGORITHM.getKeyBitLength() / SIZE));
+        }
         // explicit HmacSHA256 key: Keys.hmacShaKeyFor() would pick the algorithm by key length
-        this.secretKey = new SecretKeySpec(properties.getJwtSecret().getBytes(UTF_8), "HmacSHA256");
+        this.secretKey = new SecretKeySpec(secret, "HmacSHA256");
     }
 
     public String createJwt(String email) {
@@ -41,8 +46,9 @@ public class JwtService {
 
         try {
             return Optional.of(jwtParser.parseSignedClaims(jwt).getPayload());
-        } catch (JwtException ex) {
-            log.error("unable to parse given JWT: " + jwt, ex);
+        } catch (JwtException | IllegalArgumentException ex) {
+            // never log the token itself: it is a valid credential if only slightly malformed
+            log.warn("unable to parse given JWT: {}", ex.getMessage());
             return Optional.empty();
         }
     }

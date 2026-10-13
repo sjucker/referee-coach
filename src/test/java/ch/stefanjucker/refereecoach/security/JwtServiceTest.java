@@ -1,6 +1,7 @@
 package ch.stefanjucker.refereecoach.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,17 @@ class JwtServiceTest {
         var unsigned = LEGACY_JWT.substring(0, LEGACY_JWT.lastIndexOf('.') + 1).replace("eyJhbGciOiJIUzI1NiJ9", "eyJhbGciOiJub25lIn0");
 
         assertThat(jwtService.validateJwt(unsigned)).isEmpty();
+    }
+
+    @Test
+    void emptyOrGarbageJwtIsRejected() {
+        assertThat(jwtService.validateJwt("")).isEmpty();
+        assertThat(jwtService.validateJwt("not-a-jwt")).isEmpty();
+    }
+
+    @Test
+    void shortSecretIsRejectedAtStartup() {
+        assertThatIllegalStateException().isThrownBy(() -> jwtService("tooshort")).withMessageContaining("32 bytes");
     }
 
     private static JwtService jwtService(String secret) {
