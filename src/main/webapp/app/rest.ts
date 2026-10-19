@@ -122,8 +122,9 @@ export interface OverviewDTO {
     referee3?: UserDTO;
     relevantRefereeIds: number[];
     finished: boolean;
-    visibleForReferee: boolean;
+    finishedAt?: Date;
     coachId?: number;
+    visibleForReferee: boolean;
     coachPartOfCrew: boolean;
 }
 

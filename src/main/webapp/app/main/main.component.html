@@ -155,10 +155,15 @@
                 <table mat-table [dataSource]="dtos">
                     @if (isCoach() || isRefereeCoach()) {
                         <ng-container matColumnDef="finished">
-                            <th mat-header-cell *matHeaderCellDef class="show-gt-sm"></th>
+                            <th mat-header-cell *matHeaderCellDef class="show-gt-sm">Finished</th>
                             <td mat-cell *matCellDef="let element" class="show-gt-sm">
                                 @if (element.finished) {
-                                    <i class="material-icons">check_circle_outline</i>
+                                    <div class="finished-container">
+                                        <i class="material-icons">check_circle_outline</i>
+                                        @if (element.finishedAt) {
+                                            <span>{{ element.finishedAt | date: 'dd.MM.yyyy' }}</span>
+                                        }
+                                    </div>
                                 }
                             </td>
                         </ng-container>

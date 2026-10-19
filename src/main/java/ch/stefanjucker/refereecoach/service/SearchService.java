@@ -107,7 +107,8 @@ public class SearchService {
                                             DTO_MAPPER.toDTO(videoReport.getBasketplanGame().getReferee2()),
                                             DTO_MAPPER.toDTO(videoReport.getBasketplanGame().getReferee3()),
                                             videoReport.relevantRefereeIds(),
-                                            videoReport.isFinished()
+                                            videoReport.isFinished(),
+                                            videoReport.getFinishedAt()
                                     ));
     }
 
@@ -129,7 +130,8 @@ public class SearchService {
                                                DTO_MAPPER.toDTO(gameDiscussion.getBasketplanGame().getReferee2()),
                                                DTO_MAPPER.toDTO(gameDiscussion.getBasketplanGame().getReferee3()),
                                                gameDiscussion.relevantRefereeIds(),
-                                               false
+                                               false,
+                                               null
                                        ));
     }
 }

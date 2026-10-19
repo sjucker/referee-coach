@@ -2,6 +2,7 @@ package ch.stefanjucker.refereecoach.dto;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -22,7 +23,8 @@ public record OverviewDTO(
         UserDTO referee2,
         UserDTO referee3,
         @NotNull Set<Long> relevantRefereeIds,
-        boolean finished
+        boolean finished,
+        LocalDateTime finishedAt
 ) {
 
     public enum ReportType {
