@@ -54,4 +54,9 @@ public record OverviewDTO(
         return Optional.ofNullable(coach).map(UserDTO::id);
     }
 
+    public OverviewDTO withoutFinishedAt() {
+        return new OverviewDTO(id, type, date, gameNumber, competition, teamA, teamB, coach, reportee, relevantReferee,
+                               referee1, referee2, referee3, relevantRefereeIds, finished, null);
+    }
+
 }

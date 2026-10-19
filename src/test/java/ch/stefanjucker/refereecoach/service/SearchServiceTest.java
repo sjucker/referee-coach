@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 class SearchServiceTest extends AbstractIntegrationTest {
 
@@ -86,6 +87,37 @@ class SearchServiceTest extends AbstractIntegrationTest {
 
         assertThat(result).extracting(OverviewDTO::id, OverviewDTO::isCoachPartOfCrew)
                           .containsExactlyInAnyOrder(tuple("1", false), tuple("2", true), tuple("3", false));
+    }
+
+    @Test
+    void findAll_FinishedAt() {
+        var date = LocalDate.of(2023, 9, 22);
+        var finishedAt = LocalDateTime.of(2023, 9, 24, 20, 15);
+        var finishedReport = videoReport("1", "", date, coach1, referee1, referee2, referee3, FIRST_REFEREE);
+        finishedReport.setFinished(true);
+        finishedReport.setFinishedAt(finishedAt);
+        videoReportRepository.save(finishedReport);
+        saveVideoReport("2", date);
+        saveGameDiscussion("3", date);
+
+        var result = searchService.findAll(date, LocalDate.of(2023, 9, 30), coach1.getEmail());
+
+        assertThat(result).extracting(OverviewDTO::id, OverviewDTO::finishedAt)
+                          .containsExactlyInAnyOrder(tuple("1", finishedAt), tuple("2", null), tuple("3", null));
+    }
+
+    @Test
+    void findAll_FinishedAt_HiddenForReferee() {
+        var date = LocalDate.of(2023, 9, 22);
+        var finishedReport = videoReport("1", "", date, coach1, referee1, referee2, referee3, FIRST_REFEREE);
+        finishedReport.setFinished(true);
+        finishedReport.setFinishedAt(LocalDateTime.of(2023, 9, 24, 20, 15));
+        videoReportRepository.save(finishedReport);
+
+        var result = searchService.findAll(date, LocalDate.of(2023, 9, 30), referee1.getEmail());
+
+        assertThat(result).extracting(OverviewDTO::id, OverviewDTO::finished, OverviewDTO::finishedAt)
+                          .containsExactly(tuple("1", true, null));
     }
 
     private void saveVideoReport(String id, LocalDate date) {

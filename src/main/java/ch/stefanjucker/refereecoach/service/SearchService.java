@@ -83,6 +83,8 @@ public class SearchService {
                      .filter(overview -> user.isCoach()
                              || (Objects.equals(overview.getCoachId().orElse(0L), user.getId()))
                              || overview.isVisibleForReferee())
+                     // finish date is only shown to coaches and referee-coaches
+                     .map(overview -> user.isCoach() || user.isRefereeCoach() ? overview : overview.withoutFinishedAt())
                      .sorted(comparing(OverviewDTO::date).reversed()
                                                          .thenComparing(OverviewDTO::gameNumber)
                                                          .thenComparing(OverviewDTO::reportee, nullsLast(naturalOrder())))

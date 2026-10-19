@@ -162,6 +162,8 @@
                                         <i class="material-icons">check_circle_outline</i>
                                         @if (element.finishedAt) {
                                             <span>{{ element.finishedAt | date: 'dd.MM.yyyy' }}</span>
+                                        } @else {
+                                            <span title="Finish date unknown (finished before it was recorded)">–</span>
                                         }
                                     </div>
                                 }
