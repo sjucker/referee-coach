@@ -4,11 +4,14 @@ import static ch.stefanjucker.refereecoach.domain.VideoComment.COMMENT_MAX_LENGT
 import static ch.stefanjucker.refereecoach.domain.VideoReport.CURRENT_VERSION;
 import static ch.stefanjucker.refereecoach.util.DateUtil.now;
 import static java.util.Comparator.comparing;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
+import ch.stefanjucker.refereecoach.domain.Tags;
 import ch.stefanjucker.refereecoach.domain.User;
 import ch.stefanjucker.refereecoach.domain.VideoComment;
 import ch.stefanjucker.refereecoach.domain.VideoCommentReply;
@@ -39,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -185,11 +189,21 @@ public class VideoReportService {
                                                                   .map(VideoComment::getId)
                                                                   .collect(toCollection(HashSet::new));
 
+        // resolve tags from the DB so stale names sent by the client are never written back (one query for all comments)
+        Map<Long, Tags> tagsById = tagsRepository.findAllById(dto.videoComments().stream()
+                                                                 .flatMap(videoCommentDTO -> videoCommentDTO.tags().stream())
+                                                                 .map(TagDTO::id)
+                                                                 .collect(toSet()))
+                                                 .stream()
+                                                 .collect(toMap(Tags::getId, identity()));
+
         List<VideoCommentDTO> comments = new ArrayList<>();
         for (var videoCommentDTO : dto.videoComments()) {
             var videoComment = DTO_MAPPER.fromDTO(videoCommentDTO, dto.id());
-            // resolve tags from the DB so stale names sent by the client are never written back
-            videoComment.setTags(new HashSet<>(tagsRepository.findAllById(videoCommentDTO.tags().stream().map(TagDTO::id).toList())));
+            videoComment.setTags(videoCommentDTO.tags().stream()
+                                                .map(tag -> tagsById.get(tag.id()))
+                                                .filter(Objects::nonNull)
+                                                .collect(toCollection(HashSet::new)));
             videoComment = videoCommentRepository.save(videoComment);
             comments.add(DTO_MAPPER.toDTO(videoComment));
             existingVideoCommentIds.remove(videoComment.getId());
