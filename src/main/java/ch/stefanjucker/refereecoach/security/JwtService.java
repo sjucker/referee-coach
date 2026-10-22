@@ -7,6 +7,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import ch.stefanjucker.refereecoach.configuration.RefereeCoachProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.MacAlgorithm;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ public class JwtService {
 
     private static final MacAlgorithm SIGNATURE_ALGORITHM = HS256;
     private final SecretKey secretKey;
+    private final JwtParser jwtParser;
 
     public JwtService(RefereeCoachProperties properties) {
         var secret = properties.getJwtSecret().getBytes(UTF_8);
@@ -30,6 +32,10 @@ public class JwtService {
         }
         // explicit HmacSHA256 key: Keys.hmacShaKeyFor() would pick the algorithm by key length
         this.secretKey = new SecretKeySpec(secret, "HmacSHA256");
+        // the parser is immutable and thread-safe, so it is built once instead of on every request
+        this.jwtParser = Jwts.parser()
+                             .verifyWith(secretKey)
+                             .build();
     }
 
     public String createJwt(String email) {
@@ -40,10 +46,6 @@ public class JwtService {
     }
 
     public Optional<Claims> validateJwt(String jwt) {
-        var jwtParser = Jwts.parser()
-                            .verifyWith(secretKey)
-                            .build();
-
         try {
             return Optional.of(jwtParser.parseSignedClaims(jwt).getPayload());
         } catch (JwtException | IllegalArgumentException ex) {
