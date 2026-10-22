@@ -140,6 +140,31 @@ class VideoReportServiceTest extends AbstractIntegrationTest {
         assertThat(tagsRepository.findById(tag.getId())).hasValueSatisfying(t -> assertThat(t.getName()).isEqualTo(tag.getName()));
     }
 
+    @Test
+    void updateRejectsCommentsOfOtherReport() {
+        // given a report of another coach with a comment
+        var game = basketplanService.findGameByNumber("22-00249").orElseThrow();
+        var otherReport = videoReportService.create(game.gameNumber(), game.youtubeId(), SECOND_REFEREE, coach2);
+        var otherComment = new VideoCommentDTO(null, 42, "other comment", false, List.of(), Set.of());
+        var otherCommentId = videoReportService.update(otherReport.id(), withComments(otherReport, List.of(otherComment)), coach2)
+                                               .videoComments().getFirst().id();
+        var ownReport = videoReportService.create(game.gameNumber(), game.youtubeId(), FIRST_REFEREE, coach1);
+        var hijackedComment = new VideoCommentDTO(otherCommentId, 42, "hijacked", false, List.of(), Set.of());
+
+        // when / then the comment of the other report is rejected, even if the body points to the other report
+        assertThatThrownBy(() -> videoReportService.update(ownReport.id(), withComments(ownReport, List.of(hijackedComment)), coach1))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("not allowed to update this video-comment");
+        var ownReportWithOtherId = withComments(otherReport, List.of(hijackedComment));
+        assertThatThrownBy(() -> videoReportService.update(ownReport.id(), ownReportWithOtherId, coach1))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("not allowed to update this video-comment");
+        assertThat(videoCommentRepository.findById(otherCommentId)).hasValueSatisfying(c -> {
+            assertThat(c.getComment()).isEqualTo("other comment");
+            assertThat(c.getVideoReportId()).isEqualTo(otherReport.id());
+        });
+    }
+
     private static VideoReportDTO withComments(VideoReportDTO dto, List<VideoCommentDTO> videoComments) {
         return new VideoReportDTO(dto.id(), dto.basketplanGame(), dto.coach(), dto.reportee(), dto.general(), dto.image(), dto.fitness(),
                                   dto.mechanics(), dto.fouls(), dto.violations(), dto.gameManagement(), dto.pointsToKeepComment(),

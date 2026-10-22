@@ -199,7 +199,12 @@ public class VideoReportService {
 
         List<VideoCommentDTO> comments = new ArrayList<>();
         for (var videoCommentDTO : dto.videoComments()) {
-            var videoComment = DTO_MAPPER.fromDTO(videoCommentDTO, dto.id());
+            // only comments of this report may be updated, new comments must not carry an id
+            if (videoCommentDTO.id() != null && !existingVideoCommentIds.contains(videoCommentDTO.id())) {
+                log.error("user {} tried to update video-comment {} that does not belong to video-report {}", coach, videoCommentDTO.id(), id);
+                throw new IllegalStateException("user is not allowed to update this video-comment!");
+            }
+            var videoComment = DTO_MAPPER.fromDTO(videoCommentDTO, id);
             videoComment.setTags(videoCommentDTO.tags().stream()
                                                 .map(tag -> tagsById.get(tag.id()))
                                                 .filter(Objects::nonNull)
